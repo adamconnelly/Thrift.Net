@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\ThriftSharp.Antlr\ThriftSharp.Antlr.csproj" />
-    <ProjectReference Include="..\ThriftSharp.Compilation\ThriftSharp.Compilation.csproj" />
+    <ProjectReference Include="..\Thrift.Net.Antlr\Thrift.Net.Antlr.csproj" />
+    <ProjectReference Include="..\Thrift.Net.Compilation\Thrift.Net.Compilation.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/ThriftSharp.Compilation/ThriftSharp.Compilation.csproj",
+                "${workspaceFolder}/src/Thrift.Net.Tests/Thrift.Net.Tests.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/src/ThriftSharp.Compilation/ThriftSharp.Compilation.csproj",
+                "${workspaceFolder}/src/Thrift.Net.Compilation/Thrift.Net.Compilation.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -32,7 +32,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/src/ThriftSharp.Compilation/ThriftSharp.Compilation.csproj",
+                "${workspaceFolder}/src/Thrift.Net.Compilation/Thrift.Net.Compilation.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
