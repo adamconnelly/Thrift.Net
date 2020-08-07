@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\ThriftSharp.Antlr\ThriftSharp.Antlr.csproj" />
+    <ProjectReference Include="..\ThriftSharp.Compilation\ThriftSharp.Compilation.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+</Project>
