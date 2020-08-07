@@ -1,0 +1,5 @@
+<RuleSet Name="Code style rules for Thrift.Net" Description="This file allows the code style rules to be altered for Thrift.Net" ToolsVersion="10.0">
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA1633" Action="None" />
+  </Rules>
+</RuleSet>

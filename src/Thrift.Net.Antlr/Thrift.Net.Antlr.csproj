@@ -2,17 +2,21 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <CodeAnalysisRuleSet>..\Thrift.Net.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Antlr4.Runtime.Standard" Version="4.8.0" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
   <Target Name="GenerateAntlrGrammar" BeforeTargets="BeforeBuild">
-    <Exec Command='java -jar "$(MSBuildProjectDirectory)/lib/antlr-4.8-complete.jar" -Dlanguage=CSharp -no-listener -visitor -package "Thrift.Net.Antlr" -o "$(MSBuildProjectDirectory)" "$(MSBuildProjectDirectory)/Thrift.g4"' />
+    <Exec Command="java -jar &quot;$(MSBuildProjectDirectory)/lib/antlr-4.8-complete.jar&quot; -Dlanguage=CSharp -no-listener -visitor -package &quot;Thrift.Net.Antlr&quot; -o &quot;$(MSBuildProjectDirectory)&quot; &quot;$(MSBuildProjectDirectory)/Thrift.g4&quot;" />
     <ItemGroup>
-      <Compile Include="**/*$(DefaultLanguageSourceExtension)"
-               Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(BaseIntermediateOutputPath)**;$(BaseOutputPath)**;@(Compile)" />
+      <Compile Include="**/*$(DefaultLanguageSourceExtension)" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(BaseIntermediateOutputPath)**;$(BaseOutputPath)**;@(Compile)" />
     </ItemGroup>
   </Target>
 

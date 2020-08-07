@@ -4,8 +4,16 @@
     <ProjectReference Include="..\Thrift.Net.Antlr\Thrift.Net.Antlr.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <CodeAnalysisRuleSet>..\Thrift.Net.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
 
 </Project>
