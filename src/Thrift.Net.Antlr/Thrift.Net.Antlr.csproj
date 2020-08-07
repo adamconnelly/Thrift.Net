@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <Target Name="GenerateAntlrGrammar" BeforeTargets="BeforeBuild">
-    <Exec Command='java -jar "$(MSBuildProjectDirectory)/lib/antlr-4.8-complete.jar" -Dlanguage=CSharp -no-listener -visitor -package "ThriftSharp.Antlr" -o "$(MSBuildProjectDirectory)" "$(MSBuildProjectDirectory)/Thrift.g4"' />
+    <Exec Command='java -jar "$(MSBuildProjectDirectory)/lib/antlr-4.8-complete.jar" -Dlanguage=CSharp -no-listener -visitor -package "Thrift.Net.Antlr" -o "$(MSBuildProjectDirectory)" "$(MSBuildProjectDirectory)/Thrift.g4"' />
     <ItemGroup>
       <Compile Include="**/*$(DefaultLanguageSourceExtension)"
                Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(BaseIntermediateOutputPath)**;$(BaseOutputPath)**;@(Compile)" />
