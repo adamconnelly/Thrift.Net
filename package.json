@@ -1,0 +1,35 @@
+{
+  "name": "thrift.net",
+  "version": "1.0.0",
+  "description": "A .NET implementation of Thrift",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint:markdown": "npx markdownlint '**/*.md' --ignore node_modules",
+    "format:markdown": "npx prettier --write '**/*.md'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adamconnelly/Thrift.Net.git"
+  },
+  "author": "Adam Connelly",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adamconnelly/Thrift.Net/issues"
+  },
+  "homepage": "https://github.com/adamconnelly/Thrift.Net#readme",
+  "devDependencies": {
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
+    "markdownlint-cli": "^0.23.2",
+    "prettier": "2.0.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,css,md}": "prettier --write"
+  }
+}

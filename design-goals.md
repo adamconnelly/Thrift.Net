@@ -20,8 +20,8 @@
 
 The idea should be that all you need to use Thrift should be `ThriftSharp`. If
 you want to add Prometheus metrics, you can opt-in to `ThriftSharp.Prometheus`.
-The core runtime will provide hooks that the Prometheus library can use to provide
-instrumentation.
+The core runtime will provide hooks that the Prometheus library can use to
+provide instrumentation.
 
 ## Compiler
 
@@ -35,24 +35,24 @@ components:
 - Level (Error, Warning).
 - Message.
 
-In addition, where possible we should aim to provide suggestions on how to resolve
-the problem.
+In addition, where possible we should aim to provide suggestions on how to
+resolve the problem.
 
 ## Code Generation
 
 - Use a model + template approach for simplicity and to make changes easy.
 - The generated code should follow C# standards and follow StyleCop guidelines.
-- We should provide a _Tools_ package, similar to grpc.Tools, that can automatically
-  generate C# files for any Thrift files in a project.
+- We should provide a _Tools_ package, similar to grpc.Tools, that can
+  automatically generate C# files for any Thrift files in a project.
 
 ## Linting and Formatting
 
 We should be able to hook into the compiler to provide linting and formatting.
-We should provide a set of opinionated rules to help people write consistent Thrift
-files, but allow these rules to be adjusted.
+We should provide a set of opinionated rules to help people write consistent
+Thrift files, but allow these rules to be adjusted.
 
-One example of this is the way that Thrift allows either `,` or `;` to be used as
-a list separator, allowing you to write code like the following:
+One example of this is the way that Thrift allows either `,` or `;` to be used
+as a list separator, allowing you to write code like the following:
 
 ```thrift
 enum Colours
@@ -63,11 +63,11 @@ enum Colours
 }
 ```
 
-We need the compiler to allow this since it's valid Thrift, but we should recommend
-one or the other for consistency.
+We need the compiler to allow this since it's valid Thrift, but we should
+recommend one or the other for consistency.
 
 ## First Class C# Citizen
 
-I want the library to feel like a C# library to other developers, in terms of naming,
-how the code is structured, etc. I don't want it to feel like a direct port from
-another language.
+I want the library to feel like a C# library to other developers, in terms of
+naming, how the code is structured, etc. I don't want it to feel like a direct
+port from another language.
