@@ -19,6 +19,8 @@
   },
   "homepage": "https://github.com/adamconnelly/Thrift.Net#readme",
   "devDependencies": {
+    "@commitlint/cli": "^9.1.2",
+    "@commitlint/config-conventional": "^9.1.1",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.11",
     "markdownlint-cli": "^0.23.2",
@@ -26,7 +28,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "lint-staged": {
