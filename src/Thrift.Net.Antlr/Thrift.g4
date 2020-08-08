@@ -1,12 +1,12 @@
 grammar Thrift;
 
-document: header* definition*;
+document: header definitions;
 
-header: include | cppInclude | namespace;
+header: (includeStatement | cppIncludeStatement | namespaceStatement)*;
 
-include: 'include' LITERAL;
-cppInclude: 'cppInclude' LITERAL;
-namespace: 'namespace' namespaceScope IDENTIFIER;
+includeStatement: 'include' LITERAL;
+cppIncludeStatement: 'cppInclude' LITERAL;
+namespaceStatement: 'namespace' namespaceScope IDENTIFIER;
 
 // Although we'll parse all the allowed namespaces, we'll only allow *, csharp
 // and netcore, and we'll treat csharp and netcore as equivalent
@@ -29,9 +29,22 @@ namespaceScope: '*' |
     'st' |
     'xsd';
 
-definition: 'doc';
+definitions: definition*;
 
-LITERAL: ('"' [^"]* '"') | ('\'' [^']* '\'');
-IDENTIFIER: ( LETTER | '_' ) ( LETTER | DIGIT | '.' | '_' )*;
-LETTER: [a-z][A-Z];
-DIGIT: [0-9];
+definition: enumDefinition;
+
+// TODO: Warning for empty enum
+enumDefinition: 'enum' IDENTIFIER
+    '{'
+        enumMember*
+    '}';
+
+enumMember: IDENTIFIER ('=' INT_CONSTANT)? LIST_SEPARATOR?;
+
+LITERAL: ( '"' .*? '"' ) | ( '\'' .*? '\'' );
+IDENTIFIER: ( [a-zA-Z] | '_' ) ( [a-zA-Z] | [0-9] | '.' | '_' )*;
+INT_CONSTANT: ('+' | '-')? [0-9]+;
+LIST_SEPARATOR: ',' | ';';
+
+// TODO: Do we need this?
+WS: [ \t\r\n]+ -> skip;

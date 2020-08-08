@@ -1,0 +1,9 @@
+<RuleSet Name="Thrift.Net.Antlr rules" Description="Custom rules for the Antlr project" ToolsVersion="10.0">
+  <Include Path="../Thrift.Net.ruleset" Action="Default" />
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <!-- Disable documentation xml file requirement -->
+    <Rule Id="SA0001" Action="None" />
+    <!-- Disable documentation for all public members -->
+    <Rule Id="SA1600" Action="None" />
+  </Rules>
+</RuleSet>
