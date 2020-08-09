@@ -1,3 +1,6 @@
 {
-    "omnisharp.enableRoslynAnalyzers": true
+    "omnisharp.enableRoslynAnalyzers": true,
+    "antlr4.generation": {
+        "mode": "internal"
+    }
 }
