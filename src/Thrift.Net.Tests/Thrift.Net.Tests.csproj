@@ -3,10 +3,13 @@
   <ItemGroup>
     <ProjectReference Include="..\Thrift.Net.Antlr\Thrift.Net.Antlr.csproj" />
     <ProjectReference Include="..\Thrift.Net.Compilation\Thrift.Net.Compilation.csproj" />
+    <ProjectReference Include="..\Thrift.Net.Compiler\Thrift.Net.Compiler.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Include="NSubstitute" Version="4.2.2" />
+    <PackageReference Include="NSubstitute.Analyzers.CSharp" Version="1.0.13" />
     <PackageReference Include="xunit" Version="2.4.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
     <PackageReference Include="coverlet.collector" Version="1.2.0" />

@@ -1,6 +1,7 @@
 namespace Thrift.Net.Compilation
 {
     using System.Collections.Generic;
+    using System.Linq;
     using Thrift.Net.Compilation.Model;
 
     /// <summary>
@@ -30,5 +31,28 @@ namespace Thrift.Net.Compilation
         /// Gets any messages reported during compilation.
         /// </summary>
         public IReadOnlyCollection<CompilationMessage> Messages { get; }
+
+        /// <summary>
+        /// Gets any errors.
+        /// </summary>
+        public IReadOnlyCollection<CompilationMessage> Errors =>
+            this.Messages.Where(message => message.MessageType == CompilerMessageType.Error).ToList();
+
+        /// <summary>
+        /// Gets any warnings.
+        /// </summary>
+        public IReadOnlyCollection<CompilationMessage> Warnings =>
+            this.Messages.Where(message => message.MessageType == CompilerMessageType.Warning).ToList();
+
+        /// <summary>
+        /// Gets a value indicating whether there were any errors compiling.
+        /// </summary>
+        public bool HasErrors => this.Errors.Any();
+
+        /// <summary>
+        /// Gets a value indicating whether there were any warnings identified
+        /// while compiling.
+        /// </summary>
+        public bool HasWarnings => this.Warnings.Any();
     }
 }

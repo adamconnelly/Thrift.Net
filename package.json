@@ -7,7 +7,8 @@
     "test": "dotnet test ./src/Thrift.Net.Tests",
     "lint:markdown": "npx markdownlint '**/*.md' --ignore node_modules",
     "format:markdown": "npx prettier --write '**/*.md'",
-    "antlr:grun": "java -jar ./src/Thrift.Net.Antlr/lib/antlr-4.8-complete.jar -o .antlr -Xexact-output-dir ./src/Thrift.Net.Antlr/Thrift.g4 && javac -cp ./src/Thrift.Net.Antlr/lib/antlr-4.8-complete.jar ./.antlr/Thrift*.java && echo 'Starting grun' && java -cp ./.antlr:./src/Thrift.Net.Antlr/lib/antlr-4.8-complete.jar org.antlr.v4.gui.TestRig Thrift document -gui"
+    "antlr:grun": "java -jar ./src/Thrift.Net.Antlr/lib/antlr-4.8-complete.jar -o .antlr -Xexact-output-dir ./src/Thrift.Net.Antlr/Thrift.g4 && javac -cp ./src/Thrift.Net.Antlr/lib/antlr-4.8-complete.jar ./.antlr/Thrift*.java && echo 'Starting grun' && java -cp ./.antlr:./src/Thrift.Net.Antlr/lib/antlr-4.8-complete.jar org.antlr.v4.gui.TestRig Thrift document -gui",
+    "compiler": "dotnet run --project ./src/Thrift.Net.Compiler --"
   },
   "repository": {
     "type": "git",

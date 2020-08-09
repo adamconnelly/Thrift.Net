@@ -8,7 +8,7 @@ namespace Thrift.Net.Compilation
     /// An object used to compile thrift IDL into a model that can be used for
     /// code generation.
     /// </summary>
-    public class ThriftCompiler
+    public class ThriftCompiler : IThriftCompiler
     {
         /// <summary>
         /// Compiles the IDL contained in the input stream.
