@@ -1,6 +1,6 @@
 namespace csharp Thrift.Net.Samples
 
 enum UserType {
-    User
-    Administrator
+    User = 1
+    Administrator = "Test"
 }

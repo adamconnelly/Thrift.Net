@@ -39,12 +39,12 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "build",
+            "label": "build Thrift.Net.Antlr",
             "command": "dotnet",
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src/Thrift.Net.Tests/Thrift.Net.Tests.csproj",
+                "${workspaceFolder}/src/Thrift.Net.Antlr/Thrift.Net.Antlr.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],

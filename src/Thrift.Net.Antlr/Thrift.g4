@@ -34,13 +34,18 @@ definitions: definition*;
 definition: enumDefinition;
 
 // TODO: Warning for empty enum
-enumDefinition: 'enum' IDENTIFIER
+enumDefinition: ENUM IDENTIFIER?
     '{'
         enumMember*
     '}';
 
-enumMember: IDENTIFIER ('=' INT_CONSTANT)? LIST_SEPARATOR?;
+enumMember: (
+        IDENTIFIER (EQUALS_OPERATOR enumValue=.*?)? |
+        EQUALS_OPERATOR enumValue=.*?
+    ) LIST_SEPARATOR?;
 
+ENUM: 'enum';
+EQUALS_OPERATOR: '=';
 LITERAL: ( '"' .*? '"' ) | ( '\'' .*? '\'' );
 IDENTIFIER: ( [a-zA-Z] | '_' ) ( [a-zA-Z] | [0-9] | '.' | '_' )*;
 INT_CONSTANT: ('+' | '-')? [0-9]+;

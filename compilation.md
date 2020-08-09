@@ -96,3 +96,110 @@ The absolute path to the thrift file that has an error. For example:
 ## Messages
 
 Any Thrift compiler messages should be detailed in this section.
+
+### TC0000 - Enum Must Have a Name
+
+Reported when an enum is defined with no name specified, for example:
+
+```thrift
+enum {
+  User,
+  Administrator
+}
+```
+
+To fix this add a name, for example:
+
+```thrift
+enum UserType {
+  User,
+  Administrator
+}
+```
+
+### TC0001 - Enum Member Must Have a Name
+
+An enum member has been defined without a name, for example:
+
+```thrift
+enum UserType {
+  User = 0,
+  = 1
+}
+```
+
+To fix this add a name, for example:
+
+```thrift
+enum UserType {
+  User = 0,
+  Administrator = 1
+}
+```
+
+### TC0002 - Enum Value Must Not Be Negative
+
+An enum member has been specified with a negative value. For example:
+
+```thrift
+enum UserType {
+  User = 0,
+  Administrator = -1
+}
+```
+
+To fix this use a positive value:
+
+```thrift
+enum UserType {
+  User = 0,
+  Administrator = 1
+}
+```
+
+### TC0003 - Enum Value Must Be an Integer
+
+An enum value has been specified that isn't an integer. For example:
+
+```thrift
+enum UserType {
+  User = 0,
+  Administrator = "hello"
+}
+```
+
+To fix this change the value to an integer:
+
+```thrift
+enum UserType {
+  User = 0,
+  Administrator = 1
+}
+```
+
+### TC0004 - Enum Value Must Be Specified
+
+An enum member has been defined but the value is missing from the assign
+expression. For example:
+
+```thrift
+enum UserType {
+  User =
+}
+```
+
+To fix this assign a value:
+
+```thrift
+enum UserType {
+  User = 0
+}
+```
+
+Alternatively, just remove the value expression completely:
+
+```thrift
+enum UserType {
+  User
+}
+```

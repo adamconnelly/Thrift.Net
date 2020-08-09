@@ -7,7 +7,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
 
     using ThriftCompiler = Thrift.Net.Compilation.ThriftCompiler;
 
-    public class EnumTests
+    public class EnumParsingTests
     {
         private readonly ThriftCompiler compiler = new ThriftCompiler();
 
@@ -166,11 +166,6 @@ enum Permission
                 item => Assert.Equal(9, item.Value),
                 item => Assert.Equal(10, item.Value));
         }
-
-        // TODO: error if a non-int enum value specified.
-        // TODO: error if negative enum value specified.
-        // TODO: error if equals sign but not enum value
-        // TODO: error if enum name is missing
 
         private static MemoryStream CreateInputStream(string input)
         {
