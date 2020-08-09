@@ -117,10 +117,59 @@ enum Permission
                 item => Assert.Equal(5, item.Value));
         }
 
-        // TODO: enum values can automatically be generated.
-        // TODO: enum value should be previous value + 1 if not specified.
+        [Fact]
+        public void Compile_EnumMembersDoNotHaveValuesSpecified_ValuesAreGenerated()
+        {
+            // Arrange
+            var inputStream = CreateInputStream(
+@"enum UserType
+{
+    User,
+    Administrator
+}");
+
+            // Act
+            var result = this.compiler.Compile(inputStream);
+
+            // Assert
+            Assert.Collection(
+                result.Document.Enums.Single().Members,
+                item => Assert.Equal(0, item.Value),
+                item => Assert.Equal(1, item.Value));
+        }
+
+        [Fact]
+        public void Compile_SomeEnumMembersDoNotHaveValuesSpecified_ValuesAreBasedOnPreviousMember()
+        {
+            // Arrange
+            var inputStream = CreateInputStream(
+@"enum UserType
+{
+    User,
+    Administrator = 2,
+    Guest,
+    Moderator,
+    Leader = 9,
+    Friend
+}");
+
+            // Act
+            var result = this.compiler.Compile(inputStream);
+
+            // Assert
+            Assert.Collection(
+                result.Document.Enums.Single().Members,
+                item => Assert.Equal(0, item.Value),
+                item => Assert.Equal(2, item.Value),
+                item => Assert.Equal(3, item.Value),
+                item => Assert.Equal(4, item.Value),
+                item => Assert.Equal(9, item.Value),
+                item => Assert.Equal(10, item.Value));
+        }
+
         // TODO: error if a non-int enum value specified.
         // TODO: error if negative enum value specified.
+        // TODO: error if equals sign but not enum value
         // TODO: error if enum name is missing
 
         private static MemoryStream CreateInputStream(string input)

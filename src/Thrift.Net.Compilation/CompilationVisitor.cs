@@ -14,6 +14,10 @@ namespace Thrift.Net.Compilation
         private readonly List<EnumDefinition> enums = new List<EnumDefinition>();
         private readonly ParseTreeProperty<EnumMember> enumMembers = new ParseTreeProperty<EnumMember>();
 
+        // Used to store the current value of an enum so we can automatically generate
+        // values if they aren't defined explicitly.
+        private readonly ParseTreeProperty<int> currentEnumValue = new ParseTreeProperty<int>();
+
         /// <summary>
         /// Gets the enums defined in the document.
         /// </summary>
@@ -22,7 +26,11 @@ namespace Thrift.Net.Compilation
         /// <inheritdoc />
         public override int? VisitEnumDefinition(ThriftParser.EnumDefinitionContext context)
         {
+            this.currentEnumValue.Put(context, 0);
+
             var result = base.VisitEnumDefinition(context);
+
+            this.currentEnumValue.RemoveFrom(context);
 
             var name = context.IDENTIFIER().Symbol.Text;
             var members = context.enumMember().Select(member => this.enumMembers.Get(member));
@@ -38,7 +46,7 @@ namespace Thrift.Net.Compilation
             var result = base.VisitEnumMember(context);
 
             var name = context.IDENTIFIER().Symbol.Text;
-            var value = GetEnumValue(context.INT_CONSTANT());
+            var value = this.GetEnumValue(context);
 
             var enumMember = new EnumMember(name, value);
 
@@ -47,14 +55,21 @@ namespace Thrift.Net.Compilation
             return result;
         }
 
-        private static int GetEnumValue(ITerminalNode constant)
+        private int GetEnumValue(ThriftParser.EnumMemberContext context)
         {
-            if (constant != null)
+            // According to the Thrift IDL specification, if an enum value is
+            // not supplied, it should either be:
+            //   - 0 for the first element in an enum.
+            //   - P+1 - where `P` is the value of the previous element.
+            var currentValue = this.currentEnumValue.Get(context.Parent);
+            if (context.INT_CONSTANT() != null)
             {
-                return int.Parse(constant.Symbol.Text);
+                currentValue = int.Parse(context.INT_CONSTANT().Symbol.Text);
             }
 
-            return 0;
+            this.currentEnumValue.Put(context.Parent, currentValue + 1);
+
+            return currentValue;
         }
     }
 }
