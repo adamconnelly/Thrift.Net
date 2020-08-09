@@ -9,9 +9,12 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/Thrift.Net.Tests/bin/Debug/netcoreapp3.1/Thrift.Net.Tests.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/src/Thrift.Net.Tests",
+            "program": "${workspaceFolder}/src/Thrift.Net.Compiler/bin/Debug/netcoreapp3.1/Thrift.Net.Compiler.dll",
+            "args": [
+                "--input", "./thrift-samples/enum.thrift",
+                "--output-directory", "./thrift-output"
+            ],
+            "cwd": "${workspaceFolder}",
             "console": "internalConsole",
             "stopAtEntry": false
         },
