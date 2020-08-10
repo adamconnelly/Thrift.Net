@@ -10,11 +10,18 @@ namespace Thrift.Net.Compilation.Model
         /// <summary>
         /// Initializes a new instance of the <see cref="ThriftDocument" /> class.
         /// </summary>
+        /// <param name="namespace">The C# namespace of the document.</param>
         /// <param name="enums">Any enums found in the document.</param>
-        public ThriftDocument(IReadOnlyCollection<EnumDefinition> enums)
+        public ThriftDocument(string @namespace, IReadOnlyCollection<EnumDefinition> enums)
         {
+            this.Namespace = @namespace;
             this.Enums = enums;
         }
+
+        /// <summary>
+        /// Gets the C# namespace of the document.
+        /// </summary>
+        public string Namespace { get; }
 
         /// <summary>
         /// Gets any enums that have been defined.

@@ -11,6 +11,43 @@ namespace Thrift.Net.Compilation
     /// </summary>
     public class CompilationVisitor : ThriftBaseVisitor<int?>
     {
+        /// <summary>
+        /// The list of namespace scopes that we'll use to set the C# namespace.
+        /// </summary>
+        private static readonly HashSet<string> RecognisedNamespaceScopes =
+            new HashSet<string>
+            {
+                "*",
+                "csharp",
+                "netcore",
+            };
+
+        /// <summary>
+        /// The list of namespace scopes that are allowed without causing an
+        /// error message to be reported.
+        /// </summary>
+        private static readonly HashSet<string> AllowedNamespaceScopes =
+            new HashSet<string>
+            {
+                "*",
+                "c_glib",
+                "cpp",
+                "csharp",
+                "delphi",
+                "go",
+                "java",
+                "js",
+                "lua",
+                "netcore",
+                "perl",
+                "php",
+                "py",
+                "py.twisted",
+                "rb",
+                "st",
+                "xsd",
+            };
+
         private readonly List<EnumDefinition> enums = new List<EnumDefinition>();
         private readonly List<CompilationMessage> messages = new List<CompilationMessage>();
         private readonly ParseTreeProperty<EnumMember> enumMembers = new ParseTreeProperty<EnumMember>();
@@ -18,6 +55,11 @@ namespace Thrift.Net.Compilation
         // Used to store the current value of an enum so we can automatically generate
         // values if they aren't defined explicitly.
         private readonly ParseTreeProperty<int> currentEnumValue = new ParseTreeProperty<int>();
+
+        /// <summary>
+        /// Gets the namespace of the document.
+        /// </summary>
+        public string Namespace { get; private set; }
 
         /// <summary>
         /// Gets the enums defined in the document.
@@ -28,6 +70,54 @@ namespace Thrift.Net.Compilation
         /// Gets any messages reported during analysis.
         /// </summary>
         public IReadOnlyCollection<CompilationMessage> Messages => this.messages;
+
+        /// <inheritdoc />
+        public override int? VisitNamespaceStatement(
+            ThriftParser.NamespaceStatementContext context)
+        {
+            var result = base.VisitNamespaceStatement(context);
+
+            if (context.namespaceScope != null && context.ns != null)
+            {
+                this.Namespace = this.GetNamespace(context);
+            }
+            else if (context.namespaceScope == null && context.ns == null)
+            {
+                // Both the namespace and scope are missing. For example `namespace`.
+                this.messages.Add(new CompilationMessage(
+                    CompilerMessageId.NamespaceAndScopeMissing,
+                    CompilerMessageType.Error,
+                    context.NAMESPACE().Symbol.Line,
+                    context.NAMESPACE().Symbol.Column + 1,
+                    context.NAMESPACE().Symbol.Column + context.NAMESPACE().Symbol.Text.Length));
+            }
+            else if (context.namespaceScope == null)
+            {
+                if (AllowedNamespaceScopes.Contains(context.ns.Text))
+                {
+                    // The namespace is missing. For example `namespace csharp`
+                    this.messages.Add(new CompilationMessage(
+                        CompilerMessageId.NamespaceMissing,
+                        CompilerMessageType.Error,
+                        context.NAMESPACE().Symbol.Line,
+                        context.NAMESPACE().Symbol.Column + 1,
+                        context.ns.Column + context.ns.Text.Length));
+                }
+                else
+                {
+                    // The namespace scope is missing. For example
+                    // `namespace mynamespace`
+                    this.messages.Add(new CompilationMessage(
+                        CompilerMessageId.NamespaceScopeMissing,
+                        CompilerMessageType.Error,
+                        context.NAMESPACE().Symbol.Line,
+                        context.NAMESPACE().Symbol.Column + 1,
+                        context.ns.Column + context.ns.Text.Length));
+                }
+            }
+
+            return result;
+        }
 
         /// <inheritdoc />
         public override int? VisitEnumDefinition(ThriftParser.EnumDefinitionContext context)
@@ -71,6 +161,28 @@ namespace Thrift.Net.Compilation
             }
 
             return result;
+        }
+
+        private string GetNamespace(ThriftParser.NamespaceStatementContext context)
+        {
+            if (RecognisedNamespaceScopes.Contains(context.namespaceScope.Text))
+            {
+                return context.ns.Text;
+            }
+
+            if (!AllowedNamespaceScopes.Contains(context.namespaceScope.Text))
+            {
+                // The namespace scope is not in the list of known scopes.
+                // For example `namespace notalang mynamespace`
+                this.messages.Add(new CompilationMessage(
+                    CompilerMessageId.NamespaceScopeUnknown,
+                    CompilerMessageType.Error,
+                    context.namespaceScope.Line,
+                    context.namespaceScope.Column + 1,
+                    context.namespaceScope.Column + context.namespaceScope.Text.Length));
+            }
+
+            return null;
         }
 
         private string GetEnumName(ThriftParser.EnumDefinitionContext context)

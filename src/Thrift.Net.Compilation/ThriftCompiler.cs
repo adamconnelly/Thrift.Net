@@ -28,7 +28,7 @@ namespace Thrift.Net.Compilation
             visitor.Visit(document);
 
             return new CompilationResult(
-                new Model.ThriftDocument(visitor.Enums),
+                new Model.ThriftDocument(visitor.Namespace, visitor.Enums),
                 visitor.Messages);
         }
     }

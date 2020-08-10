@@ -6,28 +6,7 @@ header: (includeStatement | cppIncludeStatement | namespaceStatement)*;
 
 includeStatement: 'include' LITERAL;
 cppIncludeStatement: 'cppInclude' LITERAL;
-namespaceStatement: 'namespace' namespaceScope IDENTIFIER;
-
-// Although we'll parse all the allowed namespaces, we'll only allow *, csharp
-// and netcore, and we'll treat csharp and netcore as equivalent
-// TODO: potentially switch to '*' | IDENTIFIER and handle in code
-namespaceScope: '*' |
-    'c_glib' |
-    'cpp' |
-    'csharp' |
-    'delphi' |
-    'go' |
-    'java' |
-    'js' |
-    'lua' |
-    'netcore' |
-    'perl' |
-    'php' |
-    'py' |
-    'py.twisted' |
-    'rb' |
-    'st' |
-    'xsd';
+namespaceStatement: NAMESPACE (namespaceScope=.*? | namespaceScope='*') ns=IDENTIFIER;
 
 definitions: definition*;
 
@@ -45,6 +24,7 @@ enumMember: (
         IDENTIFIER enumValue=.*?                      // `User 123` (missing =)
     ) LIST_SEPARATOR?;
 
+NAMESPACE: 'namespace';
 ENUM: 'enum';
 EQUALS_OPERATOR: '=';
 LITERAL: ( '"' .*? '"' ) | ( '\'' .*? '\'' );

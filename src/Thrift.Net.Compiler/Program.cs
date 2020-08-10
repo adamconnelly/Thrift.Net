@@ -107,7 +107,18 @@
                     => "An enum value must be specified",
                 CompilerMessageId.EnumMemberEqualsOperatorMissing
                     => "The `=` operator is missing between the enum member's name and value",
-                _ => "Message Id {(int)messageId} was not found.",
+                CompilerMessageId.NamespaceAndScopeMissing
+                    => "A namespace and a namespace scope must be specified",
+                CompilerMessageId.NamespaceScopeMissing
+                    => "A namespace scope must be specified",
+                CompilerMessageId.NamespaceScopeUnknown
+
+                    // TODO: Alter this so we can include the scope in the message.
+                    // For example: 'notalang' is not a valid namespace scope.
+                    => "The specified namespace scope is not valid",
+                CompilerMessageId.NamespaceMissing
+                    => "A namespace must be specified",
+                _ => $"Message Id {(int)messageId} was not found.",
             };
         }
 

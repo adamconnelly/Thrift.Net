@@ -222,3 +222,62 @@ enum UserType {
   User = 1
 }
 ```
+
+### TC0006 - Namespace Scope Unknown
+
+The specified namespace scope is not in the list of known namespaces. For
+example:
+
+```thrift
+namespace notalang Thrift.Net.Examples
+```
+
+To fix this issue change the scope to a valid language target:
+
+```thrift
+namespace csharp Thrift.Net.Examples
+```
+
+### TC0007 - Namespace Scope Missing
+
+A namespace has been specified without a scope. For example
+
+```thrift
+namespace Thrift.Net.Examples
+```
+
+To fix this issue add a scope:
+
+```thrift
+namespace csharp Thrift.Net.Examples
+```
+
+### TC0008 - Namespace and Scope Missing
+
+The namespace keyword has been specified, but without a scope or namespace being
+provided. For example:
+
+```thrift
+namespace
+```
+
+To fix this issue provide a scope and namespace:
+
+```thrift
+namespace csharp Thrift.Net.Examples
+```
+
+### TC0009 - Namespace Missing
+
+A namespace scope has been specified without a corresponding namespace being
+provided. For example:
+
+```thrift
+namespace csharp
+```
+
+To fix this issue provide a namespace:
+
+```thrift
+namespace csharp Thrift.Net.Examples
+```

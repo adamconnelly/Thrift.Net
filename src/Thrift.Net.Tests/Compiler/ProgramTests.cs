@@ -228,7 +228,7 @@ namespace Thrift.Net.Tests.Compiler
         private void SetupSuccessfulCompilation()
         {
             var compilationResult = new CompilationResult(
-                new ThriftDocument(new List<EnumDefinition>()),
+                new ThriftDocument(null, new List<EnumDefinition>()),
                 new List<CompilationMessage>());
 
             this.compiler.Compile(default).ReturnsForAnyArgs(compilationResult);
@@ -239,7 +239,7 @@ namespace Thrift.Net.Tests.Compiler
             var errorMessage = new CompilationMessage(
                 CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Error, 1, 1, 1);
             var compilationResult = new CompilationResult(
-                new ThriftDocument(new List<EnumDefinition>()),
+                new ThriftDocument(null, new List<EnumDefinition>()),
                 new List<CompilationMessage> { errorMessage });
 
             this.compiler.Compile(default).ReturnsForAnyArgs(compilationResult);
@@ -250,7 +250,7 @@ namespace Thrift.Net.Tests.Compiler
             var errorMessage = new CompilationMessage(
                 CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Warning, 1, 1, 1);
             var compilationResult = new CompilationResult(
-                new ThriftDocument(new List<EnumDefinition>()),
+                new ThriftDocument(null, new List<EnumDefinition>()),
                 new List<CompilationMessage> { errorMessage });
 
             this.compiler.Compile(default).ReturnsForAnyArgs(compilationResult);
@@ -259,7 +259,7 @@ namespace Thrift.Net.Tests.Compiler
         private void SetupCompilationWithMessages(params CompilationMessage[] messages)
         {
             var compilationResult = new CompilationResult(
-                new ThriftDocument(new List<EnumDefinition>()),
+                new ThriftDocument(null, new List<EnumDefinition>()),
                 messages);
 
             this.compiler.Compile(default).ReturnsForAnyArgs(compilationResult);
