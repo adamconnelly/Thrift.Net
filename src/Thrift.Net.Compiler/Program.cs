@@ -105,6 +105,8 @@
                     => "The enum value must be an integer",
                 CompilerMessageId.EnumValueMustBeSpecified
                     => "An enum value must be specified",
+                CompilerMessageId.EnumMemberEqualsOperatorMissing
+                    => "The `=` operator is missing between the enum member's name and value",
                 _ => "Message Id {(int)messageId} was not found.",
             };
         }

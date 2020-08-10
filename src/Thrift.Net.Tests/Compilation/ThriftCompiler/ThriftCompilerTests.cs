@@ -18,7 +18,8 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
             var result = compiler.Compile(parserInput.GetStream());
 
             // Assert
-            var error = result.Messages.First();
+            var error = result.Errors.FirstOrDefault();
+            Assert.True(error != null, "No error messages were returned from the compiler");
             Assert.Equal(messageId, error.MessageId);
             Assert.Equal(CompilerMessageType.Error, error.MessageType);
             Assert.Equal(parserInput.LineNumber, error.LineNumber);

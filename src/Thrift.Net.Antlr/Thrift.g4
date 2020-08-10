@@ -40,8 +40,9 @@ enumDefinition: ENUM IDENTIFIER?
     '}';
 
 enumMember: (
-        IDENTIFIER (EQUALS_OPERATOR enumValue=.*?)? |
-        EQUALS_OPERATOR enumValue=.*?
+        IDENTIFIER (EQUALS_OPERATOR enumValue=.*?)? | // Successful parse
+        EQUALS_OPERATOR enumValue=.*? |               // `= 123` (missing name)
+        IDENTIFIER enumValue=.*?                      // `User 123` (missing =)
     ) LIST_SEPARATOR?;
 
 ENUM: 'enum';

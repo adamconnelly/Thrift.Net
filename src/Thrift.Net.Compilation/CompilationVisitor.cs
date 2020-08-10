@@ -58,6 +58,18 @@ namespace Thrift.Net.Compilation
 
             this.enumMembers.Put(context, enumMember);
 
+            if (context.enumValue != null && context.EQUALS_OPERATOR() == null)
+            {
+                // An enum value has been specified without the = operator.
+                // For example `enum UserType { User 10 }`
+                this.messages.Add(new CompilationMessage(
+                    CompilerMessageId.EnumMemberEqualsOperatorMissing,
+                    CompilerMessageType.Error,
+                    context.IDENTIFIER().Symbol.Line,
+                    context.IDENTIFIER().Symbol.Column + 1,
+                    context.enumValue.Column + context.enumValue.Text.Length));
+            }
+
             return result;
         }
 

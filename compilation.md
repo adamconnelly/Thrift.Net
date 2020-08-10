@@ -203,3 +203,22 @@ enum UserType {
   User
 }
 ```
+
+### TC0005 - Enum Member Equals Operator Missing
+
+The equals operator is missing between an enum member and its value. For
+example:
+
+```thrift
+enum UserType {
+  User 1
+}
+```
+
+To fix this issue add the missing equals operator:
+
+```thrift
+enum UserType {
+  User = 1
+}
+```

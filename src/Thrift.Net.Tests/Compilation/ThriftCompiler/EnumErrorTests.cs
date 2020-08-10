@@ -53,5 +53,15 @@ CompilerMessageId.EnumValueMustBeAnInteger);
 }",
 CompilerMessageId.EnumValueMustBeSpecified);
         }
+
+        [Fact]
+        public void Compile_EnumValueEqualsOperatorMissing_ReportsError()
+        {
+            this.AssertCompilerReturnsError(
+@"enum UserType {
+    $User 5$
+}",
+CompilerMessageId.EnumMemberEqualsOperatorMissing);
+        }
     }
 }

@@ -34,5 +34,11 @@ namespace Thrift.Net.Compilation
         /// assign expression. For example `enum UserType { User = }`.
         /// </summary>
         EnumValueMustBeSpecified = 4,
+
+        /// <summary>
+        /// The equals operator is missing between an enum member and its value.
+        /// For example `enum UserType { User 1 }`.
+        /// </summary>
+        EnumMemberEqualsOperatorMissing = 5,
     }
 }
