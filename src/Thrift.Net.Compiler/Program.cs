@@ -45,6 +45,8 @@
                 outputDirectory.Create();
             }
 
+            console.Out.Write($"Starting compilation of {input.Name}{Environment.NewLine}");
+
             using (var stream = input.OpenRead())
             {
                 var result = Compiler.Compile(stream);
