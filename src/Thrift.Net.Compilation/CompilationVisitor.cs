@@ -79,7 +79,7 @@ namespace Thrift.Net.Compilation
 
             if (context.namespaceScope != null && context.ns != null)
             {
-                this.Namespace = this.GetNamespace(context);
+                this.SetNamespace(context);
             }
             else if (context.namespaceScope == null && context.ns == null)
             {
@@ -163,11 +163,11 @@ namespace Thrift.Net.Compilation
             return result;
         }
 
-        private string GetNamespace(ThriftParser.NamespaceStatementContext context)
+        private void SetNamespace(ThriftParser.NamespaceStatementContext context)
         {
             if (RecognisedNamespaceScopes.Contains(context.namespaceScope.Text))
             {
-                return context.ns.Text;
+                this.Namespace = context.ns.Text;
             }
 
             if (!AllowedNamespaceScopes.Contains(context.namespaceScope.Text))
@@ -181,8 +181,6 @@ namespace Thrift.Net.Compilation
                     context.namespaceScope.Column + 1,
                     context.namespaceScope.Column + context.namespaceScope.Text.Length));
             }
-
-            return null;
         }
 
         private string GetEnumName(ThriftParser.EnumDefinitionContext context)

@@ -22,5 +22,21 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
             // Assert
             Assert.Equal(expected, result.Document.Namespace);
         }
+
+        [Fact]
+        public void Compile_MultipleNamespacesSpecified_IgnoresNonCSharpNamespaces()
+        {
+            // Arrange
+            var compiler = new ThriftCompiler();
+            string input =
+@"namespace csharp Thrift.Net.Examples
+namespace delphi SomeOtherNamespace";
+
+            // Act
+            var result = compiler.Compile(input.ToStream());
+
+            // Assert
+            Assert.Equal("Thrift.Net.Examples", result.Document.Namespace);
+        }
     }
 }
