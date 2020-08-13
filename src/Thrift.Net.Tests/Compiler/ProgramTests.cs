@@ -4,45 +4,29 @@ namespace Thrift.Net.Tests.Compiler
     using System.Collections.Generic;
     using System.CommandLine;
     using System.IO;
-    using System.Linq;
     using NSubstitute;
     using Thrift.Net.Compilation;
     using Thrift.Net.Compilation.Model;
     using Thrift.Net.Compiler;
+    using Thrift.Net.Tests.Utility;
     using Xunit;
 
     public class ProgramTests : IDisposable
     {
-        private readonly List<FileInfo> tempFiles = new List<FileInfo>();
-        private readonly List<DirectoryInfo> tempDirectories = new List<DirectoryInfo>();
         private readonly IConsole console = Substitute.For<IConsole>();
         private readonly IThriftCompiler compiler = Substitute.For<IThriftCompiler>();
+        private readonly IThriftFileProvider fileProvider = Substitute.For<IThriftFileProvider>();
+        private readonly IThriftDocumentGenerator documentGenerator = Substitute.For<IThriftDocumentGenerator>();
+        private readonly IThriftFileWriter fileWriter = Substitute.For<IThriftFileWriter>();
+        private TempFileCreator fileCreator = new TempFileCreator();
+        private bool disposed;
 
         public ProgramTests()
         {
             Program.Compiler = this.compiler;
-        }
-
-        public void Dispose()
-        {
-            // Refresh temp files and directories to make sure the Exists check
-            // are up to date.
-            this.tempFiles.ForEach(file => file.Refresh());
-            this.tempDirectories.ForEach(directory => directory.Refresh());
-
-            // Delete any temp files and directories that still exist. It's not
-            // the end of the world if this fails since we're creating the files
-            // in the temp folder, but we want to try to avoid filling it up
-            // unnecessarily.
-            this.tempFiles
-                .Where(file => file.Exists)
-                .ToList()
-                .ForEach(file => file.Delete());
-
-            this.tempDirectories
-                .Where(directory => directory.Exists)
-                .ToList()
-                .ForEach(directory => directory.Delete(true));
+            Program.FileProvider = this.fileProvider;
+            Program.DocumentGenerator = this.documentGenerator;
+            Program.FileWriter = this.fileWriter;
         }
 
         [Fact]
@@ -50,7 +34,7 @@ namespace Thrift.Net.Tests.Compiler
         {
             // Arrange
             var inputFile = new FileInfo("missing-file.thrift");
-            var outputDirectory = this.GetTempDirectory();
+            var outputDirectory = this.fileCreator.GetTempDirectory();
 
             // Act
             var result = Program.Main(inputFile, outputDirectory, this.console);
@@ -64,7 +48,7 @@ namespace Thrift.Net.Tests.Compiler
         {
             // Arrange
             var inputFile = new FileInfo("missing-file.thrift");
-            var outputDirectory = this.GetTempDirectory();
+            var outputDirectory = this.fileCreator.GetTempDirectory();
 
             // Act
             Program.Main(inputFile, outputDirectory, this.console);
@@ -78,8 +62,8 @@ namespace Thrift.Net.Tests.Compiler
         public void When_InputFileExists_ReturnsSuccess()
         {
             // Arrange
-            var inputFile = this.CreateTempFile();
-            var outputDirectory = this.GetTempDirectory();
+            var inputFile = this.fileCreator.CreateTempFile();
+            var outputDirectory = this.fileCreator.GetTempDirectory();
             this.SetupSuccessfulCompilation();
 
             // Act
@@ -93,8 +77,8 @@ namespace Thrift.Net.Tests.Compiler
         public void When_OutputDirectoryDoesNotExist_CreatesDirectory()
         {
             // Arrange
-            var inputFile = this.CreateTempFile();
-            var outputDirectory = this.GetTempDirectory();
+            var inputFile = this.fileCreator.CreateTempFile();
+            var outputDirectory = this.fileCreator.GetTempDirectory();
             this.SetupSuccessfulCompilation();
 
             // Act
@@ -109,9 +93,10 @@ namespace Thrift.Net.Tests.Compiler
         public void When_CompilationHasErrors_ReturnsFailure()
         {
             // Arrange
-            var inputFile = this.CreateTempFile();
-            var outputDirectory = this.GetTempDirectory();
+            var inputFile = this.fileCreator.CreateTempFile();
+            var outputDirectory = this.fileCreator.GetTempDirectory();
             this.SetupCompilationWithError();
+            this.SetupCreateThriftFile(inputFile);
 
             // Act
             var result = Program.Main(inputFile, outputDirectory, this.console);
@@ -124,9 +109,10 @@ namespace Thrift.Net.Tests.Compiler
         public void When_CompilationHasWarnings_ReturnsSuccess()
         {
             // Arrange
-            var inputFile = this.CreateTempFile();
-            var outputDirectory = this.GetTempDirectory();
+            var inputFile = this.fileCreator.CreateTempFile();
+            var outputDirectory = this.fileCreator.GetTempDirectory();
             this.SetupCompilationWithWarning();
+            this.SetupCreateThriftFile(inputFile);
 
             // Act
             var result = Program.Main(inputFile, outputDirectory, this.console);
@@ -139,11 +125,12 @@ namespace Thrift.Net.Tests.Compiler
         public void When_CompilationHasMessages_OutputsMessages()
         {
             // Arrange
-            var inputFile = this.CreateTempFile();
-            var outputDirectory = this.GetTempDirectory();
+            var inputFile = this.fileCreator.CreateTempFile();
+            var outputDirectory = this.fileCreator.GetTempDirectory();
             this.SetupCompilationWithMessages(
                 new CompilationMessage(CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Error, 1, 1, 4),
                 new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Error, 2, 4, 8));
+            this.SetupCreateThriftFile(inputFile);
 
             // Act
             Program.Main(inputFile, outputDirectory, this.console);
@@ -161,11 +148,12 @@ namespace Thrift.Net.Tests.Compiler
         public void When_CompilationHasErrors_OutputsErrorCount()
         {
             // Arrange
-            var inputFile = this.CreateTempFile();
-            var outputDirectory = this.GetTempDirectory();
+            var inputFile = this.fileCreator.CreateTempFile();
+            var outputDirectory = this.fileCreator.GetTempDirectory();
             this.SetupCompilationWithMessages(
                 new CompilationMessage(CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Error, 1, 1, 4),
                 new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Error, 2, 4, 8));
+            this.SetupCreateThriftFile(inputFile);
 
             // Act
             Program.Main(inputFile, outputDirectory, this.console);
@@ -178,12 +166,13 @@ namespace Thrift.Net.Tests.Compiler
         public void When_CompilationHasErrorsAndWarnings_OutputsErrorCount()
         {
             // Arrange
-            var inputFile = this.CreateTempFile();
-            var outputDirectory = this.GetTempDirectory();
+            var inputFile = this.fileCreator.CreateTempFile();
+            var outputDirectory = this.fileCreator.GetTempDirectory();
             this.SetupCompilationWithMessages(
                 new CompilationMessage(CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Error, 1, 1, 4),
                 new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Error, 2, 4, 8),
                 new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Warning, 2, 4, 8));
+            this.SetupCreateThriftFile(inputFile);
 
             // Act
             Program.Main(inputFile, outputDirectory, this.console);
@@ -196,12 +185,13 @@ namespace Thrift.Net.Tests.Compiler
         public void When_CompilationHasWarnings_OutputsWarningCount()
         {
             // Arrange
-            var inputFile = this.CreateTempFile();
-            var outputDirectory = this.GetTempDirectory();
+            var inputFile = this.fileCreator.CreateTempFile();
+            var outputDirectory = this.fileCreator.GetTempDirectory();
             this.SetupCompilationWithMessages(
                 new CompilationMessage(CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Warning, 1, 1, 4),
                 new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Warning, 2, 4, 8),
                 new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Warning, 2, 4, 8));
+            this.SetupCreateThriftFile(inputFile);
 
             // Act
             Program.Main(inputFile, outputDirectory, this.console);
@@ -214,8 +204,8 @@ namespace Thrift.Net.Tests.Compiler
         public void When_CompilationHasNoErrorsOrWarnings_OutputsSuccessMessage()
         {
             // Arrange
-            var inputFile = this.CreateTempFile();
-            var outputDirectory = this.GetTempDirectory();
+            var inputFile = this.fileCreator.CreateTempFile();
+            var outputDirectory = this.fileCreator.GetTempDirectory();
             this.SetupSuccessfulCompilation();
 
             // Act
@@ -223,6 +213,47 @@ namespace Thrift.Net.Tests.Compiler
 
             // Assert
             this.console.Out.Received().Write($"Compilation succeeded with no errors or warnings!{Environment.NewLine}");
+        }
+
+        [Fact]
+        public void When_CompilationSucceeds_WritesGeneratedCode()
+        {
+            // Arrange
+            var inputFile = this.fileCreator.CreateTempFile();
+            var outputDirectory = this.fileCreator.GetTempDirectory();
+            this.SetupSuccessfulCompilation();
+            var thriftFile = this.SetupCreateThriftFile(inputFile);
+
+            const string generatedCode = "namespace Thrift.Net.Tests ...";
+            this.documentGenerator.Generate(default).ReturnsForAnyArgs(generatedCode);
+
+            // Act
+            Program.Main(inputFile, outputDirectory, this.console);
+
+            // Assert
+            this.fileWriter.Received().Write(thriftFile, generatedCode);
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            this.Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    this.fileCreator?.Dispose();
+                }
+
+                this.fileCreator = null;
+
+                this.disposed = true;
+            }
         }
 
         private void SetupSuccessfulCompilation()
@@ -265,23 +296,11 @@ namespace Thrift.Net.Tests.Compiler
             this.compiler.Compile(default).ReturnsForAnyArgs(compilationResult);
         }
 
-        private FileInfo CreateTempFile()
+        private ThriftFile SetupCreateThriftFile(FileInfo inputFile)
         {
-            var inputFile = new FileInfo(Path.GetTempFileName());
-            this.tempFiles.Add(inputFile);
-
-            return inputFile;
-        }
-
-        private DirectoryInfo GetTempDirectory()
-        {
-            var tempFile = new FileInfo(Path.GetTempFileName());
-            tempFile.Delete();
-
-            var tempDirectory = new DirectoryInfo(tempFile.FullName);
-            this.tempDirectories.Add(tempDirectory);
-
-            return tempDirectory;
+            var thriftFile = new ThriftFile(inputFile.FullName, inputFile.Name, $"output/{inputFile.Name}");
+            this.fileProvider.Create(default, default, default).ReturnsForAnyArgs(thriftFile);
+            return thriftFile;
         }
     }
 }

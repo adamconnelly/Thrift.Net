@@ -7,7 +7,7 @@ namespace Thrift.Net.Compilation
     /// <summary>
     /// Used to generate C# from Thrift document models.
     /// </summary>
-    public class ThriftDocumentGenerator
+    public class ThriftDocumentGenerator : IThriftDocumentGenerator
     {
         /// <summary>
         /// Generates the C# representation of the specified Thrift document.

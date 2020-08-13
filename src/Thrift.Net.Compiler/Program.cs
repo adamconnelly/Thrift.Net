@@ -20,6 +20,30 @@
         public static IThriftCompiler Compiler { get; set; } = new ThriftCompiler();
 
         /// <summary>
+        /// Gets or sets the document generator.
+        /// </summary>
+        /// <remarks>
+        /// Used to allow us to inject a document generator in during unit testing.
+        /// </remarks>
+        public static IThriftDocumentGenerator DocumentGenerator { get; set; } = new ThriftDocumentGenerator();
+
+        /// <summary>
+        /// Gets or sets the file provider.
+        /// </summary>
+        /// <remarks>
+        /// Used to allow us to inject a file provider in during unit testing.
+        /// </remarks>
+        public static IThriftFileProvider FileProvider { get; set; } = new ThriftFileProvider();
+
+        /// <summary>
+        /// Gets or sets the file writer.
+        /// </summary>
+        /// <remarks>
+        /// Used to allow us to inject a file provider in during unit testing.
+        /// </remarks>
+        public static IThriftFileWriter FileWriter { get; set; } = new ThriftFileWriter();
+
+        /// <summary>
         /// The Thrift.Net Thrift compiler. Use this to generate C# code from
         /// your Thrift IDL files.
         /// </summary>
@@ -47,6 +71,11 @@
 
             console.Out.Write($"Starting compilation of {input.Name}{Environment.NewLine}");
 
+            var thriftFile = FileProvider.Create(
+                new DirectoryInfo(Directory.GetCurrentDirectory()),
+                input,
+                outputDirectory);
+
             using (var stream = input.OpenRead())
             {
                 var result = Compiler.Compile(stream);
@@ -56,13 +85,17 @@
                 // TODO: Pull message formatting out to its own object.
                 foreach (var message in result.Messages.OrderBy(message => message.LineNumber))
                 {
-                    console.Out.Write($"{input.Name}({message.LineNumber},{message.StartPosition}-{message.EndPosition}): {message.MessageType} {FormatMessageId(message.MessageId)}: {GetMessage(message.MessageId)} [{input.FullName}]{Environment.NewLine}");
+                    console.Out.Write($"{thriftFile.RelativePath}({message.LineNumber},{message.StartPosition}-{message.EndPosition}): {message.MessageType} {FormatMessageId(message.MessageId)}: {GetMessage(message.MessageId)} [{input.FullName}]{Environment.NewLine}");
                 }
 
                 if (result.HasErrors)
                 {
                     return (int)ExitCode.CompilationFailed;
                 }
+
+                var generatedCode = DocumentGenerator.Generate(result.Document);
+
+                FileWriter.Write(thriftFile, generatedCode);
             }
 
             return (int)ExitCode.Success;
