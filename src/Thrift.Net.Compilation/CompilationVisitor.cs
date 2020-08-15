@@ -133,6 +133,20 @@ namespace Thrift.Net.Compilation
 
             this.enums.Add(new EnumDefinition(name, members.ToList()));
 
+            if (!members.Any())
+            {
+                var warningTarget = context.name ?? context.ENUM().Symbol;
+
+                // The enum has no members. For example
+                // `enum MyEnum {}`
+                this.messages.Add(new CompilationMessage(
+                    CompilerMessageId.EnumEmpty,
+                    CompilerMessageType.Warning,
+                    warningTarget.Line,
+                    warningTarget.Column + 1,
+                    warningTarget.Column + warningTarget.Text.Length));
+            }
+
             return result;
         }
 
@@ -185,9 +199,9 @@ namespace Thrift.Net.Compilation
 
         private string GetEnumName(ThriftParser.EnumDefinitionContext context)
         {
-            if (context.IDENTIFIER() != null)
+            if (context.name != null)
             {
-                return context.IDENTIFIER().Symbol.Text;
+                return context.name.Text;
             }
 
             // The enum name is missing: `enum {}`.

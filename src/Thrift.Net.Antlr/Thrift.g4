@@ -12,8 +12,7 @@ definitions: definition*;
 
 definition: enumDefinition;
 
-// TODO: Warning for empty enum
-enumDefinition: ENUM IDENTIFIER?
+enumDefinition: ENUM name=IDENTIFIER?
     '{'
         enumMember*
     '}';

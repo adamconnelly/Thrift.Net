@@ -140,6 +140,8 @@
                     => "An enum value must be specified",
                 CompilerMessageId.EnumMemberEqualsOperatorMissing
                     => "The `=` operator is missing between the enum member's name and value",
+                CompilerMessageId.EnumEmpty
+                    => "The enum has no members",
                 CompilerMessageId.NamespaceAndScopeMissing
                     => "A namespace and a namespace scope must be specified",
                 CompilerMessageId.NamespaceScopeMissing

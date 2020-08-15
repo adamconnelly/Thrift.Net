@@ -16,3 +16,6 @@ enum Status {
     Success = 2,
     Failure
 }
+
+enum Empty {
+}

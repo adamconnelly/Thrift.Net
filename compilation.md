@@ -99,6 +99,8 @@ Any Thrift compiler messages should be detailed in this section.
 
 ### TC0000 - Enum Must Have a Name
 
+_Level_: Error
+
 Reported when an enum is defined with no name specified, for example:
 
 ```thrift
@@ -118,6 +120,8 @@ enum UserType {
 ```
 
 ### TC0001 - Enum Member Must Have a Name
+
+_Level_: Error
 
 An enum member has been defined without a name, for example:
 
@@ -139,6 +143,8 @@ enum UserType {
 
 ### TC0002 - Enum Value Must Not Be Negative
 
+_Level_: Error
+
 An enum member has been specified with a negative value. For example:
 
 ```thrift
@@ -159,6 +165,8 @@ enum UserType {
 
 ### TC0003 - Enum Value Must Be an Integer
 
+_Level_: Error
+
 An enum value has been specified that isn't an integer. For example:
 
 ```thrift
@@ -178,6 +186,8 @@ enum UserType {
 ```
 
 ### TC0004 - Enum Value Must Be Specified
+
+_Level_: Error
 
 An enum member has been defined but the value is missing from the assign
 expression. For example:
@@ -206,6 +216,8 @@ enum UserType {
 
 ### TC0005 - Enum Member Equals Operator Missing
 
+_Level_: Error
+
 The equals operator is missing between an enum member and its value. For
 example:
 
@@ -223,7 +235,28 @@ enum UserType {
 }
 ```
 
-### TC0006 - Namespace Scope Unknown
+### TC0006 - Enum Has No Members
+
+_Level_: Warning
+
+An enum has been defined with no members. For example:
+
+```thrift
+enum UserType {
+}
+```
+
+To fix this issue add at least one enum member:
+
+```thrift
+enum UserType {
+  User = 0
+}
+```
+
+### TC0100 - Namespace Scope Unknown
+
+_Level_: Error
 
 The specified namespace scope is not in the list of known namespaces. For
 example:
@@ -238,7 +271,9 @@ To fix this issue change the scope to a valid language target:
 namespace csharp Thrift.Net.Examples
 ```
 
-### TC0007 - Namespace Scope Missing
+### TC0101 - Namespace Scope Missing
+
+_Level_: Error
 
 A namespace has been specified without a scope. For example
 
@@ -252,7 +287,9 @@ To fix this issue add a scope:
 namespace csharp Thrift.Net.Examples
 ```
 
-### TC0008 - Namespace and Scope Missing
+### TC0102 - Namespace and Scope Missing
+
+_Level_: Error
 
 The namespace keyword has been specified, but without a scope or namespace being
 provided. For example:
@@ -267,7 +304,9 @@ To fix this issue provide a scope and namespace:
 namespace csharp Thrift.Net.Examples
 ```
 
-### TC0009 - Namespace Missing
+### TC0103 - Namespace Missing
+
+_Level_: Error
 
 A namespace scope has been specified without a corresponding namespace being
 provided. For example:

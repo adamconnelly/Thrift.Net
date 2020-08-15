@@ -42,27 +42,33 @@ namespace Thrift.Net.Compilation
         EnumMemberEqualsOperatorMissing = 5,
 
         /// <summary>
+        /// An enum has been defined with no members. For example
+        /// `enum MyEnum {}`.
+        /// </summary>
+        EnumEmpty = 6,
+
+        /// <summary>
         /// The specified namespace scope is not in the list of known namespaces.
         /// For example `namespace notalang mynamespace`.
         /// </summary>
-        NamespaceScopeUnknown = 6,
+        NamespaceScopeUnknown = 100,
 
         /// <summary>
         /// A namespace has been specified without a scope. For example
         /// `namespace mynamespace`.
         /// </summary>
-        NamespaceScopeMissing = 7,
+        NamespaceScopeMissing = 101,
 
         /// <summary>
         /// The namespace keyword has been specified, but without a scope or
         /// namespace being provided. For example `namespace`.
         /// </summary>
-        NamespaceAndScopeMissing = 8,
+        NamespaceAndScopeMissing = 102,
 
         /// <summary>
         /// A namespace scope has been specified without a corresponding
         /// namespace being provided. For example `namespace csharp`.
         /// </summary>
-        NamespaceMissing = 9,
+        NamespaceMissing = 103,
     }
 }
