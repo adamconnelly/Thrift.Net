@@ -113,15 +113,15 @@ namespaceDeclaration: 'namespace' scope=IDENTIFIER ns=IDENTIFIER;
 This allows us to access the two identifiers by name:
 
 ```csharp
-public override int? VisitNamespaceStatement(
-    ThriftParser.NamespaceStatementContext context)
+public override int? VisitNamespaceDeclaration(
+    ThriftParser.NamespaceDeclarationContext context)
 {
     var scope = context.scope;
     var namespaceName = context.ns;
 
     // Do something with this information
 
-    return base.VisitNamespaceStatement(context);
+    return base.VisitNamespaceDeclaration(context);
 }
 ```
 
@@ -220,4 +220,4 @@ Compilation succeeded with no errors or warnings!
 ```
 
 You should be able to check the output of your compilation in
-`./thrift-output/thirft-samples/namespace.cs`.
+`./thrift-output/thrift-samples/namespace.cs`.
