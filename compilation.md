@@ -276,6 +276,23 @@ enum UserType {
 }
 ```
 
+### TC0008 - Enum Duplicated
+
+_Level_: Error
+
+The same enum has been defined twice. For example:
+
+```thrift
+enum UserType {}
+enum UserType {}
+```
+
+To fix this issue rename or remove the duplicate. For example:
+
+```thrift
+enum UserType {}
+```
+
 ### TC0100 - Namespace Scope Unknown
 
 _Level_: Error

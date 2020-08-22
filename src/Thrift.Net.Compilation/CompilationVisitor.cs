@@ -49,7 +49,7 @@ namespace Thrift.Net.Compilation
                 "xsd",
             };
 
-        private readonly List<EnumDefinition> enums = new List<EnumDefinition>();
+        private readonly Dictionary<string, EnumDefinition> enums = new Dictionary<string, EnumDefinition>();
         private readonly List<CompilationMessage> messages = new List<CompilationMessage>();
         private readonly ParseTreeProperty<EnumMember> enumMembers = new ParseTreeProperty<EnumMember>();
 
@@ -65,7 +65,7 @@ namespace Thrift.Net.Compilation
         /// <summary>
         /// Gets the enums defined in the document.
         /// </summary>
-        public IReadOnlyCollection<EnumDefinition> Enums => this.enums;
+        public IReadOnlyCollection<EnumDefinition> Enums => this.enums.Values;
 
         /// <summary>
         /// Gets any messages reported during analysis.
@@ -124,8 +124,15 @@ namespace Thrift.Net.Compilation
 
             var name = this.GetEnumName(context);
             var members = this.GetEnumMembers(context);
+            var enumDefinition = new EnumDefinition(name, members.ToList());
 
-            this.enums.Add(new EnumDefinition(name, members.ToList()));
+            if (name != null && !this.enums.TryAdd(name, enumDefinition))
+            {
+                this.AddError(
+                    CompilerMessageId.EnumDuplicated,
+                    context.name,
+                    context.name.Text);
+            }
 
             if (!members.Any())
             {

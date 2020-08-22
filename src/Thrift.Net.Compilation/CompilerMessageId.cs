@@ -54,6 +54,16 @@ namespace Thrift.Net.Compilation
         EnumMemberDuplicated = 7,
 
         /// <summary>
+        /// An enum with the same name has been defined twice.
+        /// For example:
+        /// ```thrift
+        /// enum UserType {}
+        /// enum UserType {}
+        /// ```
+        /// </summary>
+        EnumDuplicated = 8,
+
+        /// <summary>
         /// The specified namespace scope is not in the list of known namespaces.
         /// For example `namespace notalang mynamespace`.
         /// </summary>

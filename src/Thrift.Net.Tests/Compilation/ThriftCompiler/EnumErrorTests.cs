@@ -86,5 +86,32 @@ CompilerMessageId.EnumMemberDuplicated);
 CompilerMessageId.EnumMemberDuplicated,
 "User");
         }
+
+        [Fact]
+        public void Compile_EnumDuplicated_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorId(
+@"enum UserType {
+    User
+}
+enum $UserType$ {
+    User
+}",
+CompilerMessageId.EnumDuplicated);
+        }
+
+        [Fact]
+        public void Compile_EnumDuplicated_ReportsErrorMessage()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"enum UserType {
+    User
+}
+enum UserType {
+    User
+}",
+CompilerMessageId.EnumDuplicated,
+"UserType");
+        }
     }
 }
