@@ -80,7 +80,7 @@
     <value>The enum has no members</value>
   </data>
   <data name="TC0100" xml:space="preserve">
-    <value>The specified namespace scope is not valid</value>
+    <value>'{0}' is not a valid namespace scope</value>
   </data>
   <data name="TC0101" xml:space="preserve">
     <value>A namespace scope must be specified</value>

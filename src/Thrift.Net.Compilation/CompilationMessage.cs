@@ -84,16 +84,26 @@ namespace Thrift.Net.Compilation
         /// <param name="endToken">
         /// The end token that the error should be placed against.
         /// </param>
+        /// <param name="messageParameters">
+        /// Any parameters to include when formatting the compiler message.
+        /// </param>
         /// <returns>The error message.</returns>
-        public static CompilationMessage CreateError(CompilerMessageId messageId, IToken startToken, IToken endToken)
+        public static CompilationMessage CreateError(
+            CompilerMessageId messageId,
+            IToken startToken,
+            IToken endToken,
+            string[] messageParameters)
         {
+            string formattedMessage = string.Format(
+                CompilerMessages.Get(messageId), messageParameters);
+
             return new CompilationMessage(
                 messageId,
                 CompilerMessageType.Error,
                 startToken.Line,
                 startToken.Column + 1,
                 endToken.Column + endToken.Text.Length,
-                CompilerMessages.Get(messageId));
+                formattedMessage);
         }
 
         /// <summary>
@@ -106,16 +116,26 @@ namespace Thrift.Net.Compilation
         /// <param name="endToken">
         /// The end token that the warning should be placed against.
         /// </param>
+        /// <param name="messageParameters">
+        /// Any parameters to include when formatting the compiler message.
+        /// </param>
         /// <returns>The warning message.</returns>
-        public static CompilationMessage CreateWarning(CompilerMessageId messageId, IToken startToken, IToken endToken)
+        public static CompilationMessage CreateWarning(
+            CompilerMessageId messageId,
+            IToken startToken,
+            IToken endToken,
+            string[] messageParameters)
         {
+            string formattedMessage = string.Format(
+                CompilerMessages.Get(messageId), messageParameters);
+
             return new CompilationMessage(
                 messageId,
                 CompilerMessageType.Warning,
                 startToken.Line,
                 startToken.Column + 1,
                 endToken.Column + endToken.Text.Length,
-                CompilerMessages.Get(messageId));
+                formattedMessage);
         }
     }
 }

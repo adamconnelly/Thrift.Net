@@ -177,7 +177,8 @@ namespace Thrift.Net.Compilation
                 // For example `namespace notalang mynamespace`
                 this.AddError(
                     CompilerMessageId.NamespaceScopeUnknown,
-                    context.namespaceScope);
+                    context.namespaceScope,
+                    context.namespaceScope.Text);
             }
         }
 
@@ -256,21 +257,21 @@ namespace Thrift.Net.Compilation
             return currentValue;
         }
 
-        private void AddError(CompilerMessageId messageId, IToken token)
+        private void AddError(CompilerMessageId messageId, IToken token, params string[] messageParameters)
         {
-            this.messages.Add(CompilationMessage.CreateError(messageId, token, token));
+            this.messages.Add(CompilationMessage.CreateError(messageId, token, token, messageParameters));
         }
 
-        private void AddError(CompilerMessageId messageId, IToken startToken, IToken endToken)
+        private void AddError(CompilerMessageId messageId, IToken startToken, IToken endToken, params string[] messageParameters)
         {
             this.messages.Add(CompilationMessage.CreateError(
-                messageId, startToken, endToken));
+                messageId, startToken, endToken, messageParameters));
         }
 
-        private void AddWarning(CompilerMessageId messageId, IToken token)
+        private void AddWarning(CompilerMessageId messageId, IToken token, params string[] messageParameters)
         {
             this.messages.Add(CompilationMessage.CreateWarning(
-                messageId, token, token));
+                messageId, token, token, messageParameters));
         }
     }
 }
