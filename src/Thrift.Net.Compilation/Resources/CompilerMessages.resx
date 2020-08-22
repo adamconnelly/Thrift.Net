@@ -79,6 +79,9 @@
   <data name="TC0006" xml:space="preserve">
     <value>The enum has no members</value>
   </data>
+  <data name="TC0007" xml:space="preserve">
+    <value>Enum member '{0}' has already been defined</value>
+  </data>
   <data name="TC0100" xml:space="preserve">
     <value>'{0}' is not a valid namespace scope</value>
   </data>

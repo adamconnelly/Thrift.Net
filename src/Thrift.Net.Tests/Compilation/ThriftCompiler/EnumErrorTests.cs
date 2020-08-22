@@ -63,5 +63,28 @@ CompilerMessageId.EnumValueMustBeSpecified);
 }",
 CompilerMessageId.EnumMemberEqualsOperatorMissing);
         }
+
+        [Fact]
+        public void Compile_EnumMemberDuplicated_ReportsError()
+        {
+            this.AssertCompilerReturnsError(
+@"enum UserType {
+    User,
+    $User$
+}",
+CompilerMessageId.EnumMemberDuplicated);
+        }
+
+        [Fact]
+        public void Compile_EnumMemberDuplicated_ReportsErrorMessage()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"enum UserType {
+    User,
+    User
+}",
+CompilerMessageId.EnumMemberDuplicated,
+"User");
+        }
     }
 }

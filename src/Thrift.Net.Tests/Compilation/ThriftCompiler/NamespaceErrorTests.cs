@@ -19,17 +19,10 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
         [Fact]
         public void Compile_UnrecognisedNamespace_IncludesScopeInErrorMessage()
         {
-            // Arrange
-            var input = "namespace notalang mynamespace";
-            var expectedMessage = string.Format(
-                CompilerMessages.Get(CompilerMessageId.NamespaceScopeUnknown), "notalang");
-            var compiler = new ThriftCompiler();
-
-            // Act
-            var result = compiler.Compile(input.ToStream());
-
-            // Assert
-            Assert.Equal(expectedMessage, result.Errors.First().Message);
+            this.AssertCompilerReturnsErrorMessage(
+                "namespace notalang mynamespace",
+                CompilerMessageId.NamespaceScopeUnknown,
+                "notalang");
         }
 
         [Theory]

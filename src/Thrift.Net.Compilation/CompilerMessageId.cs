@@ -48,6 +48,12 @@ namespace Thrift.Net.Compilation
         EnumEmpty = 6,
 
         /// <summary>
+        /// The same enum member has been declared multiple times.
+        /// For example `enum MyEnum { Member1, Member1 }`.
+        /// </summary>
+        EnumMemberDuplicated = 7,
+
+        /// <summary>
         /// The specified namespace scope is not in the list of known namespaces.
         /// For example `namespace notalang mynamespace`.
         /// </summary>

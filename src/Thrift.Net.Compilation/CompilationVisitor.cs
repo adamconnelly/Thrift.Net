@@ -123,7 +123,7 @@ namespace Thrift.Net.Compilation
             this.currentEnumValue.RemoveFrom(context);
 
             var name = this.GetEnumName(context);
-            var members = context.enumMember().Select(member => this.enumMembers.Get(member));
+            var members = this.GetEnumMembers(context);
 
             this.enums.Add(new EnumDefinition(name, members.ToList()));
 
@@ -162,6 +162,26 @@ namespace Thrift.Net.Compilation
             }
 
             return result;
+        }
+
+        private IReadOnlyCollection<EnumMember> GetEnumMembers(
+            ThriftParser.EnumDefinitionContext context)
+        {
+            var members = new Dictionary<string, EnumMember>();
+
+            foreach (var memberNode in context.enumMember())
+            {
+                var member = this.enumMembers.Get(memberNode);
+                if (member.Name != null && !members.TryAdd(member.Name, member))
+                {
+                    this.AddError(
+                        CompilerMessageId.EnumMemberDuplicated,
+                        memberNode.IDENTIFIER().Symbol,
+                        member.Name);
+                }
+            }
+
+            return members.Values;
         }
 
         private void SetNamespace(ThriftParser.NamespaceStatementContext context)
