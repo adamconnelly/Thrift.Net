@@ -11,7 +11,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
         [Fact]
         public void Compile_UnrecognisedNamespace_ReportsError()
         {
-            this.AssertCompilerReturnsError(
+            this.AssertCompilerReturnsErrorId(
                 "namespace $notalang$ mynamespace",
                 CompilerMessageId.NamespaceScopeUnknown);
         }
@@ -59,7 +59,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
         [Fact]
         public void Compile_ScopeMissing_ReportsError()
         {
-            this.AssertCompilerReturnsError(
+            this.AssertCompilerReturnsErrorId(
                 "$namespace mynamespace$",
                 CompilerMessageId.NamespaceScopeMissing);
         }
@@ -67,7 +67,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
         [Fact]
         public void Compile_NamespaceMissing_ReportsError()
         {
-            this.AssertCompilerReturnsError(
+            this.AssertCompilerReturnsErrorId(
                 "$namespace csharp$",
                 CompilerMessageId.NamespaceMissing);
         }
@@ -75,7 +75,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
         [Fact]
         public void Compile_ScopeAndNamespaceMissing_ReportsError()
         {
-            this.AssertCompilerReturnsError(
+            this.AssertCompilerReturnsErrorId(
                 "$namespace$",
                 CompilerMessageId.NamespaceAndScopeMissing);
         }

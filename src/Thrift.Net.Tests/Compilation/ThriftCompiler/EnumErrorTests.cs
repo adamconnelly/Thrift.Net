@@ -8,7 +8,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
         [Fact]
         public void Compile_EnumNameMissing_ReportsError()
         {
-            this.AssertCompilerReturnsError(
+            this.AssertCompilerReturnsErrorId(
                 "$enum$ {}",
                 CompilerMessageId.EnumMustHaveAName);
         }
@@ -16,7 +16,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
         [Fact]
         public void Compile_EnumMemberNameMissing_ReportsError()
         {
-            this.AssertCompilerReturnsError(
+            this.AssertCompilerReturnsErrorId(
 @"enum UserType {
     User = 0,
     $= 1$
@@ -27,7 +27,7 @@ CompilerMessageId.EnumMemberMustHaveAName);
         [Fact]
         public void Compile_EnumValueNegative_ReportsError()
         {
-            this.AssertCompilerReturnsError(
+            this.AssertCompilerReturnsErrorId(
 @"enum UserType {
     User = $-1$
 }",
@@ -37,7 +37,7 @@ CompilerMessageId.EnumValueMustNotBeNegative);
         [Fact]
         public void Compile_EnumValueNotAnInteger_ReportsError()
         {
-            this.AssertCompilerReturnsError(
+            this.AssertCompilerReturnsErrorId(
 @"enum UserType {
     User = $'testing-123'$
 }",
@@ -47,7 +47,7 @@ CompilerMessageId.EnumValueMustBeAnInteger);
         [Fact]
         public void Compile_EnumValueMissing_ReportsError()
         {
-            this.AssertCompilerReturnsError(
+            this.AssertCompilerReturnsErrorId(
 @"enum UserType {
     $User =$
 }",
@@ -57,7 +57,7 @@ CompilerMessageId.EnumValueMustBeSpecified);
         [Fact]
         public void Compile_EnumValueEqualsOperatorMissing_ReportsError()
         {
-            this.AssertCompilerReturnsError(
+            this.AssertCompilerReturnsErrorId(
 @"enum UserType {
     $User 5$
 }",
@@ -67,7 +67,7 @@ CompilerMessageId.EnumMemberEqualsOperatorMissing);
         [Fact]
         public void Compile_EnumMemberDuplicated_ReportsError()
         {
-            this.AssertCompilerReturnsError(
+            this.AssertCompilerReturnsErrorId(
 @"enum UserType {
     User,
     $User$

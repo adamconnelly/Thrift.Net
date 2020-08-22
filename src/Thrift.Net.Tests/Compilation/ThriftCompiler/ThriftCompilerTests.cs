@@ -9,21 +9,21 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
 
     public abstract class ThriftCompilerTests
     {
-        protected void AssertCompilerReturnsError(
+        protected void AssertCompilerReturnsErrorId(
             string input, CompilerMessageId messageId)
         {
-            this.AssertCompilerReturnsMessage(
+            this.AssertCompilerReturnsMessageId(
                 input, messageId, CompilerMessageType.Error);
         }
 
-        protected void AssertCompilerReturnsWarning(
+        protected void AssertCompilerReturnsWarningId(
             string input, CompilerMessageId messageId)
         {
-            this.AssertCompilerReturnsMessage(
+            this.AssertCompilerReturnsMessageId(
                 input, messageId, CompilerMessageType.Warning);
         }
 
-        protected void AssertCompilerReturnsMessage(
+        protected void AssertCompilerReturnsMessageId(
             string input, CompilerMessageId messageId, CompilerMessageType messageType)
         {
             // Arrange
