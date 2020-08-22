@@ -5,6 +5,7 @@ namespace Thrift.Net.Compilation
     using Antlr4.Runtime.Tree;
     using Thrift.Net.Antlr;
     using Thrift.Net.Compilation.Model;
+    using Thrift.Net.Compilation.Resources;
 
     /// <summary>
     /// A visitor used to perform the main compilation.
@@ -89,7 +90,8 @@ namespace Thrift.Net.Compilation
                     CompilerMessageType.Error,
                     context.NAMESPACE().Symbol.Line,
                     context.NAMESPACE().Symbol.Column + 1,
-                    context.NAMESPACE().Symbol.Column + context.NAMESPACE().Symbol.Text.Length));
+                    context.NAMESPACE().Symbol.Column + context.NAMESPACE().Symbol.Text.Length,
+                    CompilerMessages.Get(CompilerMessageId.NamespaceAndScopeMissing)));
             }
             else if (context.namespaceScope == null)
             {
@@ -101,7 +103,8 @@ namespace Thrift.Net.Compilation
                         CompilerMessageType.Error,
                         context.NAMESPACE().Symbol.Line,
                         context.NAMESPACE().Symbol.Column + 1,
-                        context.ns.Column + context.ns.Text.Length));
+                        context.ns.Column + context.ns.Text.Length,
+                        CompilerMessages.Get(CompilerMessageId.NamespaceMissing)));
                 }
                 else
                 {
@@ -112,7 +115,8 @@ namespace Thrift.Net.Compilation
                         CompilerMessageType.Error,
                         context.NAMESPACE().Symbol.Line,
                         context.NAMESPACE().Symbol.Column + 1,
-                        context.ns.Column + context.ns.Text.Length));
+                        context.ns.Column + context.ns.Text.Length,
+                        CompilerMessages.Get(CompilerMessageId.NamespaceScopeMissing)));
                 }
             }
 
@@ -144,7 +148,8 @@ namespace Thrift.Net.Compilation
                     CompilerMessageType.Warning,
                     warningTarget.Line,
                     warningTarget.Column + 1,
-                    warningTarget.Column + warningTarget.Text.Length));
+                    warningTarget.Column + warningTarget.Text.Length,
+                    CompilerMessages.Get(CompilerMessageId.EnumEmpty)));
             }
 
             return result;
@@ -171,7 +176,8 @@ namespace Thrift.Net.Compilation
                     CompilerMessageType.Error,
                     context.IDENTIFIER().Symbol.Line,
                     context.IDENTIFIER().Symbol.Column + 1,
-                    context.enumValue.Column + context.enumValue.Text.Length));
+                    context.enumValue.Column + context.enumValue.Text.Length,
+                    CompilerMessages.Get(CompilerMessageId.EnumMemberEqualsOperatorMissing)));
             }
 
             return result;
@@ -193,7 +199,8 @@ namespace Thrift.Net.Compilation
                     CompilerMessageType.Error,
                     context.namespaceScope.Line,
                     context.namespaceScope.Column + 1,
-                    context.namespaceScope.Column + context.namespaceScope.Text.Length));
+                    context.namespaceScope.Column + context.namespaceScope.Text.Length,
+                    CompilerMessages.Get(CompilerMessageId.NamespaceScopeUnknown)));
             }
         }
 
@@ -210,7 +217,8 @@ namespace Thrift.Net.Compilation
                 CompilerMessageType.Error,
                 context.ENUM().Symbol.Line,
                 context.ENUM().Symbol.Column + 1,
-                context.ENUM().Symbol.Column + context.ENUM().Symbol.Text.Length));
+                context.ENUM().Symbol.Column + context.ENUM().Symbol.Text.Length,
+                CompilerMessages.Get(CompilerMessageId.EnumMustHaveAName)));
 
             return null;
         }
@@ -228,7 +236,8 @@ namespace Thrift.Net.Compilation
                 CompilerMessageType.Error,
                 context.EQUALS_OPERATOR().Symbol.Line,
                 context.EQUALS_OPERATOR().Symbol.Column + 1,
-                context.enumValue.Column + context.enumValue.Text.Length));
+                context.enumValue.Column + context.enumValue.Text.Length,
+                CompilerMessages.Get(CompilerMessageId.EnumMemberMustHaveAName)));
 
             return null;
         }
@@ -254,7 +263,8 @@ namespace Thrift.Net.Compilation
                             CompilerMessageType.Error,
                             context.enumValue.Line,
                             context.enumValue.Column + 1,
-                            context.enumValue.Column + context.enumValue.Text.Length));
+                            context.enumValue.Column + context.enumValue.Text.Length,
+                            CompilerMessages.Get(CompilerMessageId.EnumValueMustNotBeNegative)));
                     }
                 }
                 else
@@ -265,7 +275,8 @@ namespace Thrift.Net.Compilation
                         CompilerMessageType.Error,
                         context.enumValue.Line,
                         context.enumValue.Column + 1,
-                        context.enumValue.Column + context.enumValue.Text.Length));
+                        context.enumValue.Column + context.enumValue.Text.Length,
+                        CompilerMessages.Get(CompilerMessageId.EnumValueMustBeAnInteger)));
                 }
             }
             else if (context.EQUALS_OPERATOR() != null)
@@ -277,7 +288,8 @@ namespace Thrift.Net.Compilation
                         CompilerMessageType.Error,
                         context.IDENTIFIER().Symbol.Line,
                         context.IDENTIFIER().Symbol.Column + 1,
-                        context.EQUALS_OPERATOR().Symbol.Column + context.EQUALS_OPERATOR().Symbol.Text.Length));
+                        context.EQUALS_OPERATOR().Symbol.Column + context.EQUALS_OPERATOR().Symbol.Text.Length,
+                        CompilerMessages.Get(CompilerMessageId.EnumValueMustBeSpecified)));
             }
 
             this.currentEnumValue.Put(context.Parent, currentValue + 1);

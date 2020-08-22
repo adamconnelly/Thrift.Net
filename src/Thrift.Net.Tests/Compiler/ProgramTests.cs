@@ -7,6 +7,7 @@ namespace Thrift.Net.Tests.Compiler
     using NSubstitute;
     using Thrift.Net.Compilation;
     using Thrift.Net.Compilation.Model;
+    using Thrift.Net.Compilation.Resources;
     using Thrift.Net.Compiler;
     using Thrift.Net.Tests.Utility;
     using Xunit;
@@ -128,20 +129,20 @@ namespace Thrift.Net.Tests.Compiler
             var inputFile = this.fileCreator.CreateTempFile();
             var outputDirectory = this.fileCreator.GetTempDirectory();
             this.SetupCompilationWithMessages(
-                new CompilationMessage(CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Error, 1, 1, 4),
-                new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Error, 2, 4, 8));
+                new CompilationMessage(CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Error, 1, 1, 4, "Message 1"),
+                new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Error, 2, 4, 8, "Message 2"));
             this.SetupCreateThriftFile(inputFile);
 
             // Act
             Program.Main(inputFile, outputDirectory, this.console);
 
             // Assert
-            var enumMustHaveName = $"TC{(int)CompilerMessageId.EnumMustHaveAName:0000}";
-            var enumMemberMustHaveName = $"TC{(int)CompilerMessageId.EnumMemberMustHaveAName:0000}";
+            var enumMustHaveName = CompilerMessages.FormatMessageId(CompilerMessageId.EnumMustHaveAName);
+            var enumMemberMustHaveName = CompilerMessages.FormatMessageId(CompilerMessageId.EnumMemberMustHaveAName);
             this.console.Out.Received().Write(
-                $"{inputFile.Name}(1,1-4): Error {enumMustHaveName}: An enum name must be specified [{inputFile.FullName}]{Environment.NewLine}");
+                $"{inputFile.Name}(1,1-4): Error {enumMustHaveName}: Message 1 [{inputFile.FullName}]{Environment.NewLine}");
             this.console.Out.Received().Write(
-                $"{inputFile.Name}(2,4-8): Error {enumMemberMustHaveName}: An enum member must have a name [{inputFile.FullName}]{Environment.NewLine}");
+                $"{inputFile.Name}(2,4-8): Error {enumMemberMustHaveName}: Message 2 [{inputFile.FullName}]{Environment.NewLine}");
         }
 
         [Fact]
@@ -151,8 +152,8 @@ namespace Thrift.Net.Tests.Compiler
             var inputFile = this.fileCreator.CreateTempFile();
             var outputDirectory = this.fileCreator.GetTempDirectory();
             this.SetupCompilationWithMessages(
-                new CompilationMessage(CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Error, 1, 1, 4),
-                new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Error, 2, 4, 8));
+                new CompilationMessage(CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Error, 1, 1, 4, null),
+                new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Error, 2, 4, 8, null));
             this.SetupCreateThriftFile(inputFile);
 
             // Act
@@ -169,9 +170,9 @@ namespace Thrift.Net.Tests.Compiler
             var inputFile = this.fileCreator.CreateTempFile();
             var outputDirectory = this.fileCreator.GetTempDirectory();
             this.SetupCompilationWithMessages(
-                new CompilationMessage(CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Error, 1, 1, 4),
-                new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Error, 2, 4, 8),
-                new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Warning, 2, 4, 8));
+                new CompilationMessage(CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Error, 1, 1, 4, null),
+                new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Error, 2, 4, 8, null),
+                new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Warning, 2, 4, 8, null));
             this.SetupCreateThriftFile(inputFile);
 
             // Act
@@ -188,9 +189,9 @@ namespace Thrift.Net.Tests.Compiler
             var inputFile = this.fileCreator.CreateTempFile();
             var outputDirectory = this.fileCreator.GetTempDirectory();
             this.SetupCompilationWithMessages(
-                new CompilationMessage(CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Warning, 1, 1, 4),
-                new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Warning, 2, 4, 8),
-                new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Warning, 2, 4, 8));
+                new CompilationMessage(CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Warning, 1, 1, 4, null),
+                new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Warning, 2, 4, 8, null),
+                new CompilationMessage(CompilerMessageId.EnumMemberMustHaveAName, CompilerMessageType.Warning, 2, 4, 8, null));
             this.SetupCreateThriftFile(inputFile);
 
             // Act
@@ -268,7 +269,7 @@ namespace Thrift.Net.Tests.Compiler
         private void SetupCompilationWithError()
         {
             var errorMessage = new CompilationMessage(
-                CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Error, 1, 1, 1);
+                CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Error, 1, 1, 1, null);
             var compilationResult = new CompilationResult(
                 new ThriftDocument(null, new List<EnumDefinition>()),
                 new List<CompilationMessage> { errorMessage });
@@ -279,7 +280,7 @@ namespace Thrift.Net.Tests.Compiler
         private void SetupCompilationWithWarning()
         {
             var errorMessage = new CompilationMessage(
-                CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Warning, 1, 1, 1);
+                CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Warning, 1, 1, 1, null);
             var compilationResult = new CompilationResult(
                 new ThriftDocument(null, new List<EnumDefinition>()),
                 new List<CompilationMessage> { errorMessage });

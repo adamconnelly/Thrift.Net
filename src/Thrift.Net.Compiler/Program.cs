@@ -85,7 +85,7 @@
                 // TODO: Pull message formatting out to its own object.
                 foreach (var message in result.Messages.OrderBy(message => message.LineNumber))
                 {
-                    console.Out.Write($"{thriftFile.RelativePath}({message.LineNumber},{message.StartPosition}-{message.EndPosition}): {message.MessageType} {FormatMessageId(message.MessageId)}: {GetMessage(message.MessageId)} [{input.FullName}]{Environment.NewLine}");
+                    console.Out.Write($"{thriftFile.RelativePath}({message.LineNumber},{message.StartPosition}-{message.EndPosition}): {message.MessageType} {message.FormattedMessageId}: {message.Message} [{input.FullName}]{Environment.NewLine}");
                 }
 
                 if (result.HasErrors)
@@ -122,44 +122,6 @@
             {
                 console.Out.Write($"Compilation succeeded with no errors or warnings!{Environment.NewLine}");
             }
-        }
-
-        private static string GetMessage(CompilerMessageId messageId)
-        {
-            return messageId switch
-            {
-                CompilerMessageId.EnumMustHaveAName
-                    => "An enum name must be specified",
-                CompilerMessageId.EnumMemberMustHaveAName
-                    => "An enum member must have a name",
-                CompilerMessageId.EnumValueMustNotBeNegative
-                    => "The enum value must not be negative",
-                CompilerMessageId.EnumValueMustBeAnInteger
-                    => "The enum value must be an integer",
-                CompilerMessageId.EnumValueMustBeSpecified
-                    => "An enum value must be specified",
-                CompilerMessageId.EnumMemberEqualsOperatorMissing
-                    => "The `=` operator is missing between the enum member's name and value",
-                CompilerMessageId.EnumEmpty
-                    => "The enum has no members",
-                CompilerMessageId.NamespaceAndScopeMissing
-                    => "A namespace and a namespace scope must be specified",
-                CompilerMessageId.NamespaceScopeMissing
-                    => "A namespace scope must be specified",
-                CompilerMessageId.NamespaceScopeUnknown
-
-                    // TODO: Alter this so we can include the scope in the message.
-                    // For example: 'notalang' is not a valid namespace scope.
-                    => "The specified namespace scope is not valid",
-                CompilerMessageId.NamespaceMissing
-                    => "A namespace must be specified",
-                _ => $"Message Id {(int)messageId} was not found.",
-            };
-        }
-
-        private static string FormatMessageId(CompilerMessageId messageId)
-        {
-            return $"TC{(int)messageId:0000}";
         }
     }
 }
