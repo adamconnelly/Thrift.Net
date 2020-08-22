@@ -91,13 +91,13 @@ Add a new enum member for our new compiler error:
 
 ```csharp
 ...
-NamespaceScopeUnknown = 6,
+NamespaceScopeUnknown = 100,
 
 /// <summary>
 /// A namespace has been specified without a scope. For example
 /// `namespace mynamespace`.
 /// </summary>
-NamespaceScopeMissing = 7,
+NamespaceScopeMissing = 101,
 ```
 
 ## Update the CompilationVisitor
@@ -115,12 +115,10 @@ public override int? VisitNamespaceStatement(
     {
         // The namespace scope is missing. For example
         // `namespace mynamespace`
-        this.messages.Add(new CompilationMessage(
+        this.AddError(
             CompilerMessageId.NamespaceScopeMissing,
-            CompilerMessageType.Error,
-            context.NAMESPACE().Symbol.Line,
-            context.NAMESPACE().Symbol.Column + 1,
-            context.ns.Column + context.ns.Text.Length));
+            context.NAMESPACE().Symbol,
+            context.ns);
     }
 
     return result;
@@ -130,16 +128,17 @@ public override int? VisitNamespaceStatement(
 ## Add Text for the Message
 
 We need to map our compiler Id to the human friendly text we're going to output.
-To do that update the `GetMessage()` method in
-[src/Thrift.Net.Compiler/Program.cs](src/Thrift.Net.Compiler/Program.cs) to map
-your new error to a string:
+To do that add your new message to
+[src/Thrift.Net.Compilation/Resources/CompilerMessages.resx](src/Thrift.Net.Compilation/Resources/CompilerMessages.resx):
 
-```csharp
+```xml
 ...
-CompilerMessageId.NamespaceAndScopeMissing
-    => "A namespace and a namespace scope must be specified",
-CompilerMessageId.NamespaceScopeMissing
-    => "A namespace scope must be specified",
+<data name="TC0100" xml:space="preserve">
+    <value>The specified namespace scope is not valid</value>
+</data>
+<data name="TC0101" xml:space="preserve">
+    <value>A namespace scope must be specified</value>
+</data>
 ```
 
 ## Run Compiler

@@ -1,5 +1,6 @@
 namespace Thrift.Net.Compilation
 {
+    using Antlr4.Runtime;
     using Thrift.Net.Compilation.Resources;
 
     /// <summary>
@@ -72,5 +73,49 @@ namespace Thrift.Net.Compilation
         /// Gets the user-friendly message.
         /// </summary>
         public string Message { get; }
+
+        /// <summary>
+        /// Creates an error message, specifying the tokens to highlight.
+        /// </summary>
+        /// <param name="messageId">The compiler message Id.</param>
+        /// <param name="startToken">
+        /// The starting token that the error should be placed against.
+        /// </param>
+        /// <param name="endToken">
+        /// The end token that the error should be placed against.
+        /// </param>
+        /// <returns>The error message.</returns>
+        public static CompilationMessage CreateError(CompilerMessageId messageId, IToken startToken, IToken endToken)
+        {
+            return new CompilationMessage(
+                messageId,
+                CompilerMessageType.Error,
+                startToken.Line,
+                startToken.Column + 1,
+                endToken.Column + endToken.Text.Length,
+                CompilerMessages.Get(messageId));
+        }
+
+        /// <summary>
+        /// Creates a warning message, specifying the tokens to highlight.
+        /// </summary>
+        /// <param name="messageId">The compiler message Id.</param>
+        /// <param name="startToken">
+        /// The starting token that the warning should be placed against.
+        /// </param>
+        /// <param name="endToken">
+        /// The end token that the warning should be placed against.
+        /// </param>
+        /// <returns>The warning message.</returns>
+        public static CompilationMessage CreateWarning(CompilerMessageId messageId, IToken startToken, IToken endToken)
+        {
+            return new CompilationMessage(
+                messageId,
+                CompilerMessageType.Warning,
+                startToken.Line,
+                startToken.Column + 1,
+                endToken.Column + endToken.Text.Length,
+                CompilerMessages.Get(messageId));
+        }
     }
 }

@@ -2,10 +2,10 @@ namespace Thrift.Net.Compilation
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Antlr4.Runtime;
     using Antlr4.Runtime.Tree;
     using Thrift.Net.Antlr;
     using Thrift.Net.Compilation.Model;
-    using Thrift.Net.Compilation.Resources;
 
     /// <summary>
     /// A visitor used to perform the main compilation.
@@ -85,38 +85,28 @@ namespace Thrift.Net.Compilation
             else if (context.namespaceScope == null && context.ns == null)
             {
                 // Both the namespace and scope are missing. For example `namespace`.
-                this.messages.Add(new CompilationMessage(
+                this.AddError(
                     CompilerMessageId.NamespaceAndScopeMissing,
-                    CompilerMessageType.Error,
-                    context.NAMESPACE().Symbol.Line,
-                    context.NAMESPACE().Symbol.Column + 1,
-                    context.NAMESPACE().Symbol.Column + context.NAMESPACE().Symbol.Text.Length,
-                    CompilerMessages.Get(CompilerMessageId.NamespaceAndScopeMissing)));
+                    context.NAMESPACE().Symbol);
             }
             else if (context.namespaceScope == null)
             {
                 if (AllowedNamespaceScopes.Contains(context.ns.Text))
                 {
                     // The namespace is missing. For example `namespace csharp`
-                    this.messages.Add(new CompilationMessage(
+                    this.AddError(
                         CompilerMessageId.NamespaceMissing,
-                        CompilerMessageType.Error,
-                        context.NAMESPACE().Symbol.Line,
-                        context.NAMESPACE().Symbol.Column + 1,
-                        context.ns.Column + context.ns.Text.Length,
-                        CompilerMessages.Get(CompilerMessageId.NamespaceMissing)));
+                        context.NAMESPACE().Symbol,
+                        context.ns);
                 }
                 else
                 {
                     // The namespace scope is missing. For example
                     // `namespace mynamespace`
-                    this.messages.Add(new CompilationMessage(
+                    this.AddError(
                         CompilerMessageId.NamespaceScopeMissing,
-                        CompilerMessageType.Error,
-                        context.NAMESPACE().Symbol.Line,
-                        context.NAMESPACE().Symbol.Column + 1,
-                        context.ns.Column + context.ns.Text.Length,
-                        CompilerMessages.Get(CompilerMessageId.NamespaceScopeMissing)));
+                        context.NAMESPACE().Symbol,
+                        context.ns);
                 }
             }
 
@@ -143,13 +133,7 @@ namespace Thrift.Net.Compilation
 
                 // The enum has no members. For example
                 // `enum MyEnum {}`
-                this.messages.Add(new CompilationMessage(
-                    CompilerMessageId.EnumEmpty,
-                    CompilerMessageType.Warning,
-                    warningTarget.Line,
-                    warningTarget.Column + 1,
-                    warningTarget.Column + warningTarget.Text.Length,
-                    CompilerMessages.Get(CompilerMessageId.EnumEmpty)));
+                this.AddWarning(CompilerMessageId.EnumEmpty, warningTarget);
             }
 
             return result;
@@ -171,13 +155,10 @@ namespace Thrift.Net.Compilation
             {
                 // An enum value has been specified without the = operator.
                 // For example `enum UserType { User 10 }`
-                this.messages.Add(new CompilationMessage(
+                this.AddError(
                     CompilerMessageId.EnumMemberEqualsOperatorMissing,
-                    CompilerMessageType.Error,
-                    context.IDENTIFIER().Symbol.Line,
-                    context.IDENTIFIER().Symbol.Column + 1,
-                    context.enumValue.Column + context.enumValue.Text.Length,
-                    CompilerMessages.Get(CompilerMessageId.EnumMemberEqualsOperatorMissing)));
+                    context.IDENTIFIER().Symbol,
+                    context.enumValue);
             }
 
             return result;
@@ -194,13 +175,9 @@ namespace Thrift.Net.Compilation
             {
                 // The namespace scope is not in the list of known scopes.
                 // For example `namespace notalang mynamespace`
-                this.messages.Add(new CompilationMessage(
+                this.AddError(
                     CompilerMessageId.NamespaceScopeUnknown,
-                    CompilerMessageType.Error,
-                    context.namespaceScope.Line,
-                    context.namespaceScope.Column + 1,
-                    context.namespaceScope.Column + context.namespaceScope.Text.Length,
-                    CompilerMessages.Get(CompilerMessageId.NamespaceScopeUnknown)));
+                    context.namespaceScope);
             }
         }
 
@@ -212,13 +189,9 @@ namespace Thrift.Net.Compilation
             }
 
             // The enum name is missing: `enum {}`.
-            this.messages.Add(new CompilationMessage(
+            this.AddError(
                 CompilerMessageId.EnumMustHaveAName,
-                CompilerMessageType.Error,
-                context.ENUM().Symbol.Line,
-                context.ENUM().Symbol.Column + 1,
-                context.ENUM().Symbol.Column + context.ENUM().Symbol.Text.Length,
-                CompilerMessages.Get(CompilerMessageId.EnumMustHaveAName)));
+                context.ENUM().Symbol);
 
             return null;
         }
@@ -231,13 +204,10 @@ namespace Thrift.Net.Compilation
             }
 
             // The enum member name is missing: `= 1`
-            this.messages.Add(new CompilationMessage(
+            this.AddError(
                 CompilerMessageId.EnumMemberMustHaveAName,
-                CompilerMessageType.Error,
-                context.EQUALS_OPERATOR().Symbol.Line,
-                context.EQUALS_OPERATOR().Symbol.Column + 1,
-                context.enumValue.Column + context.enumValue.Text.Length,
-                CompilerMessages.Get(CompilerMessageId.EnumMemberMustHaveAName)));
+                context.EQUALS_OPERATOR().Symbol,
+                context.enumValue);
 
             return null;
         }
@@ -258,43 +228,49 @@ namespace Thrift.Net.Compilation
                     if (value < 0)
                     {
                         // A negative enum value has been specified: `User = -1`.
-                        this.messages.Add(new CompilationMessage(
+                        this.AddError(
                             CompilerMessageId.EnumValueMustNotBeNegative,
-                            CompilerMessageType.Error,
-                            context.enumValue.Line,
-                            context.enumValue.Column + 1,
-                            context.enumValue.Column + context.enumValue.Text.Length,
-                            CompilerMessages.Get(CompilerMessageId.EnumValueMustNotBeNegative)));
+                            context.enumValue);
                     }
                 }
                 else
                 {
                     // A non-integer enum value has been specified: `User = "test"`.
-                    this.messages.Add(new CompilationMessage(
+                    this.AddError(
                         CompilerMessageId.EnumValueMustBeAnInteger,
-                        CompilerMessageType.Error,
-                        context.enumValue.Line,
-                        context.enumValue.Column + 1,
-                        context.enumValue.Column + context.enumValue.Text.Length,
-                        CompilerMessages.Get(CompilerMessageId.EnumValueMustBeAnInteger)));
+                        context.enumValue);
                 }
             }
             else if (context.EQUALS_OPERATOR() != null)
             {
                 // An enum member has been defined with an equals sign, but a
                 // missing value: `User = `.
-                this.messages.Add(new CompilationMessage(
-                        CompilerMessageId.EnumValueMustBeSpecified,
-                        CompilerMessageType.Error,
-                        context.IDENTIFIER().Symbol.Line,
-                        context.IDENTIFIER().Symbol.Column + 1,
-                        context.EQUALS_OPERATOR().Symbol.Column + context.EQUALS_OPERATOR().Symbol.Text.Length,
-                        CompilerMessages.Get(CompilerMessageId.EnumValueMustBeSpecified)));
+                this.AddError(
+                    CompilerMessageId.EnumValueMustBeSpecified,
+                    context.IDENTIFIER().Symbol,
+                    context.EQUALS_OPERATOR().Symbol);
             }
 
             this.currentEnumValue.Put(context.Parent, currentValue + 1);
 
             return currentValue;
+        }
+
+        private void AddError(CompilerMessageId messageId, IToken token)
+        {
+            this.messages.Add(CompilationMessage.CreateError(messageId, token, token));
+        }
+
+        private void AddError(CompilerMessageId messageId, IToken startToken, IToken endToken)
+        {
+            this.messages.Add(CompilationMessage.CreateError(
+                messageId, startToken, endToken));
+        }
+
+        private void AddWarning(CompilerMessageId messageId, IToken token)
+        {
+            this.messages.Add(CompilationMessage.CreateWarning(
+                messageId, token, token));
         }
     }
 }
