@@ -86,7 +86,7 @@ This would produce an error highlighting character positions between 1 and 9.
 ## Add New Message Id
 
 Our compiler messages are all defined in
-[src/Thrift.Net.Compilation/CompilationMessageId.cs](src/Thrift.Net.Compilation/CompilationMessageId.cs).
+[src/Thrift.Net.Compilation/CompilerMessageId.cs](src/Thrift.Net.Compilation/CompilerMessageId.cs).
 Add a new enum member for our new compiler error:
 
 ```csharp
