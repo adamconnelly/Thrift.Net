@@ -1,6 +1,9 @@
 namespace Thrift.Net.Tests.Utility
 {
+    using System;
     using System.IO;
+    using Thrift.Net.Antlr;
+    using Thrift.Net.Compilation;
     using Thrift.Net.Tests.Extensions;
 
     /// <summary>
@@ -93,5 +96,12 @@ namespace Thrift.Net.Tests.Utility
         /// </summary>
         /// <returns>A stream created from the input string.</returns>
         public Stream GetStream() => this.Input.ToStream();
+
+        public TNode ParseInput<TNode>(Func<ThriftParser, TNode> parseMethod)
+        {
+            var parser = ThriftParserFactory.Create(this.GetStream());
+
+            return parseMethod(parser);
+        }
     }
 }

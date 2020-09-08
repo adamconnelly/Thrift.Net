@@ -3,8 +3,10 @@ namespace Thrift.Net.Compilation
     using System.Collections.Generic;
     using System.Linq;
     using Antlr4.Runtime;
+    using Antlr4.Runtime.Misc;
     using Antlr4.Runtime.Tree;
     using Thrift.Net.Antlr;
+    using Thrift.Net.Compilation.Binding;
     using Thrift.Net.Compilation.Model;
 
     /// <summary>
@@ -50,12 +52,23 @@ namespace Thrift.Net.Compilation
             };
 
         private readonly Dictionary<string, EnumDefinition> enums = new Dictionary<string, EnumDefinition>();
+        private readonly List<StructDefinition> structs = new List<StructDefinition>();
         private readonly List<CompilationMessage> messages = new List<CompilationMessage>();
         private readonly ParseTreeProperty<EnumMember> enumMembers = new ParseTreeProperty<EnumMember>();
 
         // Used to store the current value of an enum so we can automatically generate
         // values if they aren't defined explicitly.
         private readonly ParseTreeProperty<int> currentEnumValue = new ParseTreeProperty<int>();
+        private readonly IBinderProvider binderProvider;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CompilationVisitor" /> class.
+        /// </summary>
+        /// <param name="binderProvider">Used to get binders for tree nodes.</param>
+        public CompilationVisitor(IBinderProvider binderProvider)
+        {
+            this.binderProvider = binderProvider;
+        }
 
         /// <summary>
         /// Gets the namespace of the document.
@@ -66,6 +79,11 @@ namespace Thrift.Net.Compilation
         /// Gets the enums defined in the document.
         /// </summary>
         public IReadOnlyCollection<EnumDefinition> Enums => this.enums.Values;
+
+        /// <summary>
+        /// Gets the structs defined in the document.
+        /// </summary>
+        public IReadOnlyCollection<StructDefinition> Structs => this.structs;
 
         /// <summary>
         /// Gets any messages reported during analysis.
@@ -167,6 +185,19 @@ namespace Thrift.Net.Compilation
                     context.IDENTIFIER().Symbol,
                     context.enumValue);
             }
+
+            return result;
+        }
+
+        /// <inheritdoc />
+        public override int? VisitStructDefinition([NotNull] ThriftParser.StructDefinitionContext context)
+        {
+            var result = base.VisitStructDefinition(context);
+
+            var binder = this.binderProvider.GetBinder(context);
+            var structDefinition = binder.Bind<StructDefinition>(context);
+
+            this.structs.Add(structDefinition);
 
             return result;
         }

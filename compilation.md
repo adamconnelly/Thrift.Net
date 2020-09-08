@@ -1,7 +1,17 @@
 # Compilation
 
+- [Compilation Overview](#compilation-overview).
 - [Explanation of the message format](#message-format).
 - [Full list of messages](#messages).
+
+## Compilation Overview
+
+Compilation is made up of a number of stages:
+
+- Parsing the input text into a syntax tree.
+- [Binding](binding.md) the nodes in the tree into Symbols.
+- Performing analysis and reporting any errors or warnings.
+- Code generation.
 
 ## Message Format
 

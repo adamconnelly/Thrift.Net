@@ -260,7 +260,7 @@ namespace Thrift.Net.Tests.Compiler
         private void SetupSuccessfulCompilation()
         {
             var compilationResult = new CompilationResult(
-                new ThriftDocument(null, new List<EnumDefinition>()),
+                new ThriftDocument(null, new List<EnumDefinition>(), new List<StructDefinition>()),
                 new List<CompilationMessage>());
 
             this.compiler.Compile(default).ReturnsForAnyArgs(compilationResult);
@@ -271,7 +271,7 @@ namespace Thrift.Net.Tests.Compiler
             var errorMessage = new CompilationMessage(
                 CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Error, 1, 1, 1, null);
             var compilationResult = new CompilationResult(
-                new ThriftDocument(null, new List<EnumDefinition>()),
+                new ThriftDocument(null, new List<EnumDefinition>(), new List<StructDefinition>()),
                 new List<CompilationMessage> { errorMessage });
 
             this.compiler.Compile(default).ReturnsForAnyArgs(compilationResult);
@@ -282,7 +282,7 @@ namespace Thrift.Net.Tests.Compiler
             var errorMessage = new CompilationMessage(
                 CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Warning, 1, 1, 1, null);
             var compilationResult = new CompilationResult(
-                new ThriftDocument(null, new List<EnumDefinition>()),
+                new ThriftDocument(null, new List<EnumDefinition>(), new List<StructDefinition>()),
                 new List<CompilationMessage> { errorMessage });
 
             this.compiler.Compile(default).ReturnsForAnyArgs(compilationResult);
@@ -291,7 +291,7 @@ namespace Thrift.Net.Tests.Compiler
         private void SetupCompilationWithMessages(params CompilationMessage[] messages)
         {
             var compilationResult = new CompilationResult(
-                new ThriftDocument(null, new List<EnumDefinition>()),
+                new ThriftDocument(null, new List<EnumDefinition>(), new List<StructDefinition>()),
                 messages);
 
             this.compiler.Compile(default).ReturnsForAnyArgs(compilationResult);

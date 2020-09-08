@@ -72,14 +72,17 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
 
         private static ThriftDocument CreateDocument()
         {
-            return new ThriftDocument("Thrift.Net.Tests", new List<EnumDefinition>
+            return new ThriftDocument(
+                "Thrift.Net.Tests",
+                new List<EnumDefinition>
                 {
                     new EnumDefinition("UserType", new List<EnumMember>
                     {
                         new EnumMember("User", 2),
                         new EnumMember("Administrator", 5),
                     }),
-                });
+                },
+                new List<StructDefinition>());
         }
     }
 }

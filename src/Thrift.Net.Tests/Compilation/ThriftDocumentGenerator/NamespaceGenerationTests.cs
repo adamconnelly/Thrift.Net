@@ -13,7 +13,8 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
         {
             // Arrange
             var generator = new ThriftDocumentGenerator();
-            var document = new ThriftDocument("Thrift.Net.Tests", new List<EnumDefinition>());
+            var document = new ThriftDocument(
+                "Thrift.Net.Tests", new List<EnumDefinition>(), new List<StructDefinition>());
 
             // Act
             var output = generator.Generate(document);

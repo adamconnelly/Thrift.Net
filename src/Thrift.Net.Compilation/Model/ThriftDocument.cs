@@ -12,10 +12,15 @@ namespace Thrift.Net.Compilation.Model
         /// </summary>
         /// <param name="namespace">The C# namespace of the document.</param>
         /// <param name="enums">Any enums found in the document.</param>
-        public ThriftDocument(string @namespace, IReadOnlyCollection<EnumDefinition> enums)
+        /// <param name="structs">Any structs found in the document.</param>
+        public ThriftDocument(
+            string @namespace,
+            IReadOnlyCollection<EnumDefinition> enums,
+            IReadOnlyCollection<StructDefinition> structs)
         {
             this.Namespace = @namespace;
             this.Enums = enums;
+            this.Structs = structs;
         }
 
         /// <summary>
@@ -27,5 +32,10 @@ namespace Thrift.Net.Compilation.Model
         /// Gets any enums that have been defined.
         /// </summary>
         public IReadOnlyCollection<EnumDefinition> Enums { get; }
+
+        /// <summary>
+        /// Gets any structs that have been defined.
+        /// </summary>
+        public IReadOnlyCollection<StructDefinition> Structs { get; }
     }
 }

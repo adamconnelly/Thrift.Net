@@ -10,7 +10,7 @@ namespaceStatement: NAMESPACE (namespaceScope=.*? | namespaceScope='*') ns=IDENT
 
 definitions: definition*;
 
-definition: enumDefinition;
+definition: enumDefinition | structDefinition;
 
 enumDefinition: ENUM name=IDENTIFIER?
     '{'
@@ -23,8 +23,23 @@ enumMember: (
         IDENTIFIER enumValue=.*?                      // `User 123` (missing =)
     ) LIST_SEPARATOR?;
 
+structDefinition: STRUCT name=IDENTIFIER?
+    '{'
+        field*
+    '}';
+
+field: fieldType name=IDENTIFIER |
+    fieldRequiredness fieldType name=IDENTIFIER |
+    fieldId=.+? ':' fieldRequiredness? fieldType name=IDENTIFIER;
+
+fieldRequiredness: REQUIRED | OPTIONAL;
+fieldType: IDENTIFIER;
+
 NAMESPACE: 'namespace';
 ENUM: 'enum';
+STRUCT: 'struct';
+REQUIRED: 'required';
+OPTIONAL: 'optional';
 EQUALS_OPERATOR: '=';
 LITERAL: ( '"' .*? '"' ) | ( '\'' .*? '\'' );
 IDENTIFIER: ( [a-zA-Z] | '_' ) ( [a-zA-Z] | [0-9] | '.' | '_' )*;
