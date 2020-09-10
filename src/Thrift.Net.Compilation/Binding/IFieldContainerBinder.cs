@@ -25,6 +25,16 @@ namespace Thrift.Net.Compilation.Binding
         FieldDefinition GetPreviousSibling(FieldContext context);
 
         /// <summary>
+        /// Checks whether a field with the specified Id has already been defined.
+        /// </summary>
+        /// <param name="fieldId">The field Id to check for.</param>
+        /// <param name="node">The field being defined.</param>
+        /// <returns>
+        /// true if the field Id has already been defined, false otherwise.
+        /// </returns>
+        bool IsFieldIdAlreadyDefined(int fieldId, FieldContext node);
+
+        /// <summary>
         /// Checks whether the field has already been defined.
         /// </summary>
         /// <param name="name">The name of the field.</param>

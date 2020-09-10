@@ -104,5 +104,17 @@ namespace Thrift.Net.Compilation
         /// ```
         /// </summary>
         StructFieldNameAlreadyDefined = 201,
+
+        /// <summary>
+        /// The specified field Id has already been defined in the same struct.
+        /// For example:
+        /// ```
+        /// struct User {
+        ///   0: i32 Id,
+        ///   0: string Username
+        /// }
+        /// ```
+        /// </summary>
+        StructFieldIdAlreadyDefined = 202,
     }
 }

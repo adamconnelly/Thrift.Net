@@ -412,3 +412,25 @@ struct User {
   string Username
 }
 ```
+
+### TC202 - Field Id Already Defined
+
+_Level_: Error
+
+The same field Id has been used for more than one field. For example:
+
+```thrift
+struct User {
+  0: i32 Id
+  0: string Username
+}
+```
+
+To fix this issue, make sure all the field Ids are unique:
+
+```thrift
+struct User {
+  0: i32 Id
+  1: string Username
+}
+```

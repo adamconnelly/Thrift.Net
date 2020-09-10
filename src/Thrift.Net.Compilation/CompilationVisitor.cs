@@ -223,6 +223,14 @@ namespace Thrift.Net.Compilation
                     field.Name);
             }
 
+            if (parentBinder.IsFieldIdAlreadyDefined(field.FieldId.Value, context))
+            {
+                this.AddError(
+                    CompilerMessageId.StructFieldIdAlreadyDefined,
+                    context.fieldId,
+                    field.FieldId.ToString());
+            }
+
             return base.VisitField(context);
         }
 

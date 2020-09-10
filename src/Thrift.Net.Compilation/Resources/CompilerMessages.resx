@@ -103,4 +103,7 @@
   <data name="TC0201" xml:space="preserve">
     <value>A field called '{0}' has already been defined.</value>
   </data>
+  <data name="TC0202" xml:space="preserve">
+    <value>Field Id '{0}' has already been used by another field in this struct.</value>
+  </data>
 </root>

@@ -67,6 +67,21 @@ namespace Thrift.Net.Compilation.Binding
                 .FirstOrDefault().Node != node;
         }
 
+        /// <inheritdoc />
+        public bool IsFieldIdAlreadyDefined(int fieldId, FieldContext node)
+        {
+            var parentNode = node.Parent as StructDefinitionContext;
+
+            return parentNode.field()
+                .Select(node => new
+                    {
+                        Node = node,
+                        Symbol = this.binderProvider.GetBinder(node).Bind<FieldDefinition>(node),
+                    })
+                .Where(item => item.Symbol.FieldId == fieldId)
+                .FirstOrDefault().Node != node;
+        }
+
         /// <summary>
         /// Creates a <see cref="StructDefinition" /> based on the parse tree node.
         /// </summary>
