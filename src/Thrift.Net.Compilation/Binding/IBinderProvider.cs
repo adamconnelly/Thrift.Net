@@ -1,6 +1,6 @@
 namespace Thrift.Net.Compilation.Binding
 {
-    using Antlr4.Runtime;
+    using Antlr4.Runtime.Tree;
 
     /// <summary>
     /// An object that can provide the correct <see cref="IBinder" /> for nodes
@@ -13,6 +13,6 @@ namespace Thrift.Net.Compilation.Binding
         /// </summary>
         /// <param name="node">The node in the tree to get the binder for.</param>
         /// <returns>The binder for the specified node.</returns>
-        IBinder GetBinder(ParserRuleContext node);
+        IBinder GetBinder(IParseTree node);
     }
 }

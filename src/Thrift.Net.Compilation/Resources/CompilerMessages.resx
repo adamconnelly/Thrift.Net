@@ -100,4 +100,7 @@
   <data name="TC0200" xml:space="preserve">
     <value>A struct name must be specified</value>
   </data>
+  <data name="TC0201" xml:space="preserve">
+    <value>A field called '{0}' has already been defined.</value>
+  </data>
 </root>

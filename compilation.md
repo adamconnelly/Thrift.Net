@@ -389,3 +389,26 @@ struct User {
   i32 Id
 }
 ```
+
+### TC0201 - Field Name Already Defined
+
+_Level_: Error
+
+The same field name has been used more than once in the same struct. For
+example:
+
+```thrift
+struct User {
+  string Username
+  string Username
+}
+```
+
+To fix this issue, delete or rename one of the fields:
+
+```thrift
+struct User {
+  i32 Id
+  string Username
+}
+```

@@ -41,7 +41,7 @@ namespace Thrift.Net.Compilation.Binding
         /// <returns>
         /// The binder, or null if no binder exists for the specified node.
         /// </returns>
-        public IBinder GetBinder(ParserRuleContext node)
+        public IBinder GetBinder(IParseTree node)
         {
             return this.binderMap.Get(node);
         }

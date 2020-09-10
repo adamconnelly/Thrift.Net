@@ -209,6 +209,23 @@ namespace Thrift.Net.Compilation
             return result;
         }
 
+        /// <inheritdoc />
+        public override int? VisitField([NotNull] ThriftParser.FieldContext context)
+        {
+            var fieldBinder = this.binderProvider.GetBinder(context);
+            var field = fieldBinder.Bind<FieldDefinition>(context);
+            var parentBinder = this.binderProvider.GetBinder(context.Parent) as IFieldContainerBinder;
+            if (parentBinder.IsFieldNameAlreadyDefined(field.Name, context))
+            {
+                this.AddError(
+                    CompilerMessageId.StructFieldNameAlreadyDefined,
+                    context.name,
+                    field.Name);
+            }
+
+            return base.VisitField(context);
+        }
+
         private IReadOnlyCollection<EnumMember> GetEnumMembers(
             ThriftParser.EnumDefinitionContext context)
         {

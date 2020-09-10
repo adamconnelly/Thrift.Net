@@ -2,6 +2,7 @@ namespace Thrift.Net.Compilation.Binding
 {
     using System;
     using Antlr4.Runtime;
+    using Antlr4.Runtime.Tree;
     using Thrift.Net.Compilation.Model;
 
     /// <summary>
@@ -31,7 +32,7 @@ namespace Thrift.Net.Compilation.Binding
         }
 
         /// <inheritdoc />
-        public TSymbol Bind<TSymbol>(ParserRuleContext node)
+        public TSymbol Bind<TSymbol>(IParseTree node)
             where TSymbol : class, ISymbol
         {
             if (!(node is TNode))

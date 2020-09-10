@@ -12,5 +12,17 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
                 "$struct$ {}",
                 CompilerMessageId.StructMustHaveAName);
         }
+
+        [Fact]
+        public void Compile_DuplicateFieldName_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"struct {
+    i32 Username
+    string $Username$
+}",
+CompilerMessageId.StructFieldNameAlreadyDefined,
+"Username");
+        }
     }
 }

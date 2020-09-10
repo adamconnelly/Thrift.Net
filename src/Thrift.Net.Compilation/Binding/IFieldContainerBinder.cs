@@ -23,5 +23,15 @@ namespace Thrift.Net.Compilation.Binding
         /// <param name="context">The field to look before.</param>
         /// <returns>The previous field, or null if there is no previous field.</returns>
         FieldDefinition GetPreviousSibling(FieldContext context);
+
+        /// <summary>
+        /// Checks whether the field has already been defined.
+        /// </summary>
+        /// <param name="name">The name of the field.</param>
+        /// <param name="node">The field being defined.</param>
+        /// <returns>
+        /// true if the field name has already been defined, false otherwise.
+        /// </returns>
+        bool IsFieldNameAlreadyDefined(string name, FieldContext node);
     }
 }

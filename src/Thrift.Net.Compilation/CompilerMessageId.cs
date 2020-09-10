@@ -92,5 +92,17 @@ namespace Thrift.Net.Compilation
         /// `struct {}`.
         /// </summary>
         StructMustHaveAName = 200,
+
+        /// <summary>
+        /// The specified field name has already been used in the same struct.
+        /// For example:
+        /// ```
+        /// struct User {
+        ///   i32 Username
+        ///   string Username
+        /// }
+        /// ```
+        /// </summary>
+        StructFieldNameAlreadyDefined = 201,
     }
 }

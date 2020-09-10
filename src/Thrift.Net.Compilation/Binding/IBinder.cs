@@ -1,7 +1,7 @@
 namespace Thrift.Net.Compilation.Binding
 {
     using System;
-    using Antlr4.Runtime;
+    using Antlr4.Runtime.Tree;
     using Thrift.Net.Compilation.Model;
 
     /// <summary>
@@ -27,7 +27,7 @@ namespace Thrift.Net.Compilation.Binding
         /// Thrown if the symbol created from the node cannot be converted to
         /// <typeparamref name="TSymbol" />.
         /// </exception>
-        TSymbol Bind<TSymbol>(ParserRuleContext node)
+        TSymbol Bind<TSymbol>(IParseTree node)
             where TSymbol : class, ISymbol;
     }
 }
