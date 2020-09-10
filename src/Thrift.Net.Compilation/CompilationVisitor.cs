@@ -197,6 +197,13 @@ namespace Thrift.Net.Compilation
             var binder = this.binderProvider.GetBinder(context);
             var structDefinition = binder.Bind<StructDefinition>(context);
 
+            if (structDefinition.Name == null)
+            {
+                this.AddError(
+                    CompilerMessageId.StructMustHaveAName,
+                    context.STRUCT().Symbol);
+            }
+
             this.structs.Add(structDefinition);
 
             return result;

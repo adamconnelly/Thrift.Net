@@ -86,5 +86,11 @@ namespace Thrift.Net.Compilation
         /// namespace being provided. For example `namespace csharp`.
         /// </summary>
         NamespaceMissing = 103,
+
+        /// <summary>
+        /// A struct has been defined without a name. For example:
+        /// `struct {}`.
+        /// </summary>
+        StructMustHaveAName = 200,
     }
 }

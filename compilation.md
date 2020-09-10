@@ -369,3 +369,23 @@ To fix this issue provide a namespace:
 ```thrift
 namespace csharp Thrift.Net.Examples
 ```
+
+### TC0200 - Struct Name Missing
+
+_Level_: Error
+
+A struct has been defined with no name. For example:
+
+```thrift
+struct {
+  i32 Id
+}
+```
+
+To fix this issue provide a name for the struct:
+
+```thrift
+struct User {
+  i32 Id
+}
+```
