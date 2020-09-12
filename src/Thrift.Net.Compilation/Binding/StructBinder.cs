@@ -3,6 +3,7 @@ namespace Thrift.Net.Compilation.Binding
     using System;
     using System.Linq;
     using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Symbols.Builders;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
@@ -82,9 +83,11 @@ namespace Thrift.Net.Compilation.Binding
         /// <returns>The struct definition.</returns>
         protected override Struct Bind(StructDefinitionContext context)
         {
-            var fields = context.field().Select(this.GetField);
+            var builder = new StructBuilder()
+                .SetName(context.name?.Text)
+                .AddFields(context.field().Select(this.GetField));
 
-            return new Struct(context.name?.Text, fields.ToList());
+            return builder.Build();
         }
 
         private Field GetField(FieldContext context)
