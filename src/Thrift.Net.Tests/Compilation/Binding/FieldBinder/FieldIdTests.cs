@@ -3,6 +3,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
     using NSubstitute;
     using Thrift.Net.Compilation.Binding;
     using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Symbols.Builders;
     using Thrift.Net.Tests.Utility;
     using Xunit;
 
@@ -51,7 +52,9 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
         public void Bind_FieldIdNotProvided_GetsFieldIdFromContainer()
         {
             // Arrange
-            var previousField = CreateFieldWithId(5);
+            var previousField = new FieldBuilder()
+                .SetFieldId(5)
+                .Build();
 
             var fieldContext = ParserInput
                 .FromString("i32 Id")
@@ -69,7 +72,9 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
         public void Bind_FieldIdNotProvided_IndicatesFieldIdIsImplicit()
         {
             // Arrange
-            var previousField = CreateFieldWithId(5);
+            var previousField = new FieldBuilder()
+                .SetFieldId(5)
+                .Build();
 
             var fieldContext = ParserInput
                 .FromString("i32 Id")
@@ -125,17 +130,6 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
 
             // Assert
             Assert.Null(field.FieldId);
-        }
-
-        private static Field CreateFieldWithId(int fieldId)
-        {
-            return new Field(
-                fieldId,
-                fieldId.ToString(),
-                FieldRequiredness.Default,
-                FieldType.Bool,
-                "IsEnabled",
-                false);
         }
     }
 }

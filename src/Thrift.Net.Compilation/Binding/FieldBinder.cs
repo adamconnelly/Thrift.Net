@@ -1,6 +1,7 @@
 namespace Thrift.Net.Compilation.Binding
 {
     using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Symbols.Builders;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
@@ -31,19 +32,17 @@ namespace Thrift.Net.Compilation.Binding
         /// <returns>The field definition.</returns>
         protected override Field Bind(FieldContext context)
         {
-            var fieldId = this.GetFieldId(context);
-            var requiredness = this.GetFieldRequiredness(context);
             var typeBinder = this.binderProvider.GetBinder(context.fieldType());
-            var type = typeBinder.Bind<FieldType>(context.fieldType());
-            bool isFieldIdImplicit = context.fieldId == null;
 
-            return new Field(
-                fieldId,
-                context.fieldId?.Text,
-                requiredness,
-                type,
-                context.name.Text,
-                isFieldIdImplicit);
+            var builder = new FieldBuilder()
+                .SetFieldId(this.GetFieldId(context))
+                .SetIsFieldIdImplicit(context.fieldId == null)
+                .SetRawFieldId(context.fieldId?.Text)
+                .SetRequiredness(this.GetFieldRequiredness(context))
+                .SetType(typeBinder.Bind<FieldType>(context.fieldType()))
+                .SetName(context.name.Text);
+
+            return builder.Build();
         }
 
         private FieldRequiredness GetFieldRequiredness(FieldContext context)

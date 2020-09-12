@@ -3,6 +3,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.StructBinder
     using NSubstitute;
     using Thrift.Net.Compilation.Binding;
     using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Symbols.Builders;
     using Thrift.Net.Tests.Utility;
     using Xunit;
 
@@ -28,12 +29,10 @@ namespace Thrift.Net.Tests.Compilation.Binding.StructBinder
                 .FromString(input)
                 .ParseInput(parser => parser.structDefinition());
 
-            var idField = new Field(
-                1, "1", FieldRequiredness.Default, FieldType.I32, "Id", false);
+            var idField = new FieldBuilder().Build();
             this.fieldBinder.Bind<Field>(structContext.field()[0])
                 .Returns(idField);
-            var usernameField = new Field(
-                2, "2", FieldRequiredness.Default, FieldType.I32, "Username", false);
+            var usernameField = new FieldBuilder().Build();
             this.fieldBinder.Bind<Field>(structContext.field()[1])
                 .Returns(usernameField);
 

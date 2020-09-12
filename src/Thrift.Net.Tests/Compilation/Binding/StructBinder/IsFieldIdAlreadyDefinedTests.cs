@@ -4,6 +4,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.StructBinder
     using NSubstitute;
     using Thrift.Net.Compilation.Binding;
     using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Symbols.Builders;
     using Thrift.Net.Tests.Utility;
     using Xunit;
 
@@ -113,12 +114,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.StructBinder
         private void SetupFieldWithId(IParseTree node, int fieldId)
         {
             this.fieldBinder.Bind<Field>(node)
-                .Returns(this.CreateFieldWithId(fieldId));
-        }
-
-        private Field CreateFieldWithId(int fieldId)
-        {
-            return new Field(fieldId, "0", FieldRequiredness.Default, FieldType.Binary, fieldId.ToString(), false);
+                .Returns(new FieldBuilder().SetFieldId(fieldId).Build());
         }
     }
 }

@@ -39,7 +39,10 @@ namespace Thrift.Net.Compilation.Symbols
         public string Name { get; }
 
         /// <summary>
-        /// Gets the Id of the field.
+        /// Gets the Id of the field. This will be null if the field Id could
+        /// not be parsed from the IDL, for example if it is negative or not
+        /// an integer. The <see cref="RawFieldId" /> field can be used to get
+        /// the raw string value.
         /// </summary>
         public int? FieldId { get; }
 
