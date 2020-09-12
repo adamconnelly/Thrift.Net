@@ -116,5 +116,16 @@ namespace Thrift.Net.Compilation
         /// ```
         /// </summary>
         StructFieldIdAlreadyDefined = 202,
+
+        /// <summary>
+        /// The specified field Id is not a positive integer. For example:
+        /// ```
+        /// struct User {
+        ///   abc: i32 Id
+        ///   -1: string Username
+        /// }
+        /// ```
+        /// </summary>
+        StructFieldIdMustBeAPositiveInteger = 203,
     }
 }

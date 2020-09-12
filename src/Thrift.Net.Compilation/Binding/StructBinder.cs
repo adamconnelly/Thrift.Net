@@ -1,5 +1,6 @@
 namespace Thrift.Net.Compilation.Binding
 {
+    using System;
     using System.Linq;
     using Thrift.Net.Compilation.Model;
     using static Thrift.Net.Antlr.ThriftParser;
@@ -26,31 +27,6 @@ namespace Thrift.Net.Compilation.Binding
 
         /// <inheritdoc />
         public FieldRequiredness DefaultFieldRequiredness => FieldRequiredness.Default;
-
-        /// <inheritdoc />
-        public FieldDefinition GetPreviousSibling(FieldContext target)
-        {
-            var parentNode = target.Parent as StructDefinitionContext;
-            FieldContext previousFieldNode = null;
-
-            foreach (var fieldNode in parentNode.field())
-            {
-                if (fieldNode == target)
-                {
-                    break;
-                }
-
-                previousFieldNode = fieldNode;
-            }
-
-            if (previousFieldNode != null)
-            {
-                var binder = this.binderProvider.GetBinder(previousFieldNode);
-                return binder.Bind<FieldDefinition>(previousFieldNode);
-            }
-
-            return null;
-        }
 
         /// <inheritdoc />
         public bool IsFieldNameAlreadyDefined(string name, FieldContext node)
@@ -80,6 +56,23 @@ namespace Thrift.Net.Compilation.Binding
                     })
                 .Where(item => item.Symbol.FieldId == fieldId)
                 .FirstOrDefault().Node != node;
+        }
+
+        /// <inheritdoc />
+        public int GetAutomaticFieldId(FieldContext node)
+        {
+            if (node.fieldId != null)
+            {
+                throw new InvalidOperationException(
+                    "Cannot generate an automatic field Id because the field has an explicit Id specified");
+            }
+
+            var structDefinition = node.Parent as StructDefinitionContext;
+
+            return (structDefinition.field()
+                .Where(field => field.fieldId == null)
+                .ToList()
+                .IndexOf(node) + 1) * -1;
         }
 
         /// <summary>

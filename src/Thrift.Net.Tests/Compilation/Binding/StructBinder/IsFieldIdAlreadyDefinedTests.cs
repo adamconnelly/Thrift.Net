@@ -118,7 +118,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.StructBinder
 
         private FieldDefinition CreateFieldWithId(int fieldId)
         {
-            return new FieldDefinition(fieldId, "0", FieldRequiredness.Default, FieldType.Binary, fieldId.ToString());
+            return new FieldDefinition(fieldId, "0", FieldRequiredness.Default, FieldType.Binary, fieldId.ToString(), false);
         }
     }
 }

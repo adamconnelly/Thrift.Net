@@ -37,6 +37,26 @@ CompilerMessageId.StructFieldIdAlreadyDefined,
 "1");
         }
 
-        // TODO: Error if field Id isn't an int
+        [Fact]
+        public void Compile_FieldIdNotAnInt_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"struct User {
+    $abc$: string Username
+}",
+CompilerMessageId.StructFieldIdMustBeAPositiveInteger,
+"abc");
+        }
+
+        [Fact]
+        public void Compile_FieldIdNegative_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"struct User {
+    $-5$: string Username
+}",
+CompilerMessageId.StructFieldIdMustBeAPositiveInteger,
+"-5");
+        }
     }
 }

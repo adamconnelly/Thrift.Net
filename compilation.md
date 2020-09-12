@@ -434,3 +434,26 @@ struct User {
   1: string Username
 }
 ```
+
+### TC203 - Field Id Invalid
+
+_Level_: Error
+
+The field Id is invalid. Only positive integers are valid field Ids. For
+example:
+
+```thrift
+struct User {
+  -1: i32 Id
+  abc: string Username
+}
+```
+
+To fix this issue, make sure all the field Ids are positive integers:
+
+```thrift
+struct User {
+  0: i32 Id
+  1: string Username
+}
+```

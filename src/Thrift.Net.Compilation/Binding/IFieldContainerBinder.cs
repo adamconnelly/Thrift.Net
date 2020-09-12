@@ -18,13 +18,6 @@ namespace Thrift.Net.Compilation.Binding
         FieldRequiredness DefaultFieldRequiredness { get; }
 
         /// <summary>
-        /// Gets the field defined immediately before the specified field.
-        /// </summary>
-        /// <param name="context">The field to look before.</param>
-        /// <returns>The previous field, or null if there is no previous field.</returns>
-        FieldDefinition GetPreviousSibling(FieldContext context);
-
-        /// <summary>
         /// Checks whether a field with the specified Id has already been defined.
         /// </summary>
         /// <param name="fieldId">The field Id to check for.</param>
@@ -43,5 +36,13 @@ namespace Thrift.Net.Compilation.Binding
         /// true if the field name has already been defined, false otherwise.
         /// </returns>
         bool IsFieldNameAlreadyDefined(string name, FieldContext node);
+
+        /// <summary>
+        /// Gets the automatic field Id to use for the node in the situation
+        /// where an explicit field Id has not been provided.
+        /// </summary>
+        /// <param name="node">The field to get an automatic Id for.</param>
+        /// <returns>The next available field Id.</returns>
+        int GetAutomaticFieldId(FieldContext node);
     }
 }

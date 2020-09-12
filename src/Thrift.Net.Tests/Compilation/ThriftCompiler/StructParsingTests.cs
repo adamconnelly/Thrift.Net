@@ -64,5 +64,33 @@ struct Team {}";
                 item => Assert.Equal("Id", item.Name),
                 item => Assert.Equal("Name", item.Name));
         }
+
+        [Fact]
+        public void Compile_StructContainsFields_SetsFieldIdsCorrectly()
+        {
+            // Arrange
+            var input =
+@"struct User {
+    i32 Id
+    1: string Username
+    2: string CreatedOn
+    string Name
+    string DeletedOn
+}";
+
+            // Act
+            var result = this.compiler.Compile(input.ToStream());
+
+            // Assert
+            var definition = result.Document.Structs.First();
+
+            Assert.Collection(
+                definition.Fields,
+                item => Assert.Equal(-1, item.FieldId),
+                item => Assert.Equal(1, item.FieldId),
+                item => Assert.Equal(2, item.FieldId),
+                item => Assert.Equal(-2, item.FieldId),
+                item => Assert.Equal(-3, item.FieldId));
+        }
     }
 }

@@ -13,18 +13,24 @@ namespace Thrift.Net.Compilation.Model
         /// <param name="requiredness">The level of requiredness of the field.</param>
         /// <param name="type">The type of the field.</param>
         /// <param name="name">The name of the field.</param>
+        /// <param name="isFieldIdImplicit">
+        /// Indicates whether the field Id was generated automatically by the
+        /// compiler rather than being explicitly defined in the IDL.
+        /// </param>
         public FieldDefinition(
             int? fieldId,
             string rawFieldId,
             FieldRequiredness requiredness,
             FieldType type,
-            string name)
+            string name,
+            bool isFieldIdImplicit)
         {
             this.FieldId = fieldId;
             this.RawFieldId = rawFieldId;
             this.Requiredness = requiredness;
             this.Type = type;
             this.Name = name;
+            this.IsFieldIdImplicit = isFieldIdImplicit;
         }
 
         /// <summary>
@@ -52,6 +58,12 @@ namespace Thrift.Net.Compilation.Model
         /// Gets the data type of the field.
         /// </summary>
         public FieldType Type { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the field Id was generated implicitly,
+        /// rather than being explicitly defined in the Thrift IDL.
+        /// </summary>
+        public bool IsFieldIdImplicit { get; }
 
         /// <inheritdoc />
         public override string ToString()

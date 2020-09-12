@@ -48,7 +48,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
         }
 
         [Fact]
-        public void Bind_FieldIdNotProvided_UsesSiblingToSetId()
+        public void Bind_FieldIdNotProvided_GetsFieldIdFromContainer()
         {
             // Arrange
             var previousField = CreateFieldWithId(5);
@@ -56,17 +56,34 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
             var fieldContext = ParserInput
                 .FromString("i32 Id")
                 .ParseInput(parser => parser.field());
-            this.containerBinder.GetPreviousSibling(fieldContext).Returns(previousField);
+            this.containerBinder.GetAutomaticFieldId(fieldContext).Returns(-3);
 
             // Act
             var field = this.binder.Bind<FieldDefinition>(fieldContext);
 
             // Assert
-            Assert.Equal(6, field.FieldId);
+            Assert.Equal(-3, field.FieldId);
         }
 
         [Fact]
-        public void Bind_FieldIdNegative_SetsFieldId()
+        public void Bind_FieldIdNotProvided_IndicatesFieldIdIsImplicit()
+        {
+            // Arrange
+            var previousField = CreateFieldWithId(5);
+
+            var fieldContext = ParserInput
+                .FromString("i32 Id")
+                .ParseInput(parser => parser.field());
+
+            // Act
+            var field = this.binder.Bind<FieldDefinition>(fieldContext);
+
+            // Assert
+            Assert.True(field.IsFieldIdImplicit);
+        }
+
+        [Fact]
+        public void Bind_FieldIdNegative_SetsFieldIdNull()
         {
             // Arrange
             var fieldContext = ParserInput
@@ -77,7 +94,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
             var field = this.binder.Bind<FieldDefinition>(fieldContext);
 
             // Assert
-            Assert.Equal(-1, field.FieldId);
+            Assert.Null(field.FieldId);
         }
 
         [Fact]
@@ -117,7 +134,8 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
                 fieldId.ToString(),
                 FieldRequiredness.Default,
                 FieldType.Bool,
-                "IsEnabled");
+                "IsEnabled",
+                false);
         }
     }
 }

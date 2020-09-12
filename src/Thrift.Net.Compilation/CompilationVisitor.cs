@@ -223,12 +223,25 @@ namespace Thrift.Net.Compilation
                     field.Name);
             }
 
-            if (parentBinder.IsFieldIdAlreadyDefined(field.FieldId.Value, context))
+            if (!field.IsFieldIdImplicit)
             {
-                this.AddError(
-                    CompilerMessageId.StructFieldIdAlreadyDefined,
-                    context.fieldId,
-                    field.FieldId.ToString());
+                if (field.FieldId != null)
+                {
+                    if (parentBinder.IsFieldIdAlreadyDefined(field.FieldId.Value, context))
+                    {
+                        this.AddError(
+                            CompilerMessageId.StructFieldIdAlreadyDefined,
+                            context.fieldId,
+                            field.FieldId.ToString());
+                    }
+                }
+                else
+                {
+                    this.AddError(
+                        CompilerMessageId.StructFieldIdMustBeAPositiveInteger,
+                        context.fieldId,
+                        field.RawFieldId);
+                }
             }
 
             return base.VisitField(context);

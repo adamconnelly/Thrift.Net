@@ -29,11 +29,11 @@ namespace Thrift.Net.Tests.Compilation.Binding.StructBinder
                 .ParseInput(parser => parser.structDefinition());
 
             var idField = new FieldDefinition(
-                1, "1", FieldRequiredness.Default, FieldType.I32, "Id");
+                1, "1", FieldRequiredness.Default, FieldType.I32, "Id", false);
             this.fieldBinder.Bind<FieldDefinition>(structContext.field()[0])
                 .Returns(idField);
             var usernameField = new FieldDefinition(
-                2, "2", FieldRequiredness.Default, FieldType.I32, "Username");
+                2, "2", FieldRequiredness.Default, FieldType.I32, "Username", false);
             this.fieldBinder.Bind<FieldDefinition>(structContext.field()[1])
                 .Returns(usernameField);
 

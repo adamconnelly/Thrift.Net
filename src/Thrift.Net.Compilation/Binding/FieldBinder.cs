@@ -35,9 +35,15 @@ namespace Thrift.Net.Compilation.Binding
             var requiredness = this.GetFieldRequiredness(context);
             var typeBinder = this.binderProvider.GetBinder(context.fieldType());
             var type = typeBinder.Bind<FieldType>(context.fieldType());
+            bool isFieldIdImplicit = context.fieldId == null;
 
             return new FieldDefinition(
-                fieldId, context.fieldId?.Text, requiredness, type, context.name.Text);
+                fieldId,
+                context.fieldId?.Text,
+                requiredness,
+                type,
+                context.name.Text,
+                isFieldIdImplicit);
         }
 
         private FieldRequiredness GetFieldRequiredness(FieldContext context)
@@ -59,7 +65,8 @@ namespace Thrift.Net.Compilation.Binding
         {
             if (context.fieldId != null)
             {
-                if (int.TryParse(context.fieldId.Text, out var fieldId))
+                if (int.TryParse(context.fieldId.Text, out var fieldId) &&
+                    fieldId >= 0)
                 {
                     return fieldId;
                 }
@@ -67,13 +74,7 @@ namespace Thrift.Net.Compilation.Binding
                 return null;
             }
 
-            var previousField = this.containerBinder.GetPreviousSibling(context);
-            if (previousField != null)
-            {
-                return previousField.FieldId + 1;
-            }
-
-            return 0;
+            return this.containerBinder.GetAutomaticFieldId(context);
         }
     }
 }
