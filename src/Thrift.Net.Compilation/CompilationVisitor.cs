@@ -51,8 +51,8 @@ namespace Thrift.Net.Compilation
                 "xsd",
             };
 
-        private readonly Dictionary<string, EnumDefinition> enums = new Dictionary<string, EnumDefinition>();
-        private readonly List<StructDefinition> structs = new List<StructDefinition>();
+        private readonly Dictionary<string, Enum> enums = new Dictionary<string, Enum>();
+        private readonly List<Struct> structs = new List<Struct>();
         private readonly List<CompilationMessage> messages = new List<CompilationMessage>();
         private readonly ParseTreeProperty<EnumMember> enumMembers = new ParseTreeProperty<EnumMember>();
 
@@ -78,12 +78,12 @@ namespace Thrift.Net.Compilation
         /// <summary>
         /// Gets the enums defined in the document.
         /// </summary>
-        public IReadOnlyCollection<EnumDefinition> Enums => this.enums.Values;
+        public IReadOnlyCollection<Enum> Enums => this.enums.Values;
 
         /// <summary>
         /// Gets the structs defined in the document.
         /// </summary>
-        public IReadOnlyCollection<StructDefinition> Structs => this.structs;
+        public IReadOnlyCollection<Struct> Structs => this.structs;
 
         /// <summary>
         /// Gets any messages reported during analysis.
@@ -142,7 +142,7 @@ namespace Thrift.Net.Compilation
 
             var name = this.GetEnumName(context);
             var members = this.GetEnumMembers(context);
-            var enumDefinition = new EnumDefinition(name, members.ToList());
+            var enumDefinition = new Enum(name, members.ToList());
 
             if (name != null && !this.enums.TryAdd(name, enumDefinition))
             {
@@ -195,7 +195,7 @@ namespace Thrift.Net.Compilation
             var result = base.VisitStructDefinition(context);
 
             var binder = this.binderProvider.GetBinder(context);
-            var structDefinition = binder.Bind<StructDefinition>(context);
+            var structDefinition = binder.Bind<Struct>(context);
 
             if (structDefinition.Name == null)
             {
@@ -213,7 +213,7 @@ namespace Thrift.Net.Compilation
         public override int? VisitField([NotNull] ThriftParser.FieldContext context)
         {
             var fieldBinder = this.binderProvider.GetBinder(context);
-            var field = fieldBinder.Bind<FieldDefinition>(context);
+            var field = fieldBinder.Bind<Field>(context);
             var parentBinder = this.binderProvider.GetBinder(context.Parent) as IFieldContainerBinder;
             if (parentBinder.IsFieldNameAlreadyDefined(field.Name, context))
             {

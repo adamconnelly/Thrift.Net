@@ -15,7 +15,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.StructBinder
                 .ParseInput(parser => parser.structDefinition());
 
             // Act
-            var structDefinition = this.Binder.Bind<StructDefinition>(structContext);
+            var structDefinition = this.Binder.Bind<Struct>(structContext);
 
             // Assert
             Assert.Equal("User", structDefinition.Name);
@@ -30,7 +30,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.StructBinder
                 .ParseInput(parser => parser.structDefinition());
 
             // Act
-            var structDefinition = this.Binder.Bind<StructDefinition>(structContext);
+            var structDefinition = this.Binder.Bind<Struct>(structContext);
 
             // Assert
             Assert.Null(structDefinition.Name);

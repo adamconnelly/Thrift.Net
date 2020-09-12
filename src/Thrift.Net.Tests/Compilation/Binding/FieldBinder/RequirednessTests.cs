@@ -29,7 +29,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
                 .ParseInput(parser => parser.field());
 
             // Act
-            var field = this.binder.Bind<FieldDefinition>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext);
 
             // Assert
             Assert.Equal(FieldRequiredness.Optional, field.Requiredness);
@@ -44,7 +44,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
                 .ParseInput(parser => parser.field());
 
             // Act
-            var field = this.binder.Bind<FieldDefinition>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext);
 
             // Assert
             Assert.Equal(FieldRequiredness.Required, field.Requiredness);
@@ -59,7 +59,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
                 .ParseInput(parser => parser.field());
 
             // Act
-            var field = this.binder.Bind<FieldDefinition>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext);
 
             // Assert
             Assert.Equal(FieldRequiredness.Optional, field.Requiredness);

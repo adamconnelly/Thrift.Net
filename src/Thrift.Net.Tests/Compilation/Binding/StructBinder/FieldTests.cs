@@ -28,17 +28,17 @@ namespace Thrift.Net.Tests.Compilation.Binding.StructBinder
                 .FromString(input)
                 .ParseInput(parser => parser.structDefinition());
 
-            var idField = new FieldDefinition(
+            var idField = new Field(
                 1, "1", FieldRequiredness.Default, FieldType.I32, "Id", false);
-            this.fieldBinder.Bind<FieldDefinition>(structContext.field()[0])
+            this.fieldBinder.Bind<Field>(structContext.field()[0])
                 .Returns(idField);
-            var usernameField = new FieldDefinition(
+            var usernameField = new Field(
                 2, "2", FieldRequiredness.Default, FieldType.I32, "Username", false);
-            this.fieldBinder.Bind<FieldDefinition>(structContext.field()[1])
+            this.fieldBinder.Bind<Field>(structContext.field()[1])
                 .Returns(usernameField);
 
             // Act
-            var structDefinition = this.Binder.Bind<StructDefinition>(structContext);
+            var structDefinition = this.Binder.Bind<Struct>(structContext);
 
             // Assert
             Assert.Collection(

@@ -6,9 +6,9 @@ namespace Thrift.Net.Compilation.Binding
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
-    /// Used to bind a <see cref="StructDefinition" /> from the parse tree.
+    /// Used to bind a <see cref="Struct" /> from the parse tree.
     /// </summary>
-    public class StructBinder : Binder<StructDefinitionContext, StructDefinition>, IBinder, IFieldContainerBinder
+    public class StructBinder : Binder<StructDefinitionContext, Struct>, IBinder, IFieldContainerBinder
     {
         private readonly IBinderProvider binderProvider;
 
@@ -37,7 +37,7 @@ namespace Thrift.Net.Compilation.Binding
                 .Select(node => new
                     {
                         Node = node,
-                        Symbol = this.binderProvider.GetBinder(node).Bind<FieldDefinition>(node),
+                        Symbol = this.binderProvider.GetBinder(node).Bind<Field>(node),
                     })
                 .Where(item => item.Symbol.Name == name)
                 .FirstOrDefault().Node != node;
@@ -52,7 +52,7 @@ namespace Thrift.Net.Compilation.Binding
                 .Select(node => new
                     {
                         Node = node,
-                        Symbol = this.binderProvider.GetBinder(node).Bind<FieldDefinition>(node),
+                        Symbol = this.binderProvider.GetBinder(node).Bind<Field>(node),
                     })
                 .Where(item => item.Symbol.FieldId == fieldId)
                 .FirstOrDefault().Node != node;
@@ -76,22 +76,22 @@ namespace Thrift.Net.Compilation.Binding
         }
 
         /// <summary>
-        /// Creates a <see cref="StructDefinition" /> based on the parse tree node.
+        /// Creates a <see cref="Struct" /> based on the parse tree node.
         /// </summary>
         /// <param name="context">The node to bind.</param>
         /// <returns>The struct definition.</returns>
-        protected override StructDefinition Bind(StructDefinitionContext context)
+        protected override Struct Bind(StructDefinitionContext context)
         {
             var fields = context.field().Select(this.GetField);
 
-            return new StructDefinition(context.name?.Text, fields.ToList());
+            return new Struct(context.name?.Text, fields.ToList());
         }
 
-        private FieldDefinition GetField(FieldContext context)
+        private Field GetField(FieldContext context)
         {
             var binder = this.binderProvider.GetBinder(context);
 
-            return binder.Bind<FieldDefinition>(context);
+            return binder.Bind<Field>(context);
         }
     }
 }

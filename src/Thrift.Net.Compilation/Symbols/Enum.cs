@@ -5,14 +5,14 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Describes an enum.
     /// </summary>
-    public class EnumDefinition
+    public class Enum
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="EnumDefinition" /> class.
+        /// Initializes a new instance of the <see cref="Enum" /> class.
         /// </summary>
         /// <param name="name">The name of the enum.</param>
         /// <param name="members">The enum members.</param>
-        public EnumDefinition(string name, IReadOnlyCollection<EnumMember> members)
+        public Enum(string name, IReadOnlyCollection<EnumMember> members)
         {
             this.Name = name;
             this.Members = members;

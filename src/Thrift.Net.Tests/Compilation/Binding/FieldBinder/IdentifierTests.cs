@@ -26,7 +26,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
                 .ParseInput(parser => parser.field());
 
             // Act
-            var field = this.binder.Bind<FieldDefinition>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext);
 
             // Assert
             Assert.Equal("Name", field.Name);

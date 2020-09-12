@@ -112,13 +112,13 @@ namespace Thrift.Net.Tests.Compilation.Binding.StructBinder
 
         private void SetupFieldWithId(IParseTree node, int fieldId)
         {
-            this.fieldBinder.Bind<FieldDefinition>(node)
+            this.fieldBinder.Bind<Field>(node)
                 .Returns(this.CreateFieldWithId(fieldId));
         }
 
-        private FieldDefinition CreateFieldWithId(int fieldId)
+        private Field CreateFieldWithId(int fieldId)
         {
-            return new FieldDefinition(fieldId, "0", FieldRequiredness.Default, FieldType.Binary, fieldId.ToString(), false);
+            return new Field(fieldId, "0", FieldRequiredness.Default, FieldType.Binary, fieldId.ToString(), false);
         }
     }
 }

@@ -32,7 +32,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
                 .Returns(FieldType.Bool);
 
             // Act
-            var field = this.binder.Bind<FieldDefinition>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext);
 
             // Assert
             Assert.Same(FieldType.Bool, field.Type);

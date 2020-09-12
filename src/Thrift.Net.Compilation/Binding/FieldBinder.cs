@@ -6,7 +6,7 @@ namespace Thrift.Net.Compilation.Binding
     /// <summary>
     /// Used to bind fields based on a parse tree.
     /// </summary>
-    public class FieldBinder : Binder<FieldContext, FieldDefinition>, IBinder
+    public class FieldBinder : Binder<FieldContext, Field>, IBinder
     {
         private readonly IFieldContainerBinder containerBinder;
         private readonly IBinderProvider binderProvider;
@@ -29,7 +29,7 @@ namespace Thrift.Net.Compilation.Binding
         /// </summary>
         /// <param name="context">The parsed field.</param>
         /// <returns>The field definition.</returns>
-        protected override FieldDefinition Bind(FieldContext context)
+        protected override Field Bind(FieldContext context)
         {
             var fieldId = this.GetFieldId(context);
             var requiredness = this.GetFieldRequiredness(context);
@@ -37,7 +37,7 @@ namespace Thrift.Net.Compilation.Binding
             var type = typeBinder.Bind<FieldType>(context.fieldType());
             bool isFieldIdImplicit = context.fieldId == null;
 
-            return new FieldDefinition(
+            return new Field(
                 fieldId,
                 context.fieldId?.Text,
                 requiredness,

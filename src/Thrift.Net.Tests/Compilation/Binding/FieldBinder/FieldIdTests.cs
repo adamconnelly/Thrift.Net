@@ -26,7 +26,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
                 .ParseInput(parser => parser.field());
 
             // Act
-            var field = this.binder.Bind<FieldDefinition>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext);
 
             // Assert
             Assert.Equal(1, field.FieldId);
@@ -41,7 +41,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
                 .ParseInput(parser => parser.field());
 
             // Act
-            var field = this.binder.Bind<FieldDefinition>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext);
 
             // Assert
             Assert.Equal(0, field.FieldId);
@@ -59,7 +59,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
             this.containerBinder.GetAutomaticFieldId(fieldContext).Returns(-3);
 
             // Act
-            var field = this.binder.Bind<FieldDefinition>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext);
 
             // Assert
             Assert.Equal(-3, field.FieldId);
@@ -76,7 +76,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
                 .ParseInput(parser => parser.field());
 
             // Act
-            var field = this.binder.Bind<FieldDefinition>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext);
 
             // Assert
             Assert.True(field.IsFieldIdImplicit);
@@ -91,7 +91,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
                 .ParseInput(parser => parser.field());
 
             // Act
-            var field = this.binder.Bind<FieldDefinition>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext);
 
             // Assert
             Assert.Null(field.FieldId);
@@ -106,7 +106,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
                 .ParseInput(parser => parser.field());
 
             // Act
-            var field = this.binder.Bind<FieldDefinition>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext);
 
             // Assert
             Assert.Equal("4", field.RawFieldId);
@@ -121,15 +121,15 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
                 .ParseInput(parser => parser.field());
 
             // Act
-            var field = this.binder.Bind<FieldDefinition>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext);
 
             // Assert
             Assert.Null(field.FieldId);
         }
 
-        private static FieldDefinition CreateFieldWithId(int fieldId)
+        private static Field CreateFieldWithId(int fieldId)
         {
-            return new FieldDefinition(
+            return new Field(
                 fieldId,
                 fieldId.ToString(),
                 FieldRequiredness.Default,

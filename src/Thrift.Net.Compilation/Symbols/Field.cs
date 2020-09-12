@@ -3,10 +3,10 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a field in a struct, union or exception.
     /// </summary>
-    public class FieldDefinition : ISymbol
+    public class Field : ISymbol
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FieldDefinition" /> class.
+        /// Initializes a new instance of the <see cref="Field" /> class.
         /// </summary>
         /// <param name="fieldId">The field's Id.</param>
         /// <param name="rawFieldId">The raw text representing the field Id.</param>
@@ -17,7 +17,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// Indicates whether the field Id was generated automatically by the
         /// compiler rather than being explicitly defined in the IDL.
         /// </param>
-        public FieldDefinition(
+        public Field(
             int? fieldId,
             string rawFieldId,
             FieldRequiredness requiredness,

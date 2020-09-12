@@ -5,14 +5,14 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a Thrift struct.
     /// </summary>
-    public class StructDefinition : ISymbol
+    public class Struct : ISymbol
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="StructDefinition" /> class.
+        /// Initializes a new instance of the <see cref="Struct" /> class.
         /// </summary>
         /// <param name="name">The name of the struct.</param>
         /// <param name="fields">The struct's fields.</param>
-        public StructDefinition(string name, IReadOnlyCollection<FieldDefinition> fields)
+        public Struct(string name, IReadOnlyCollection<Field> fields)
         {
             this.Name = name;
             this.Fields = fields;
@@ -26,7 +26,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// <summary>
         /// Gets the fields of the struct.
         /// </summary>
-        public IReadOnlyCollection<FieldDefinition> Fields { get; }
+        public IReadOnlyCollection<Field> Fields { get; }
 
         /// <inheritdoc />
         public override string ToString()

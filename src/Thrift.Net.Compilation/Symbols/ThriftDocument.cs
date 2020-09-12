@@ -15,8 +15,8 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="structs">Any structs found in the document.</param>
         public ThriftDocument(
             string @namespace,
-            IReadOnlyCollection<EnumDefinition> enums,
-            IReadOnlyCollection<StructDefinition> structs)
+            IReadOnlyCollection<Enum> enums,
+            IReadOnlyCollection<Struct> structs)
         {
             this.Namespace = @namespace;
             this.Enums = enums;
@@ -31,11 +31,11 @@ namespace Thrift.Net.Compilation.Symbols
         /// <summary>
         /// Gets any enums that have been defined.
         /// </summary>
-        public IReadOnlyCollection<EnumDefinition> Enums { get; }
+        public IReadOnlyCollection<Enum> Enums { get; }
 
         /// <summary>
         /// Gets any structs that have been defined.
         /// </summary>
-        public IReadOnlyCollection<StructDefinition> Structs { get; }
+        public IReadOnlyCollection<Struct> Structs { get; }
     }
 }
