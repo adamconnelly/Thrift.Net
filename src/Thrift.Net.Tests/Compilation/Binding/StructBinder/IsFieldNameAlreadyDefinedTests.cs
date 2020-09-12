@@ -3,7 +3,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.StructBinder
     using Antlr4.Runtime.Tree;
     using NSubstitute;
     using Thrift.Net.Compilation.Binding;
-    using Thrift.Net.Compilation.Model;
+    using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Tests.Utility;
     using Xunit;
 

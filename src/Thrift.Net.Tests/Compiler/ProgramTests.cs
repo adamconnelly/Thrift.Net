@@ -6,8 +6,8 @@ namespace Thrift.Net.Tests.Compiler
     using System.IO;
     using NSubstitute;
     using Thrift.Net.Compilation;
-    using Thrift.Net.Compilation.Model;
     using Thrift.Net.Compilation.Resources;
+    using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Compiler;
     using Thrift.Net.Tests.Utility;
     using Xunit;

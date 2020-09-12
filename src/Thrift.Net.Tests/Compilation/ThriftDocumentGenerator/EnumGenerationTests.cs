@@ -3,7 +3,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
     using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using Thrift.Net.Compilation.Model;
+    using Thrift.Net.Compilation.Symbols;
     using Xunit;
     using ThriftDocumentGenerator = Thrift.Net.Compilation.ThriftDocumentGenerator;
 

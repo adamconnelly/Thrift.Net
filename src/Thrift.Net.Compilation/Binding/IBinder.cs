@@ -2,7 +2,7 @@ namespace Thrift.Net.Compilation.Binding
 {
     using System;
     using Antlr4.Runtime.Tree;
-    using Thrift.Net.Compilation.Model;
+    using Thrift.Net.Compilation.Symbols;
 
     /// <summary>
     /// An object that can bind a node in the parse tree to its semantic

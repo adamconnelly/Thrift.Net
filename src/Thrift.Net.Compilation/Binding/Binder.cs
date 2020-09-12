@@ -3,7 +3,7 @@ namespace Thrift.Net.Compilation.Binding
     using System;
     using Antlr4.Runtime;
     using Antlr4.Runtime.Tree;
-    using Thrift.Net.Compilation.Model;
+    using Thrift.Net.Compilation.Symbols;
 
     /// <summary>
     /// A base class for binders.

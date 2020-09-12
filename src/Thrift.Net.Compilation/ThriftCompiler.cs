@@ -27,7 +27,7 @@ namespace Thrift.Net.Compilation
             visitor.Visit(document);
 
             return new CompilationResult(
-                new Model.ThriftDocument(
+                new Symbols.ThriftDocument(
                     visitor.Namespace,
                     visitor.Enums,
                     visitor.Structs),

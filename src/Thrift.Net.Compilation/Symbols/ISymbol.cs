@@ -1,4 +1,4 @@
-namespace Thrift.Net.Compilation.Model
+namespace Thrift.Net.Compilation.Symbols
 {
     /// <summary>
     /// Represents a symbol in the semantic model.

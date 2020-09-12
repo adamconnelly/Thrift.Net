@@ -7,7 +7,7 @@ namespace Thrift.Net.Compilation
     using Antlr4.Runtime.Tree;
     using Thrift.Net.Antlr;
     using Thrift.Net.Compilation.Binding;
-    using Thrift.Net.Compilation.Model;
+    using Thrift.Net.Compilation.Symbols;
 
     /// <summary>
     /// A visitor used to perform the main compilation.

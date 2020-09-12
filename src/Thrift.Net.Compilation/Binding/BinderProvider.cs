@@ -4,7 +4,7 @@ namespace Thrift.Net.Compilation.Binding
     using Antlr4.Runtime.Misc;
     using Antlr4.Runtime.Tree;
     using Thrift.Net.Antlr;
-    using Thrift.Net.Compilation.Model;
+    using Thrift.Net.Compilation.Symbols;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>

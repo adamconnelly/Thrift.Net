@@ -2,7 +2,7 @@ namespace Thrift.Net.Compilation
 {
     using System.IO;
     using Antlr4.StringTemplate;
-    using Thrift.Net.Compilation.Model;
+    using Thrift.Net.Compilation.Symbols;
 
     /// <summary>
     /// Used to generate C# from Thrift document models.

@@ -1,6 +1,6 @@
 namespace Thrift.Net.Tests.Compilation.Binding.StructBinder
 {
-    using Thrift.Net.Compilation.Model;
+    using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Tests.Utility;
     using Xunit;
 

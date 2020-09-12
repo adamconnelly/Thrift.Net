@@ -1,4 +1,4 @@
-namespace Thrift.Net.Compilation.Model
+namespace Thrift.Net.Compilation.Symbols
 {
     /// <summary>
     /// Represents an individual member of an enum.

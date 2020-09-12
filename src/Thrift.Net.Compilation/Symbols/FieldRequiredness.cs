@@ -1,4 +1,4 @@
-namespace Thrift.Net.Compilation.Model
+namespace Thrift.Net.Compilation.Symbols
 {
     /// <summary>
     /// Defines whether or not a field is required.

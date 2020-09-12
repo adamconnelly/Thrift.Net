@@ -4,7 +4,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
     using System.Linq;
     using NSubstitute;
     using Thrift.Net.Compilation.Binding;
-    using Thrift.Net.Compilation.Model;
+    using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Tests.Utility;
     using Xunit;
 

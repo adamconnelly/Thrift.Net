@@ -2,7 +2,7 @@ namespace Thrift.Net.Compilation
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Thrift.Net.Compilation.Model;
+    using Thrift.Net.Compilation.Symbols;
 
     /// <summary>
     /// The result of compiling a Thrift document.

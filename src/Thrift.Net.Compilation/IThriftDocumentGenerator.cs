@@ -1,6 +1,6 @@
 namespace Thrift.Net.Compilation
 {
-    using Thrift.Net.Compilation.Model;
+    using Thrift.Net.Compilation.Symbols;
 
     /// <summary>
     /// Used to generate C# code from Thrift documents.

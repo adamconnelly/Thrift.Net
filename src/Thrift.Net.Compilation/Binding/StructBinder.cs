@@ -2,7 +2,7 @@ namespace Thrift.Net.Compilation.Binding
 {
     using System;
     using System.Linq;
-    using Thrift.Net.Compilation.Model;
+    using Thrift.Net.Compilation.Symbols;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
