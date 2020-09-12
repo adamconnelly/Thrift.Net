@@ -11,7 +11,7 @@ namespace Thrift.Net.Compilation.Binding
     /// <typeparam name="TNode">The type of node this binder can bind.</typeparam>
     /// <typeparam name="TResult">The type of symbol produced by the binder.</typeparam>
     public abstract class Binder<TNode, TResult> : IBinder
-        where TNode : ParserRuleContext
+        where TNode : class, IParseTree
         where TResult : ISymbol
     {
         private readonly IBinder parent;
