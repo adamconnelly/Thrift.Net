@@ -8,6 +8,7 @@ namespace Thrift.Net.Compilation
     using Thrift.Net.Antlr;
     using Thrift.Net.Compilation.Binding;
     using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Symbols.Builders;
 
     /// <summary>
     /// A visitor used to perform the main compilation.
@@ -140,11 +141,12 @@ namespace Thrift.Net.Compilation
 
             this.currentEnumValue.RemoveFrom(context);
 
-            var name = this.GetEnumName(context);
-            var members = this.GetEnumMembers(context);
-            var enumDefinition = new Enum(name, members.ToList());
+            var enumBuilder = new EnumBuilder();
+            enumBuilder.SetName(this.GetEnumName(context));
+            this.GetEnumMembers(context, enumBuilder);
+            var enumDefinition = enumBuilder.Build();
 
-            if (name != null && !this.enums.TryAdd(name, enumDefinition))
+            if (enumDefinition.Name != null && !this.enums.TryAdd(enumDefinition.Name, enumDefinition))
             {
                 this.AddError(
                     CompilerMessageId.EnumDuplicated,
@@ -152,7 +154,7 @@ namespace Thrift.Net.Compilation
                     context.name.Text);
             }
 
-            if (!members.Any())
+            if (!enumDefinition.Members.Any())
             {
                 var warningTarget = context.name ?? context.ENUM().Symbol;
 
@@ -247,24 +249,29 @@ namespace Thrift.Net.Compilation
             return base.VisitField(context);
         }
 
-        private IReadOnlyCollection<EnumMember> GetEnumMembers(
-            ThriftParser.EnumDefinitionContext context)
+        private void GetEnumMembers(
+            ThriftParser.EnumDefinitionContext context, EnumBuilder enumBuilder)
         {
-            var members = new Dictionary<string, EnumMember>();
+            var members = new HashSet<string>();
 
             foreach (var memberNode in context.enumMember())
             {
                 var member = this.enumMembers.Get(memberNode);
-                if (member.Name != null && !members.TryAdd(member.Name, member))
+                if (member.Name != null)
                 {
-                    this.AddError(
-                        CompilerMessageId.EnumMemberDuplicated,
-                        memberNode.IDENTIFIER().Symbol,
-                        member.Name);
+                    if (members.Add(member.Name))
+                    {
+                        enumBuilder.AddMember(member);
+                    }
+                    else
+                    {
+                        this.AddError(
+                            CompilerMessageId.EnumMemberDuplicated,
+                            memberNode.IDENTIFIER().Symbol,
+                            member.Name);
+                    }
                 }
             }
-
-            return members.Values;
         }
 
         private void SetNamespace(ThriftParser.NamespaceStatementContext context)

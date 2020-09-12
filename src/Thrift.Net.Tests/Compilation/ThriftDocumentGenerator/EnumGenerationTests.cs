@@ -4,6 +4,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
     using System.Linq;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Symbols.Builders;
     using Xunit;
     using ThriftDocumentGenerator = Thrift.Net.Compilation.ThriftDocumentGenerator;
 
@@ -76,11 +77,11 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
                 "Thrift.Net.Tests",
                 new List<Enum>
                 {
-                    new Enum("UserType", new List<EnumMember>
-                    {
-                        new EnumMember("User", 2),
-                        new EnumMember("Administrator", 5),
-                    }),
+                    new EnumBuilder()
+                        .SetName("UserType")
+                        .AddMember(new EnumMember("User", 2))
+                        .AddMember(new EnumMember("Administrator", 5))
+                        .Build(),
                 },
                 new List<Struct>());
         }
