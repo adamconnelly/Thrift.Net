@@ -44,6 +44,21 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         }
 
         /// <summary>
+        /// Adds a new member to the builder, using the specified action to
+        /// configure the member.
+        /// </summary>
+        /// <param name="configureMember">Used to configure the enum member.</param>
+        /// <returns>The builder.</returns>
+        public EnumBuilder AddMember(System.Action<EnumMemberBuilder> configureMember)
+        {
+            var builder = new EnumMemberBuilder();
+            configureMember(builder);
+            this.AddMember(builder.Build());
+
+            return this;
+        }
+
+        /// <summary>
         /// Builds the enum.
         /// </summary>
         /// <returns>The enum.</returns>

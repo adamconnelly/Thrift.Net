@@ -171,10 +171,10 @@ namespace Thrift.Net.Compilation
         {
             var result = base.VisitEnumMember(context);
 
-            var name = this.GetEnumMemberName(context);
-            var value = this.GetEnumValue(context);
-
-            var enumMember = new EnumMember(name, value);
+            var enumMember = new EnumMemberBuilder()
+                .SetName(this.GetEnumMemberName(context))
+                .SetValue(this.GetEnumValue(context))
+                .Build();
 
             this.enumMembers.Put(context, enumMember);
 

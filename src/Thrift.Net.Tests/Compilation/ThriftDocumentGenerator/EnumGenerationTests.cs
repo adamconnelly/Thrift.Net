@@ -79,8 +79,8 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
                 {
                     new EnumBuilder()
                         .SetName("UserType")
-                        .AddMember(new EnumMember("User", 2))
-                        .AddMember(new EnumMember("Administrator", 5))
+                        .AddMember(builder => builder.SetName("User").SetValue(2))
+                        .AddMember(builder => builder.SetName("Administrator").SetValue(5))
                         .Build(),
                 },
                 new List<Struct>());
