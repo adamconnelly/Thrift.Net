@@ -19,21 +19,19 @@ namespace Thrift.Net.Compilation
             var assembly = typeof(ThriftDocumentGenerator).Assembly;
             var rawTemplate = assembly.GetManifestResourceStream(
                 $"{assembly.GetName().Name}.Templates.csharp.stg");
-            using (var reader = new StreamReader(rawTemplate))
-            {
-                var templateGroup = new TemplateGroupString(
-                    "csharp.stg",
-                    reader.ReadToEnd(),
-                    '$',
-                    '$');
-                var template = templateGroup.GetInstanceOf("document");
+            using var reader = new StreamReader(rawTemplate);
+            var templateGroup = new TemplateGroupString(
+                "csharp.stg",
+                reader.ReadToEnd(),
+                '$',
+                '$');
+            var template = templateGroup.GetInstanceOf("document");
 
-                // TODO: Get the semantic version
-                template.Add("version", assembly.GetName().Version.ToString());
-                template.Add("model", document);
+            // TODO: Get the semantic version
+            template.Add("version", assembly.GetName().Version.ToString());
+            template.Add("model", document);
 
-                return template.Render();
-            }
+            return template.Render();
         }
     }
 }
