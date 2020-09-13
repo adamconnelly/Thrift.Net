@@ -56,10 +56,6 @@ namespace Thrift.Net.Compilation
         private readonly List<Struct> structs = new List<Struct>();
         private readonly List<CompilationMessage> messages = new List<CompilationMessage>();
         private readonly ParseTreeProperty<EnumMember> enumMembers = new ParseTreeProperty<EnumMember>();
-
-        // Used to store the current value of an enum so we can automatically generate
-        // values if they aren't defined explicitly.
-        private readonly ParseTreeProperty<int> currentEnumValue = new ParseTreeProperty<int>();
         private readonly IBinderProvider binderProvider;
 
         /// <summary>
@@ -135,11 +131,7 @@ namespace Thrift.Net.Compilation
         /// <inheritdoc />
         public override int? VisitEnumDefinition(ThriftParser.EnumDefinitionContext context)
         {
-            this.currentEnumValue.Put(context, 0);
-
             var result = base.VisitEnumDefinition(context);
-
-            this.currentEnumValue.RemoveFrom(context);
 
             var enumBuilder = new EnumBuilder();
             enumBuilder.SetName(this.GetEnumName(context));
@@ -171,22 +163,12 @@ namespace Thrift.Net.Compilation
         {
             var result = base.VisitEnumMember(context);
 
-            var enumMember = new EnumMemberBuilder()
-                .SetName(this.GetEnumMemberName(context))
-                .SetValue(this.GetEnumValue(context))
-                .Build();
+            var memberBinder = this.binderProvider.GetBinder(context);
+            var enumMember = memberBinder.Bind<EnumMember>(context);
 
             this.enumMembers.Put(context, enumMember);
 
-            if (context.enumValue != null && context.EQUALS_OPERATOR() == null)
-            {
-                // An enum value has been specified without the = operator.
-                // For example `enum UserType { User 10 }`
-                this.AddError(
-                    CompilerMessageId.EnumMemberEqualsOperatorMissing,
-                    context.IDENTIFIER().Symbol,
-                    context.enumValue);
-            }
+            this.AddEnumMemberMessages(context, enumMember);
 
             return result;
         }
@@ -307,64 +289,52 @@ namespace Thrift.Net.Compilation
             return null;
         }
 
-        private string GetEnumMemberName(ThriftParser.EnumMemberContext context)
+        private void AddEnumMemberMessages(ThriftParser.EnumMemberContext context, EnumMember enumMember)
         {
-            if (context.IDENTIFIER() != null)
+            if (enumMember.Name == null)
             {
-                return context.IDENTIFIER().Symbol.Text;
+                // The enum member name is missing: `= 1`
+                this.AddError(
+                    CompilerMessageId.EnumMemberMustHaveAName,
+                    context.EQUALS_OPERATOR().Symbol,
+                    context.enumValue);
             }
 
-            // The enum member name is missing: `= 1`
-            this.AddError(
-                CompilerMessageId.EnumMemberMustHaveAName,
-                context.EQUALS_OPERATOR().Symbol,
-                context.enumValue);
-
-            return null;
-        }
-
-        private int GetEnumValue(ThriftParser.EnumMemberContext context)
-        {
-            // According to the Thrift IDL specification, if an enum value is
-            // not supplied, it should either be:
-            //   - 0 for the first element in an enum.
-            //   - P+1 - where `P` is the value of the previous element.
-            var currentValue = this.currentEnumValue.Get(context.Parent);
-            if (context.enumValue != null)
+            switch (enumMember.InvalidValueReason)
             {
-                if (int.TryParse(context.enumValue.Text, out var value))
-                {
-                    currentValue = value;
+                case InvalidEnumValueReason.Negative:
+                    // A negative enum value has been specified: `User = -1`.
+                    this.AddError(
+                        CompilerMessageId.EnumValueMustNotBeNegative,
+                        context.enumValue);
+                    break;
 
-                    if (value < 0)
-                    {
-                        // A negative enum value has been specified: `User = -1`.
-                        this.AddError(
-                            CompilerMessageId.EnumValueMustNotBeNegative,
-                            context.enumValue);
-                    }
-                }
-                else
-                {
+                case InvalidEnumValueReason.NotAnInteger:
                     // A non-integer enum value has been specified: `User = "test"`.
                     this.AddError(
                         CompilerMessageId.EnumValueMustBeAnInteger,
                         context.enumValue);
-                }
+                    break;
+
+                case InvalidEnumValueReason.Missing:
+                    // An enum member has been defined with an equals sign, but a
+                    // missing value: `User = `.
+                    this.AddError(
+                        CompilerMessageId.EnumValueMustBeSpecified,
+                        context.IDENTIFIER().Symbol,
+                        context.EQUALS_OPERATOR().Symbol);
+                    break;
             }
-            else if (context.EQUALS_OPERATOR() != null)
+
+            if (context.enumValue != null && context.EQUALS_OPERATOR() == null)
             {
-                // An enum member has been defined with an equals sign, but a
-                // missing value: `User = `.
+                // An enum value has been specified without the = operator.
+                // For example `enum UserType { User 10 }`
                 this.AddError(
-                    CompilerMessageId.EnumValueMustBeSpecified,
+                    CompilerMessageId.EnumMemberEqualsOperatorMissing,
                     context.IDENTIFIER().Symbol,
-                    context.EQUALS_OPERATOR().Symbol);
+                    context.enumValue);
             }
-
-            this.currentEnumValue.Put(context.Parent, currentValue + 1);
-
-            return currentValue;
         }
 
         private void AddError(CompilerMessageId messageId, IToken token, params string[] messageParameters)

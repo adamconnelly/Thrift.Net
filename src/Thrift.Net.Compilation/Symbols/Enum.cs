@@ -5,7 +5,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Describes an enum.
     /// </summary>
-    public class Enum
+    public class Enum : ISymbol
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Enum" /> class.

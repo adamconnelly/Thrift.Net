@@ -89,6 +89,28 @@ namespace Thrift.Net.Compilation.Binding
 
                 return structBinder;
             }
+
+            public override IBinder VisitEnumDefinition([NotNull] EnumDefinitionContext context)
+            {
+                // TODO: Pass in document binder
+                var enumBinder = new EnumBinder(null, this.binderProvider);
+                this.binderMap.Put(context, enumBinder);
+
+                base.VisitEnumDefinition(context);
+
+                return enumBinder;
+            }
+
+            public override IBinder VisitEnumMember([NotNull] EnumMemberContext context)
+            {
+                var parentBinder = this.binderMap.Get(context.Parent) as IEnumBinder;
+                var memberBinder = new EnumMemberBinder(parentBinder);
+                this.binderMap.Put(context, memberBinder);
+
+                base.VisitEnumMember(context);
+
+                return memberBinder;
+            }
         }
     }
 }
