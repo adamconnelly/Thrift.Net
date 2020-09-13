@@ -23,6 +23,7 @@ namespace Thrift.Net.Compilation.Binding
         protected override EnumMember Bind(EnumMemberContext node)
         {
             var builder = new EnumMemberBuilder()
+                .SetNode(node)
                 .SetName(node.IDENTIFIER()?.Symbol.Text)
                 .SetRawValue(node.enumValue?.Text);
 

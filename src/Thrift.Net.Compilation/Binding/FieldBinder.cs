@@ -28,31 +28,32 @@ namespace Thrift.Net.Compilation.Binding
         /// <summary>
         /// Binds the specified field.
         /// </summary>
-        /// <param name="context">The parsed field.</param>
+        /// <param name="node">The parsed field.</param>
         /// <returns>The field definition.</returns>
-        protected override Field Bind(FieldContext context)
+        protected override Field Bind(FieldContext node)
         {
-            var typeBinder = this.binderProvider.GetBinder(context.fieldType());
+            var typeBinder = this.binderProvider.GetBinder(node.fieldType());
 
             var builder = new FieldBuilder()
-                .SetFieldId(this.GetFieldId(context))
-                .SetIsFieldIdImplicit(context.fieldId == null)
-                .SetRawFieldId(context.fieldId?.Text)
-                .SetRequiredness(this.GetFieldRequiredness(context))
-                .SetType(typeBinder.Bind<FieldType>(context.fieldType()))
-                .SetName(context.name.Text);
+                .SetNode(node)
+                .SetFieldId(this.GetFieldId(node))
+                .SetIsFieldIdImplicit(node.fieldId == null)
+                .SetRawFieldId(node.fieldId?.Text)
+                .SetRequiredness(this.GetFieldRequiredness(node))
+                .SetType(typeBinder.Bind<FieldType>(node.fieldType()))
+                .SetName(node.name.Text);
 
             return builder.Build();
         }
 
-        private FieldRequiredness GetFieldRequiredness(FieldContext context)
+        private FieldRequiredness GetFieldRequiredness(FieldContext node)
         {
-            if (context.fieldRequiredness()?.REQUIRED() != null)
+            if (node.fieldRequiredness()?.REQUIRED() != null)
             {
                 return FieldRequiredness.Required;
             }
 
-            if (context.fieldRequiredness()?.OPTIONAL() != null)
+            if (node.fieldRequiredness()?.OPTIONAL() != null)
             {
                 return FieldRequiredness.Optional;
             }
@@ -60,11 +61,11 @@ namespace Thrift.Net.Compilation.Binding
             return this.containerBinder.DefaultFieldRequiredness;
         }
 
-        private int? GetFieldId(FieldContext context)
+        private int? GetFieldId(FieldContext node)
         {
-            if (context.fieldId != null)
+            if (node.fieldId != null)
             {
-                if (int.TryParse(context.fieldId.Text, out var fieldId) &&
+                if (int.TryParse(node.fieldId.Text, out var fieldId) &&
                     fieldId >= 0)
                 {
                     return fieldId;
@@ -73,7 +74,7 @@ namespace Thrift.Net.Compilation.Binding
                 return null;
             }
 
-            return this.containerBinder.GetAutomaticFieldId(context);
+            return this.containerBinder.GetAutomaticFieldId(node);
         }
     }
 }

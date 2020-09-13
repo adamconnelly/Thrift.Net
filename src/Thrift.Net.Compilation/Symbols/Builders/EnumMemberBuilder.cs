@@ -1,10 +1,17 @@
 namespace Thrift.Net.Compilation.Symbols.Builders
 {
+    using Antlr4.Runtime.Tree;
+
     /// <summary>
     /// Used to build <see cref="EnumMember" /> objects.
     /// </summary>
     public class EnumMemberBuilder
     {
+        /// <summary>
+        /// Gets the node associated with the enum member.
+        /// </summary>
+        public IParseTree Node { get; private set; }
+
         /// <summary>
         /// Gets the name of the enum member.
         /// </summary>
@@ -24,6 +31,18 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// Gets the reason the enum value is invalid.
         /// </summary>
         public InvalidEnumValueReason InvalidValueReason { get; private set; }
+
+        /// <summary>
+        /// Sets the node associated with the enum member.
+        /// </summary>
+        /// <param name="node">The node associated with the enum member.</param>
+        /// <returns>The builder.</returns>
+        public EnumMemberBuilder SetNode(IParseTree node)
+        {
+            this.Node = node;
+
+            return this;
+        }
 
         /// <summary>
         /// Sets the name of the enum member.
@@ -80,6 +99,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         public EnumMember Build()
         {
             return new EnumMember(
+                this.Node,
                 this.Name,
                 this.Value,
                 this.RawValue,

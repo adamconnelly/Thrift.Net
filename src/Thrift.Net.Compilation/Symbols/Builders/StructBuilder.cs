@@ -1,6 +1,7 @@
 namespace Thrift.Net.Compilation.Symbols.Builders
 {
     using System.Collections.Generic;
+    using Antlr4.Runtime.Tree;
 
     /// <summary>
     /// Used to build <see cref="Struct" /> objects.
@@ -8,6 +9,11 @@ namespace Thrift.Net.Compilation.Symbols.Builders
     public class StructBuilder
     {
         private readonly List<Field> fields = new List<Field>();
+
+        /// <summary>
+        /// Gets the node associated with the struct.
+        /// </summary>
+        public IParseTree Node { get; private set; }
 
         /// <summary>
         /// Gets the name of the struct.
@@ -18,6 +24,18 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// Gets the fields of the struct.
         /// </summary>
         public IReadOnlyCollection<Field> Fields => this.fields;
+
+        /// <summary>
+        /// Sets the node associated with the struct.
+        /// </summary>
+        /// <param name="node">The node associated with the struct.</param>
+        /// <returns>The builder.</returns>
+        public StructBuilder SetNode(IParseTree node)
+        {
+            this.Node = node;
+
+            return this;
+        }
 
         /// <summary>
         /// Sets the name of the struct.
@@ -79,7 +97,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// <returns>The struct.</returns>
         public Struct Build()
         {
-            return new Struct(this.Name, this.Fields);
+            return new Struct(this.Node, this.Name, this.Fields);
         }
     }
 }

@@ -2,6 +2,7 @@ namespace Thrift.Net.Compilation.Binding
 {
     using System.Linq;
     using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Symbols.Builders;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
@@ -26,30 +27,30 @@ namespace Thrift.Net.Compilation.Binding
         /// <inheritdoc />
         public int GetEnumValue(EnumMemberContext node)
         {
-            // TODO: Reimplement and add unit tests
             var parent = node.Parent as EnumDefinitionContext;
-            EnumMemberContext previousMemberNode = null;
 
-            foreach (var memberNode in parent.enumMember())
+            EnumMember previousMember = null;
+
+            var members = parent.enumMember()
+                .TakeWhile(memberNode => memberNode != node)
+                .Select(memberNode => this.binderProvider
+                    .GetBinder(memberNode)
+                    .Bind<EnumMember>(memberNode))
+                .Where(member => member.Value != null);
+
+            foreach (var member in members)
             {
-                if (memberNode == node)
+                if (member.Node == node)
                 {
                     break;
                 }
 
-                previousMemberNode = memberNode;
+                previousMember = member;
             }
 
-            if (previousMemberNode != null)
+            if (previousMember != null)
             {
-                var previousMember = this.binderProvider
-                    .GetBinder(previousMemberNode)
-                    .Bind<EnumMember>(previousMemberNode);
-
-                if (previousMember.Value != null)
-                {
-                    return previousMember.Value.Value + 1;
-                }
+                return previousMember.Value.Value + 1;
             }
 
             return 0;
@@ -58,7 +59,17 @@ namespace Thrift.Net.Compilation.Binding
         /// <inheritdoc />
         protected override Enum Bind(EnumDefinitionContext node)
         {
-            throw new System.NotImplementedException();
+            var members = node.enumMember()
+                .Select(memberNode => this.binderProvider
+                    .GetBinder(memberNode)
+                    .Bind<EnumMember>(memberNode));
+
+            var builder = new EnumBuilder()
+                .SetNode(node)
+                .SetName(node.name?.Text)
+                .AddMembers(members);
+
+            return builder.Build();
         }
     }
 }

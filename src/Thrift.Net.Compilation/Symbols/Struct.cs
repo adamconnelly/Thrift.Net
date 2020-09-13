@@ -1,18 +1,21 @@
 namespace Thrift.Net.Compilation.Symbols
 {
     using System.Collections.Generic;
+    using Antlr4.Runtime.Tree;
 
     /// <summary>
     /// Represents a Thrift struct.
     /// </summary>
-    public class Struct : ISymbol
+    public class Struct : Symbol
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Struct" /> class.
         /// </summary>
+        /// <param name="node">The node associated with the symbol.</param>
         /// <param name="name">The name of the struct.</param>
         /// <param name="fields">The struct's fields.</param>
-        public Struct(string name, IReadOnlyCollection<Field> fields)
+        public Struct(IParseTree node, string name, IReadOnlyCollection<Field> fields)
+            : base(node)
         {
             this.Name = name;
             this.Fields = fields;

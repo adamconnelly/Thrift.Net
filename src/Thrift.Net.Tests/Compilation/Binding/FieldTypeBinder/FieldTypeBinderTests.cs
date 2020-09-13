@@ -2,6 +2,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Antlr4.Runtime.Tree;
     using NSubstitute;
     using Thrift.Net.Compilation.Binding;
     using Thrift.Net.Compilation.Symbols;
@@ -48,7 +49,8 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
                 .FromString(input)
                 .ParseInput(parser => parser.fieldType());
 
-            var resolvedType = FieldType.CreateResolvedType(input);
+            var targetTypeNode = Substitute.For<IParseTree>();
+            var resolvedType = FieldType.CreateResolvedType(targetTypeNode, input);
             this.parentBinder.ResolveType(input).Returns(resolvedType);
 
             // Act

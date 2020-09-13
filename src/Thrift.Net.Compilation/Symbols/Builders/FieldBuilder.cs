@@ -1,10 +1,17 @@
 namespace Thrift.Net.Compilation.Symbols.Builders
 {
+    using Antlr4.Runtime.Tree;
+
     /// <summary>
     /// Used to build <see cref="Field" /> objects.
     /// </summary>
     public class FieldBuilder
     {
+        /// <summary>
+        /// Gets the node associated with the field.
+        /// </summary>
+        public IParseTree Node { get; private set; }
+
         /// <summary>
         /// Gets the field's name.
         /// </summary>
@@ -36,6 +43,18 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// rather than being explicitly defined in the Thrift IDL.
         /// </summary>
         public bool IsFieldIdImplicit { get; private set; }
+
+        /// <summary>
+        /// Sets the node associated with the field.
+        /// </summary>
+        /// <param name="node">The node associated with the field.</param>
+        /// <returns>The builder.</returns>
+        public FieldBuilder SetNode(IParseTree node)
+        {
+            this.Node = node;
+
+            return this;
+        }
 
         /// <summary>
         /// Sets the name of the field.
@@ -119,6 +138,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         public Field Build()
         {
             return new Field(
+                this.Node,
                 this.FieldId,
                 this.RawFieldId,
                 this.Requiredness,

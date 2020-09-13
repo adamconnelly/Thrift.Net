@@ -29,11 +29,11 @@ namespace Thrift.Net.Compilation.Binding
         /// <summary>
         /// Uses the parsed field type to create a <see cref="FieldType" /> object.
         /// </summary>
-        /// <param name="context">The parsed type name.</param>
+        /// <param name="node">The parsed type name.</param>
         /// <returns>The field type, or null if the type could not be resolved.</returns>
-        protected override FieldType Bind(FieldTypeContext context)
+        protected override FieldType Bind(FieldTypeContext node)
         {
-            var typeName = context.IDENTIFIER().Symbol.Text;
+            var typeName = node.IDENTIFIER().Symbol.Text;
             var baseType = FieldType.ResolveBaseType(typeName);
             if (baseType != null)
             {
@@ -49,7 +49,7 @@ namespace Thrift.Net.Compilation.Binding
                 }
             }
 
-            return FieldType.CreateUnresolvedType(typeName);
+            return FieldType.CreateUnresolvedType(node, typeName);
         }
     }
 }

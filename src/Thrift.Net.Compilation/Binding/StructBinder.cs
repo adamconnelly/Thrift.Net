@@ -79,13 +79,14 @@ namespace Thrift.Net.Compilation.Binding
         /// <summary>
         /// Creates a <see cref="Struct" /> based on the parse tree node.
         /// </summary>
-        /// <param name="context">The node to bind.</param>
+        /// <param name="node">The node to bind.</param>
         /// <returns>The struct definition.</returns>
-        protected override Struct Bind(StructDefinitionContext context)
+        protected override Struct Bind(StructDefinitionContext node)
         {
             var builder = new StructBuilder()
-                .SetName(context.name?.Text)
-                .AddFields(context.field().Select(this.GetField));
+                .SetNode(node)
+                .SetName(node.name?.Text)
+                .AddFields(node.field().Select(this.GetField));
 
             return builder.Build();
         }

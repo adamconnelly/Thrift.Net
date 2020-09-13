@@ -4,11 +4,10 @@ namespace Thrift.Net.Compilation
     using System.Linq;
     using Antlr4.Runtime;
     using Antlr4.Runtime.Misc;
-    using Antlr4.Runtime.Tree;
     using Thrift.Net.Antlr;
     using Thrift.Net.Compilation.Binding;
     using Thrift.Net.Compilation.Symbols;
-    using Thrift.Net.Compilation.Symbols.Builders;
+    using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
     /// A visitor used to perform the main compilation.
@@ -55,7 +54,6 @@ namespace Thrift.Net.Compilation
         private readonly Dictionary<string, Enum> enums = new Dictionary<string, Enum>();
         private readonly List<Struct> structs = new List<Struct>();
         private readonly List<CompilationMessage> messages = new List<CompilationMessage>();
-        private readonly ParseTreeProperty<EnumMember> enumMembers = new ParseTreeProperty<EnumMember>();
         private readonly IBinderProvider binderProvider;
 
         /// <summary>
@@ -89,7 +87,7 @@ namespace Thrift.Net.Compilation
 
         /// <inheritdoc />
         public override int? VisitNamespaceStatement(
-            ThriftParser.NamespaceStatementContext context)
+            NamespaceStatementContext context)
         {
             var result = base.VisitNamespaceStatement(context);
 
@@ -133,27 +131,10 @@ namespace Thrift.Net.Compilation
         {
             var result = base.VisitEnumDefinition(context);
 
-            var enumBuilder = new EnumBuilder();
-            enumBuilder.SetName(this.GetEnumName(context));
-            this.GetEnumMembers(context, enumBuilder);
-            var enumDefinition = enumBuilder.Build();
+            var binder = this.binderProvider.GetBinder(context);
+            var enumDefinition = binder.Bind<Enum>(context);
 
-            if (enumDefinition.Name != null && !this.enums.TryAdd(enumDefinition.Name, enumDefinition))
-            {
-                this.AddError(
-                    CompilerMessageId.EnumDuplicated,
-                    context.name,
-                    context.name.Text);
-            }
-
-            if (!enumDefinition.Members.Any())
-            {
-                var warningTarget = context.name ?? context.ENUM().Symbol;
-
-                // The enum has no members. For example
-                // `enum MyEnum {}`
-                this.AddWarning(CompilerMessageId.EnumEmpty, warningTarget);
-            }
+            this.AddEnumMessages(enumDefinition);
 
             return result;
         }
@@ -166,9 +147,7 @@ namespace Thrift.Net.Compilation
             var memberBinder = this.binderProvider.GetBinder(context);
             var enumMember = memberBinder.Bind<EnumMember>(context);
 
-            this.enumMembers.Put(context, enumMember);
-
-            this.AddEnumMemberMessages(context, enumMember);
+            this.AddEnumMemberMessages(enumMember);
 
             return result;
         }
@@ -231,22 +210,49 @@ namespace Thrift.Net.Compilation
             return base.VisitField(context);
         }
 
-        private void GetEnumMembers(
-            ThriftParser.EnumDefinitionContext context, EnumBuilder enumBuilder)
+        private void AddEnumMessages(Enum enumDefinition)
+        {
+            var enumNode = enumDefinition.Node as EnumDefinitionContext;
+            if (enumDefinition.Name == null)
+            {
+                // The enum name is missing: `enum {}`.
+                this.AddError(
+                    CompilerMessageId.EnumMustHaveAName,
+                    enumNode.ENUM().Symbol);
+            }
+
+            if (enumDefinition.Name != null && !this.enums.TryAdd(enumDefinition.Name, enumDefinition))
+            {
+                this.AddError(
+                    CompilerMessageId.EnumDuplicated,
+                    enumNode.name,
+                    enumNode.name.Text);
+            }
+
+            if (!enumDefinition.Members.Any())
+            {
+                var warningTarget = enumNode.name ?? enumNode.ENUM().Symbol;
+
+                // The enum has no members. For example
+                // `enum MyEnum {}`
+                this.AddWarning(CompilerMessageId.EnumEmpty, warningTarget);
+            }
+
+            this.CheckForDuplicateEnumMembers(enumDefinition);
+        }
+
+        private void CheckForDuplicateEnumMembers(Enum enumSymbol)
         {
             var members = new HashSet<string>();
 
-            foreach (var memberNode in context.enumMember())
+            foreach (var member in enumSymbol.Members)
             {
-                var member = this.enumMembers.Get(memberNode);
                 if (member.Name != null)
                 {
-                    if (members.Add(member.Name))
+                    if (!members.Add(member.Name))
                     {
-                        enumBuilder.AddMember(member);
-                    }
-                    else
-                    {
+                        var memberNode = member.Node as EnumMemberContext;
+
                         this.AddError(
                             CompilerMessageId.EnumMemberDuplicated,
                             memberNode.IDENTIFIER().Symbol,
@@ -274,30 +280,16 @@ namespace Thrift.Net.Compilation
             }
         }
 
-        private string GetEnumName(ThriftParser.EnumDefinitionContext context)
+        private void AddEnumMemberMessages(EnumMember enumMember)
         {
-            if (context.name != null)
-            {
-                return context.name.Text;
-            }
-
-            // The enum name is missing: `enum {}`.
-            this.AddError(
-                CompilerMessageId.EnumMustHaveAName,
-                context.ENUM().Symbol);
-
-            return null;
-        }
-
-        private void AddEnumMemberMessages(ThriftParser.EnumMemberContext context, EnumMember enumMember)
-        {
+            var memberNode = enumMember.Node as EnumMemberContext;
             if (enumMember.Name == null)
             {
                 // The enum member name is missing: `= 1`
                 this.AddError(
                     CompilerMessageId.EnumMemberMustHaveAName,
-                    context.EQUALS_OPERATOR().Symbol,
-                    context.enumValue);
+                    memberNode.EQUALS_OPERATOR().Symbol,
+                    memberNode.enumValue);
             }
 
             switch (enumMember.InvalidValueReason)
@@ -306,14 +298,14 @@ namespace Thrift.Net.Compilation
                     // A negative enum value has been specified: `User = -1`.
                     this.AddError(
                         CompilerMessageId.EnumValueMustNotBeNegative,
-                        context.enumValue);
+                        memberNode.enumValue);
                     break;
 
                 case InvalidEnumValueReason.NotAnInteger:
                     // A non-integer enum value has been specified: `User = "test"`.
                     this.AddError(
                         CompilerMessageId.EnumValueMustBeAnInteger,
-                        context.enumValue);
+                        memberNode.enumValue);
                     break;
 
                 case InvalidEnumValueReason.Missing:
@@ -321,19 +313,19 @@ namespace Thrift.Net.Compilation
                     // missing value: `User = `.
                     this.AddError(
                         CompilerMessageId.EnumValueMustBeSpecified,
-                        context.IDENTIFIER().Symbol,
-                        context.EQUALS_OPERATOR().Symbol);
+                        memberNode.IDENTIFIER().Symbol,
+                        memberNode.EQUALS_OPERATOR().Symbol);
                     break;
             }
 
-            if (context.enumValue != null && context.EQUALS_OPERATOR() == null)
+            if (memberNode.enumValue != null && memberNode.EQUALS_OPERATOR() == null)
             {
                 // An enum value has been specified without the = operator.
                 // For example `enum UserType { User 10 }`
                 this.AddError(
                     CompilerMessageId.EnumMemberEqualsOperatorMissing,
-                    context.IDENTIFIER().Symbol,
-                    context.enumValue);
+                    memberNode.IDENTIFIER().Symbol,
+                    memberNode.enumValue);
             }
         }
 

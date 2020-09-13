@@ -1,61 +1,62 @@
 namespace Thrift.Net.Compilation.Symbols
 {
     using System.Collections.Generic;
+    using Antlr4.Runtime.Tree;
 
     /// <summary>
     /// Represents the type of a field.
     /// </summary>
-    public class FieldType : ISymbol
+    public class FieldType : Symbol
     {
         /// <summary>
         /// The 'bool' base type.
         /// </summary>
-        public static readonly FieldType Bool = CreateResolvedType("bool");
+        public static readonly FieldType Bool = CreateBaseType("bool");
 
         /// <summary>
         /// The 'byte' base type.
         /// </summary>
-        public static readonly FieldType Byte = CreateResolvedType("byte");
+        public static readonly FieldType Byte = CreateBaseType("byte");
 
         /// <summary>
         /// The 'i8' base type.
         /// </summary>
-        public static readonly FieldType I8 = CreateResolvedType("i8");
+        public static readonly FieldType I8 = CreateBaseType("i8");
 
         /// <summary>
         /// The 'i16' base type.
         /// </summary>
-        public static readonly FieldType I16 = CreateResolvedType("i16");
+        public static readonly FieldType I16 = CreateBaseType("i16");
 
         /// <summary>
         /// The 'i32' base type.
         /// </summary>
-        public static readonly FieldType I32 = CreateResolvedType("i32");
+        public static readonly FieldType I32 = CreateBaseType("i32");
 
         /// <summary>
         /// The 'i64' base type.
         /// </summary>
-        public static readonly FieldType I64 = CreateResolvedType("i64");
+        public static readonly FieldType I64 = CreateBaseType("i64");
 
         /// <summary>
         /// The 'double' base type.
         /// </summary>
-        public static readonly FieldType Double = CreateResolvedType("double");
+        public static readonly FieldType Double = CreateBaseType("double");
 
         /// <summary>
         /// The 'string' base type.
         /// </summary>
-        public static readonly FieldType String = CreateResolvedType("string");
+        public static readonly FieldType String = CreateBaseType("string");
 
         /// <summary>
         /// The 'binary' base type.
         /// </summary>
-        public static readonly FieldType Binary = CreateResolvedType("binary");
+        public static readonly FieldType Binary = CreateBaseType("binary");
 
         /// <summary>
         /// The 'slist' base type.
         /// </summary>
-        public static readonly FieldType SList = FieldType.CreateResolvedType("slist");
+        public static readonly FieldType SList = CreateBaseType("slist");
 
         private static readonly Dictionary<string, FieldType> BaseTypeMap =
             new Dictionary<string, FieldType>
@@ -75,6 +76,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// <summary>
         /// Initializes a new instance of the <see cref="FieldType" /> class.
         /// </summary>
+        /// <param name="node">The node associated with the symbol.</param>
         /// <param name="name">The name of the type.</param>
         /// <param name="identifierPartsCount">
         /// The number of parts that make up the type name.
@@ -82,7 +84,12 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="isResolved">
         /// Indicates whether the type has been resolved successfully or not.
         /// </param>
-        public FieldType(string name, int identifierPartsCount, bool isResolved)
+        public FieldType(
+            IParseTree node,
+            string name,
+            int identifierPartsCount,
+            bool isResolved)
+            : base(node)
         {
             this.Name = name;
             this.IdentifierPartsCount = identifierPartsCount;
@@ -115,29 +122,31 @@ namespace Thrift.Net.Compilation.Symbols
         /// <summary>
         /// Creates a new type marked as resolved.
         /// </summary>
+        /// <param name="node">The node associated with the symbol.</param>
         /// <param name="typeName">The name of the type.</param>
         /// <returns>
         /// The type.
         /// </returns>
-        public static FieldType CreateResolvedType(string typeName)
+        public static FieldType CreateResolvedType(IParseTree node, string typeName)
         {
             var nameParts = typeName.Split('.');
 
-            return new FieldType(typeName, nameParts.Length, true);
+            return new FieldType(node, typeName, nameParts.Length, true);
         }
 
         /// <summary>
         /// Creates a new type marked as unresolved.
         /// </summary>
+        /// <param name="node">The node associated with the symbol.</param>
         /// <param name="typeName">The name of the type.</param>
         /// <returns>
         /// The type.
         /// </returns>
-        public static FieldType CreateUnresolvedType(string typeName)
+        public static FieldType CreateUnresolvedType(IParseTree node, string typeName)
         {
             var nameParts = typeName.Split('.');
 
-            return new FieldType(typeName, nameParts.Length, false);
+            return new FieldType(node, typeName, nameParts.Length, false);
         }
 
         /// <summary>
@@ -161,6 +170,11 @@ namespace Thrift.Net.Compilation.Symbols
         public override string ToString()
         {
             return this.Name;
+        }
+
+        private static FieldType CreateBaseType(string typeName)
+        {
+            return CreateResolvedType(null, typeName);
         }
     }
 }
