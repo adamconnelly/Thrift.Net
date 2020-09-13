@@ -29,8 +29,6 @@ namespace Thrift.Net.Compilation.Binding
         {
             var parent = node.Parent as EnumDefinitionContext;
 
-            EnumMember previousMember = null;
-
             var members = parent.enumMember()
                 .TakeWhile(memberNode => memberNode != node)
                 .Select(memberNode => this.binderProvider
@@ -38,19 +36,9 @@ namespace Thrift.Net.Compilation.Binding
                     .Bind<EnumMember>(memberNode))
                 .Where(member => member.Value != null);
 
-            foreach (var member in members)
+            if (members.Any())
             {
-                if (member.Node == node)
-                {
-                    break;
-                }
-
-                previousMember = member;
-            }
-
-            if (previousMember != null)
-            {
-                return previousMember.Value.Value + 1;
+                return members.Last().Value.Value + 1;
             }
 
             return 0;
