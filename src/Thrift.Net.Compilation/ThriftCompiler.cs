@@ -1,6 +1,7 @@
 namespace Thrift.Net.Compilation
 {
     using System.IO;
+    using System.Linq;
     using Thrift.Net.Compilation.Binding;
 
     /// <summary>
@@ -16,7 +17,8 @@ namespace Thrift.Net.Compilation
         /// <returns>The result of the compile operation.</returns>
         public CompilationResult Compile(Stream inputStream)
         {
-            var parser = ThriftParserFactory.Create(inputStream);
+            var parserErrorListener = new CollectingErrorListener();
+            var parser = ThriftParserFactory.Create(inputStream, parserErrorListener);
 
             var document = parser.document();
 
@@ -26,12 +28,14 @@ namespace Thrift.Net.Compilation
             var visitor = new CompilationVisitor(binderProvider);
             visitor.Visit(document);
 
+            var combinedMessages = visitor.Messages.Union(parserErrorListener.Messages).ToList();
+
             return new CompilationResult(
                 new Symbols.ThriftDocument(
                     visitor.Namespace,
                     visitor.Enums,
                     visitor.Structs),
-                visitor.Messages);
+                combinedMessages);
         }
     }
 }

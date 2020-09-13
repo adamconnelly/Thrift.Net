@@ -457,3 +457,20 @@ struct User {
   1: string Username
 }
 ```
+
+### TC0300 - Generic Parser Error
+
+_Level_: Error
+
+A syntax error has been encountered by the parser. Where possible we should aim
+to make the grammar loose enough to catch most errors ourselves, but this is a
+catch-all to make sure we report everything. Here's some examples:
+
+```thrift
+structe User {} // The `struct` keyword has an `e` at the end
+struct User {
+
+] // The closing brace is the wrong type
+```
+
+Since this is an unexpected error, we can't really say what to do to resolve it.

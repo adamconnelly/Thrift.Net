@@ -127,5 +127,10 @@ namespace Thrift.Net.Compilation
         /// ```
         /// </summary>
         StructFieldIdMustBeAPositiveInteger = 203,
+
+        /// <summary>
+        /// A syntax error has been reported by the Antlr parser.
+        /// </summary>
+        GenericParseError = 300,
     }
 }

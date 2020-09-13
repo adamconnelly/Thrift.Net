@@ -109,4 +109,8 @@
   <data name="TC0203" xml:space="preserve">
     <value>Field Id '{0}' is not valid. Field Ids must be positive integers.</value>
   </data>
+  <data name="TC0300" xml:space="preserve">
+    <!-- Generic Antlr parsing error - just report the message from Antlr -->
+    <value>{0}</value>
+  </data>
 </root>

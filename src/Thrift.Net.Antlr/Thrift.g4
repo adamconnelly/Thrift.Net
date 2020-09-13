@@ -1,6 +1,6 @@
 grammar Thrift;
 
-document: header definitions;
+document: header definitions EOF;
 
 header: (includeStatement | cppIncludeStatement | namespaceStatement)*;
 

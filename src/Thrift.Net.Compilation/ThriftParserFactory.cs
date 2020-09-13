@@ -13,14 +13,32 @@ namespace Thrift.Net.Compilation
         /// Creates a new parser from the specified input stream.
         /// </summary>
         /// <param name="inputStream">The stream to parse.</param>
+        /// <param name="errorListener">
+        /// Used to collect any errors encountered during lexing or parsing. If
+        /// no listener is provided, the default Antlr listeners that output
+        /// messages to the console will be used.
+        /// </param>
         /// <returns>The parser.</returns>
-        public static ThriftParser Create(Stream inputStream)
+        public static ThriftParser Create(
+            Stream inputStream,
+            CollectingErrorListener errorListener = null)
         {
             var charStream = new AntlrInputStream(inputStream);
             var lexer = new ThriftLexer(charStream);
             var tokenStream = new CommonTokenStream(lexer);
 
-            return new ThriftParser(tokenStream);
+            ThriftParser parser = new ThriftParser(tokenStream);
+
+            if (errorListener != null)
+            {
+                lexer.RemoveErrorListeners();
+                lexer.AddErrorListener(errorListener);
+
+                parser.RemoveErrorListeners();
+                parser.AddErrorListener(errorListener);
+            }
+
+            return parser;
         }
     }
 }
