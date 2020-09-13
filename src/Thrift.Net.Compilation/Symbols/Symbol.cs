@@ -5,18 +5,22 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// The base class for symbols.
     /// </summary>
-    public abstract class Symbol : ISymbol
+    /// <typeparam name="TNode">
+    /// The type of the node associated with the symbol.
+    /// </typeparam>
+    public abstract class Symbol<TNode> : ISymbol<TNode>
+        where TNode : IParseTree
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Symbol" /> class.
+        /// Initializes a new instance of the <see cref="Symbol{T}" /> class.
         /// </summary>
         /// <param name="node">The node associated with this symbol.</param>
-        protected Symbol(IParseTree node)
+        protected Symbol(TNode node)
         {
             this.Node = node;
         }
 
         /// <inheritdoc />
-        public IParseTree Node { get; private set; }
+        public TNode Node { get; private set; }
     }
 }

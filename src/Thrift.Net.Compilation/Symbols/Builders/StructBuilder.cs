@@ -2,6 +2,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
 {
     using System.Collections.Generic;
     using Antlr4.Runtime.Tree;
+    using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
     /// Used to build <see cref="Struct" /> objects.
@@ -13,7 +14,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// <summary>
         /// Gets the node associated with the struct.
         /// </summary>
-        public IParseTree Node { get; private set; }
+        public StructDefinitionContext Node { get; private set; }
 
         /// <summary>
         /// Gets the name of the struct.
@@ -30,7 +31,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// </summary>
         /// <param name="node">The node associated with the struct.</param>
         /// <returns>The builder.</returns>
-        public StructBuilder SetNode(IParseTree node)
+        public StructBuilder SetNode(StructDefinitionContext node)
         {
             this.Node = node;
 

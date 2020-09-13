@@ -1,6 +1,7 @@
 namespace Thrift.Net.Compilation.Symbols.Builders
 {
     using Antlr4.Runtime.Tree;
+    using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
     /// Used to build <see cref="Field" /> objects.
@@ -10,7 +11,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// <summary>
         /// Gets the node associated with the field.
         /// </summary>
-        public IParseTree Node { get; private set; }
+        public FieldContext Node { get; private set; }
 
         /// <summary>
         /// Gets the field's name.
@@ -49,7 +50,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// </summary>
         /// <param name="node">The node associated with the field.</param>
         /// <returns>The builder.</returns>
-        public FieldBuilder SetNode(IParseTree node)
+        public FieldBuilder SetNode(FieldContext node)
         {
             this.Node = node;
 

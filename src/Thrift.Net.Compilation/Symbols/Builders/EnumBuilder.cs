@@ -2,6 +2,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
 {
     using System.Collections.Generic;
     using Antlr4.Runtime.Tree;
+    using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
     /// A builder that can be used to create <see cref="Enum" /> objects.
@@ -13,7 +14,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// <summary>
         /// Gets the tree node associated with the enum.
         /// </summary>
-        public IParseTree Node { get; private set; }
+        public EnumDefinitionContext Node { get; private set; }
 
         /// <summary>
         /// Gets the name of the enum.
@@ -30,7 +31,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// </summary>
         /// <param name="node">The node associated with the enum.</param>
         /// <returns>The builder.</returns>
-        public EnumBuilder SetNode(IParseTree node)
+        public EnumBuilder SetNode(EnumDefinitionContext node)
         {
             this.Node = node;
 

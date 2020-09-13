@@ -1,12 +1,12 @@
 namespace Thrift.Net.Compilation.Symbols
 {
     using System.Collections.Generic;
-    using Antlr4.Runtime.Tree;
+    using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
     /// Describes an enum.
     /// </summary>
-    public class Enum : Symbol
+    public class Enum : Symbol<EnumDefinitionContext>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Enum" /> class.
@@ -14,7 +14,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="node">The node associated with the symbol.</param>
         /// <param name="name">The name of the enum.</param>
         /// <param name="members">The enum members.</param>
-        public Enum(IParseTree node, string name, IReadOnlyCollection<EnumMember> members)
+        public Enum(EnumDefinitionContext node, string name, IReadOnlyCollection<EnumMember> members)
             : base(node)
         {
             this.Name = name;

@@ -1,11 +1,11 @@
 namespace Thrift.Net.Compilation.Symbols
 {
-    using Antlr4.Runtime.Tree;
+    using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
     /// Represents an individual member of an enum.
     /// </summary>
-    public class EnumMember : Symbol
+    public class EnumMember : Symbol<EnumMemberContext>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EnumMember" /> class.
@@ -16,7 +16,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="rawValue">The raw text representation of the value.</param>
         /// <param name="invalidValueReason">The reason the enum value failed to parse.</param>
         public EnumMember(
-            IParseTree node,
+            EnumMemberContext node,
             string name,
             int? value,
             string rawValue,

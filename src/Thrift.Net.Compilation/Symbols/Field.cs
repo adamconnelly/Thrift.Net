@@ -1,11 +1,11 @@
 namespace Thrift.Net.Compilation.Symbols
 {
-    using Antlr4.Runtime.Tree;
+    using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
     /// Represents a field in a struct, union or exception.
     /// </summary>
-    public class Field : Symbol
+    public class Field : Symbol<FieldContext>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Field" /> class.
@@ -21,7 +21,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// compiler rather than being explicitly defined in the IDL.
         /// </param>
         public Field(
-            IParseTree node,
+            FieldContext node,
             int? fieldId,
             string rawFieldId,
             FieldRequiredness requiredness,
