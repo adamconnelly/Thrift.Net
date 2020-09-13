@@ -92,5 +92,41 @@ struct Team {}";
                 item => Assert.Equal(-2, item.FieldId),
                 item => Assert.Equal(-3, item.FieldId));
         }
+
+        [Fact]
+        public void Compile_StructUsesCommaFieldSeparators_ParsesCorrectly()
+        {
+            // Arrange
+            var input =
+@"struct User {
+    i32 Id,
+    string Username
+}";
+
+            // Act
+            var result = this.compiler.Compile(input.ToStream());
+
+            // Assert
+            Assert.False(result.HasErrors);
+            Assert.Equal(2, result.Document.Structs.Single().Fields.Count());
+        }
+
+        [Fact]
+        public void Compile_StructUsesSemicolonFieldSeparators_ParsesCorrectly()
+        {
+            // Arrange
+            var input =
+@"struct User {
+    i32 Id;
+    string Username
+}";
+
+            // Act
+            var result = this.compiler.Compile(input.ToStream());
+
+            // Assert
+            Assert.False(result.HasErrors);
+            Assert.Equal(2, result.Document.Structs.Single().Fields.Count());
+        }
     }
 }

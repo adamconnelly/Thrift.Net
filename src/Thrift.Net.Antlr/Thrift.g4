@@ -28,9 +28,9 @@ structDefinition: STRUCT name=IDENTIFIER?
         field*
     '}';
 
-field: fieldType name=IDENTIFIER |
+field: (fieldType name=IDENTIFIER |
     fieldRequiredness fieldType name=IDENTIFIER |
-    fieldId=.+? ':' fieldRequiredness? fieldType name=IDENTIFIER;
+    fieldId=.+? ':' fieldRequiredness? fieldType name=IDENTIFIER) LIST_SEPARATOR?;
 
 fieldRequiredness: REQUIRED | OPTIONAL;
 fieldType: IDENTIFIER;
