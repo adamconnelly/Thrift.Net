@@ -15,6 +15,8 @@ $endif$
 
 generateDocument(model) ::= <<
 $model.Enums:generateEnum(); separator="\n\n"$
+
+$model.Structs:generateStruct(); separator="\n\n"$
 >>
 
 generateEnum(enum) ::= <<
@@ -26,4 +28,18 @@ public enum $enum.Name$
 
 generateEnumMember(member) ::= <<
 $member.Name$ = $member.Value$
+>>
+
+generateStruct(struct) ::= <<
+public class $struct.Name$
+{
+    $struct.Fields:generateField(); separator="\n\n"$
+}
+>>
+
+generateField(field) ::= <<
+public $field.Type.CSharpTypeName$ $field.Name$
+{
+    get; set;
+}
 >>

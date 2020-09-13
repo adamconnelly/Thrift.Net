@@ -50,7 +50,8 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
                 .ParseInput(parser => parser.fieldType());
 
             var targetTypeNode = Substitute.For<IParseTree>();
-            var resolvedType = FieldType.CreateResolvedType(targetTypeNode, input);
+            var resolvedType = FieldType.CreateResolvedType(
+                targetTypeNode, input, "UserType");
             this.parentBinder.ResolveType(input).Returns(resolvedType);
 
             // Act

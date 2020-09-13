@@ -10,8 +10,6 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
 
     public class EnumGenerationTests : ThriftDocumentGeneratorTests
     {
-        private readonly ThriftDocumentGenerator generator = new ThriftDocumentGenerator();
-
         [Fact]
         public void Generate_EnumProvided_SetsCorrectName()
         {
@@ -19,7 +17,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
             var model = CreateDocument();
 
             // Act
-            var output = this.generator.Generate(model);
+            var output = this.Generator.Generate(model);
 
             // Assert
             var userTypeEnum = GetEnum(output);
@@ -34,7 +32,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
             var model = CreateDocument();
 
             // Act
-            var output = this.generator.Generate(model);
+            var output = this.Generator.Generate(model);
 
             // Assert
             var userTypeEnum = GetEnum(output);
@@ -52,7 +50,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
             var model = CreateDocument();
 
             // Act
-            var output = this.generator.Generate(model);
+            var output = this.Generator.Generate(model);
 
             // Assert
             var userTypeEnum = GetEnum(output);
