@@ -236,27 +236,6 @@ namespace Thrift.Net.Compilation
                 // `enum MyEnum {}`
                 this.AddWarning(CompilerMessageId.EnumEmpty, warningTarget);
             }
-
-            this.CheckForDuplicateEnumMembers(enumDefinition);
-        }
-
-        private void CheckForDuplicateEnumMembers(Enum enumSymbol)
-        {
-            var members = new HashSet<string>();
-
-            foreach (var member in enumSymbol.Members)
-            {
-                if (member.Name != null)
-                {
-                    if (!members.Add(member.Name))
-                    {
-                        this.AddError(
-                            CompilerMessageId.EnumMemberDuplicated,
-                            member.Node.IDENTIFIER().Symbol,
-                            member.Name);
-                    }
-                }
-            }
         }
 
         private void SetNamespace(ThriftParser.NamespaceStatementContext context)
@@ -322,6 +301,16 @@ namespace Thrift.Net.Compilation
                     CompilerMessageId.EnumMemberEqualsOperatorMissing,
                     enumMember.Node.IDENTIFIER().Symbol,
                     enumMember.Node.enumValue);
+            }
+
+            var enumBinder = this.binderProvider
+                .GetBinder(enumMember.Node.Parent) as IEnumBinder;
+            if (enumBinder.IsEnumMemberAlreadyDefined(enumMember.Name, enumMember.Node))
+            {
+                this.AddError(
+                    CompilerMessageId.EnumMemberDuplicated,
+                    enumMember.Node.IDENTIFIER().Symbol,
+                    enumMember.Name);
             }
         }
 

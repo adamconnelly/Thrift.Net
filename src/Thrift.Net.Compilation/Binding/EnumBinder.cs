@@ -29,6 +29,12 @@ namespace Thrift.Net.Compilation.Binding
         {
             var parent = node.Parent as EnumDefinitionContext;
 
+            // If there's only a single member, don't bother doing any more work
+            if (parent.enumMember().Length == 1)
+            {
+                return 0;
+            }
+
             var members = parent.enumMember()
                 .TakeWhile(memberNode => memberNode != node)
                 .Select(memberNode => this.binderProvider
@@ -42,6 +48,27 @@ namespace Thrift.Net.Compilation.Binding
             }
 
             return 0;
+        }
+
+        /// <inheritdoc />
+        public bool IsEnumMemberAlreadyDefined(string memberName, EnumMemberContext node)
+        {
+            var parent = node.Parent as EnumDefinitionContext;
+
+            // If there's only a single member, don't bother doing any more work
+            if (parent.enumMember().Length == 1)
+            {
+                return false;
+            }
+
+            var matchingMembers = parent.enumMember()
+                .Select(memberNode => this.binderProvider
+                    .GetBinder(memberNode)
+                    .Bind<EnumMember>(memberNode))
+                .Where(member => member.Name == memberName)
+                .TakeWhile(member => member.Node != node);
+
+            return matchingMembers.Any();
         }
 
         /// <inheritdoc />
