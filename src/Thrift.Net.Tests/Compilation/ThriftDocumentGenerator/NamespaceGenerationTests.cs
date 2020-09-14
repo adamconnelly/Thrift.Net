@@ -1,6 +1,7 @@
 namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
 {
     using System.Collections.Generic;
+    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Compilation.Symbols.Builders;
@@ -20,8 +21,8 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
             var output = this.Generator.Generate(document);
 
             // Assert
-            var root = ParseCSharp(output);
-            var namespaceDeclaration = root.Members.First() as NamespaceDeclarationSyntax;
+            var (root, _, _) = ParseCSharp(output);
+            var namespaceDeclaration = root.GetCompilationUnitRoot().Members.First() as NamespaceDeclarationSyntax;
             Assert.Equal("Thrift.Net.Tests", namespaceDeclaration.Name.ToString());
         }
 
@@ -41,9 +42,9 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
             var output = this.Generator.Generate(document);
 
             // Assert
-            var root = ParseCSharp(output);
+            var (root, _, _) = ParseCSharp(output);
             var enumDeclaration = Assert.IsAssignableFrom<EnumDeclarationSyntax>(
-                root.Members.First());
+                root.GetCompilationUnitRoot().Members.First());
             Assert.Equal("UserType", enumDeclaration.Identifier.Text);
         }
     }

@@ -33,6 +33,15 @@ $member.Name$ = $member.Value$
 generateStruct(struct) ::= <<
 public class $struct.Name$
 {
+    /// <summary>
+    /// Contains the Thrift Ids of all of the fields for use during serialization
+    /// and deserialization.
+    /// </summary>
+    public static class FieldIds
+    {
+        $struct.Fields:generateFieldId(); separator="\n\n"$
+    }
+
     $struct.Fields:generateField(); separator="\n\n"$
 }
 >>
@@ -42,4 +51,8 @@ public $field.Type.CSharpTypeName$ $field.Name$
 {
     get; set;
 }
+>>
+
+generateFieldId(field) ::= <<
+public const int $field.Name$ = $field.FieldId$;
 >>

@@ -2,6 +2,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
 {
     using System.Collections.Generic;
     using System.Linq;
+    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Compilation.Symbols.Builders;
@@ -63,8 +64,8 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
 
         private static EnumDeclarationSyntax GetEnum(string output)
         {
-            var root = ParseCSharp(output);
-            var namespaceDeclaration = root.Members.First() as NamespaceDeclarationSyntax;
+            var (root, _, _) = ParseCSharp(output);
+            var namespaceDeclaration = root.GetCompilationUnitRoot().Members.First() as NamespaceDeclarationSyntax;
 
             return namespaceDeclaration.Members.First() as EnumDeclarationSyntax;
         }

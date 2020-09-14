@@ -1,7 +1,7 @@
 namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
 {
+    using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
     using ThriftDocumentGenerator = Thrift.Net.Compilation.ThriftDocumentGenerator;
 
     public abstract class ThriftDocumentGeneratorTests
@@ -16,11 +16,16 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
         /// </summary>
         /// <param name="input">The C# text to parse.</param>
         /// <returns>The root of the tree.</returns>
-        protected static CompilationUnitSyntax ParseCSharp(string input)
+        protected static (SyntaxTree syntaxTree, CSharpCompilation compilation, SemanticModel semanticModel) ParseCSharp(
+            string input)
         {
             var syntaxTree = CSharpSyntaxTree.ParseText(input);
+            var compilation = CSharpCompilation
+                .Create("Thrift.Net.Tests.Compilation")
+                .AddSyntaxTrees(syntaxTree);
+            var semanticModel = compilation.GetSemanticModel(syntaxTree);
 
-            return syntaxTree.GetCompilationUnitRoot();
+            return (syntaxTree, compilation, semanticModel);
         }
     }
 }
