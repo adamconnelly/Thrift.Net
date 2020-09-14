@@ -97,6 +97,16 @@ feat(compiler): add ability to parse an enum
 - Did z because of a.
 ```
 
+### Running Apache Thrift Compiler via Docker
+
+There's a Docker image available for the Thrift compiler that can be useful if
+you need to check what the official compiler produces. Here's an example
+`docker run` command:
+
+```shell
+docker run -v "$PWD:/data" thrift thrift -o /data/thrift-output --gen netstd /data/thrift-samples/structs/User.thrift
+```
+
 ### Other Resources
 
 - The [Roslyn Overview](https://github.com/dotnet/roslyn/wiki/Roslyn%20Overview)
