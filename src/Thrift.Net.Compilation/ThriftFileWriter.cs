@@ -14,7 +14,7 @@ namespace Thrift.Net.Compilation
                 outputFile.Directory.Create();
             }
 
-            using var writer = new StreamWriter(outputFile.OpenWrite());
+            using var writer = new StreamWriter(outputFile.Create());
             writer.WriteLine(generatedCode);
         }
     }
