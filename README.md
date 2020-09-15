@@ -43,11 +43,7 @@ npm install
 
 This will also configure our shared Git hooks using
 [Husky](https://github.com/typicode/husky). At the moment Husky is configured to
-lint and format markdown, along with running our .NET tests.
-
-**NOTE:** we might want to stop Husky running our tests for every commit as the
-project gets bigger and it takes longer to run tests, but it's currently handy
-to have until we have a CI pipeline configured.
+lint and format markdown.
 
 ### Antlr
 
