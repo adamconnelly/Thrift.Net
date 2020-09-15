@@ -1,6 +1,7 @@
 namespace Thrift.Net.Compilation.Symbols
 {
     using System.Collections.Generic;
+    using System.Linq;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
@@ -30,6 +31,13 @@ namespace Thrift.Net.Compilation.Symbols
         /// Gets the fields of the struct.
         /// </summary>
         public IReadOnlyCollection<Field> Fields { get; }
+
+        /// <summary>
+        /// Gets the fields that are optional (either explicitly or implicitly).
+        /// </summary>
+        public IReadOnlyCollection<Field> OptionalFields => this.Fields
+            .Where(field => field.Requiredness != FieldRequiredness.Required)
+            .ToList();
 
         /// <inheritdoc />
         public override string ToString()

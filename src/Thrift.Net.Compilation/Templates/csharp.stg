@@ -33,6 +33,23 @@ $member.Name$ = $member.Value$
 generateStruct(struct) ::= <<
 public class $struct.Name$
 {
+$if(struct.OptionalFields)$
+    private IsSetInfo isSet;
+$endif$
+    $struct.Fields:generateBackingField(); separator="\n"$
+
+$if(struct.OptionalFields)$
+    /// <summary>
+    /// Gets information about whether each optional field has been set.
+    /// </summary>
+    public IsSetInfo IsSet
+    {
+        get { return this.isSet; }
+    }
+
+$endif$
+    $struct.Fields:generateField(); separator="\n\n"$
+
     /// <summary>
     /// Contains the Thrift Ids of all of the fields for use during serialization
     /// and deserialization.
@@ -41,18 +58,48 @@ public class $struct.Name$
     {
         $struct.Fields:generateFieldId(); separator="\n\n"$
     }
+$if(struct.OptionalFields)$
 
-    $struct.Fields:generateField(); separator="\n\n"$
+    /// <summary>
+    /// Contains an entry for each optional field, indicating whether it has been
+    /// set or not.
+    /// </summary>
+    public struct IsSetInfo
+    {
+        $struct.OptionalFields:generateIsSetField(); separator="\n\n"$
+    }
+$endif$
 }
+>>
+
+backingFieldName(field) ::= <<
+_$field.Name$
+>>
+
+generateBackingField(field) ::= <<
+private $field.Type.CSharpTypeName$ $backingFieldName(field)$;
 >>
 
 generateField(field) ::= <<
 public $field.Type.CSharpTypeName$ $field.Name$
 {
-    get; set;
+    get
+    {
+        return $backingFieldName(field)$;
+    }
+
+    set
+    {
+        this.$backingFieldName(field)$ = value;
+        this.isSet.$field.Name$ = true;
+    }
 }
 >>
 
 generateFieldId(field) ::= <<
 public const int $field.Name$ = $field.FieldId$;
+>>
+
+generateIsSetField(field) ::= <<
+public bool $field.Name$;
 >>

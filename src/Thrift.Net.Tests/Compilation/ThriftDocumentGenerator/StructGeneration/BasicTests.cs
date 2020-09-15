@@ -1,4 +1,4 @@
-namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
+namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -9,7 +9,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
     using Thrift.Net.Compilation.Symbols.Builders;
     using Xunit;
 
-    public class StructGenerationTests : ThriftDocumentGeneratorTests
+    public class BasicTests : ThriftDocumentGeneratorTests
     {
         public static IEnumerable<object[]> GetBaseTypes()
         {
@@ -44,7 +44,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
         }
 
         [Fact]
-        public void Generate_StructsHasFields_GeneratesFields()
+        public void Generate_StructsHaveFields_GeneratesFields()
         {
             // Arrange
             var document = new ThriftDocument(
@@ -72,16 +72,19 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
             var userClass = namespaceDeclaration.Members
                 .OfType<ClassDeclarationSyntax>()
                 .First();
+            var fieldProperties = userClass.Members
+                .OfType<PropertyDeclarationSyntax>()
+                .Where(property => property.Identifier.Text.StartsWith("Field"));
 
             Assert.Collection(
-                userClass.Members.OfType<PropertyDeclarationSyntax>(),
+                fieldProperties,
                 field1 => Assert.Equal("Field1", field1.Identifier.Text),
                 field2 => Assert.Equal("Field2", field2.Identifier.Text));
         }
 
         [Theory]
         [MemberData(nameof(GetBaseTypes))]
-        public void Generate_StructsHasFields_GeneratesPropertiesWithCorrectTypes(
+        public void Generate_StructHasFields_GeneratesPropertiesWithCorrectTypes(
             FieldType type)
         {
             // Arrange
@@ -110,7 +113,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
 
             var property = userClass.Members
                 .OfType<PropertyDeclarationSyntax>()
-                .Single();
+                .Single(property => property.Identifier.Text == "Field");
 
             string typeName;
 
