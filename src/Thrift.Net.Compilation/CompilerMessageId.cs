@@ -140,6 +140,17 @@ namespace Thrift.Net.Compilation
         SlistDeprecated = 204,
 
         /// <summary>
+        /// A field has been specified without a field Id. This can lead to backwards
+        /// incompatible changes being made to the protocol by accident. For example:
+        /// ```
+        /// struct User {
+        ///   string Username
+        /// }
+        /// ```
+        /// </summary>
+        FieldIdNotSpecified = 205,
+
+        /// <summary>
         /// A syntax error has been reported by the Antlr parser.
         /// </summary>
         GenericParseError = 300,

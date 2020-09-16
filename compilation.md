@@ -479,6 +479,51 @@ struct User {
 }
 ```
 
+### TC205 - Field Id Not Specified
+
+_Level_: Warning
+
+A field has been defined without an explicit field Id being specified. For
+example:
+
+```thrift
+struct User {
+  string Username
+}
+```
+
+This can cause a backwards incompatible change to be made if the field is moved
+or reordered. When no field Id is explicitly defined, the Thrift compiler
+automatically assigns negative field Ids starting at -1, as shown in the
+following example:
+
+```thrift
+struct User {
+  i32 Id           // Field Id -1
+  string Username  // Field Id -2
+  string CreatedOn // Field Id -3
+}
+```
+
+So if the `Username` field was deleted it would cause `CreatedOn` to end up with
+field Id `-2`. Similarly, if the order of the two fields is swapped in the IDL,
+it would cause both fields to swap field Ids.
+
+To fix this issue, explicitly specify Ids for all fields:
+
+```thrift
+struct User {
+  1: i32 Id
+  2: string Username
+  3: string CreatedOn
+}
+```
+
+**NOTE:** _The official Thrift compiler doesn't allow negative field Ids to be_
+_specified in IDL files by default, but allows you to opt-in via the
+`--allow-neg-keys`_ _flag. The Thrift.Net compiler will not support that
+behaviour unless it's asked_ _for._
+
 ### TC0300 - Generic Parser Error
 
 _Level_: Error

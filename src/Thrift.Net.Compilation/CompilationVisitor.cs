@@ -186,7 +186,14 @@ namespace Thrift.Net.Compilation
                     field.Name);
             }
 
-            if (!field.IsFieldIdImplicit)
+            if (field.IsFieldIdImplicit)
+            {
+                this.AddWarning(
+                    CompilerMessageId.FieldIdNotSpecified,
+                    context.name,
+                    field.Name);
+            }
+            else
             {
                 if (field.FieldId != null)
                 {

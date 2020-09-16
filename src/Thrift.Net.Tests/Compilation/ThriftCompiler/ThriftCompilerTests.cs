@@ -66,13 +66,23 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
             var expectedMessage = string.Format(
                 CompilerMessages.Get(messageId), messageParameters);
             var compiler = new ThriftCompiler();
+            var parserInput = ParserInput.FromString(input);
 
             // Act
-            var result = compiler.Compile(input.ToStream());
+            var result = compiler.Compile(parserInput.GetStream());
 
             // Assert
-            Assert.Equal(messageId, result.Warnings.First().MessageId);
-            Assert.Equal(expectedMessage, result.Warnings.First().Message);
+            var message = result.Warnings.FirstOrDefault(message => message.MessageId == messageId);
+
+            Assert.NotNull(message);
+            Assert.Equal(expectedMessage, message.Message);
+
+            if (parserInput.StartPosition != null)
+            {
+                Assert.Equal(parserInput.LineNumber, message.LineNumber);
+                Assert.Equal(parserInput.StartPosition, message.StartPosition);
+                Assert.Equal(parserInput.EndPosition, message.EndPosition);
+            }
         }
     }
 }

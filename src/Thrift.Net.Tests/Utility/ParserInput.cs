@@ -14,9 +14,9 @@ namespace Thrift.Net.Tests.Utility
     {
         public ParserInput(
             string input,
-            int lineNumber,
-            int startPosition,
-            int endPosition)
+            int? lineNumber,
+            int? startPosition,
+            int? endPosition)
         {
             this.Input = input;
             this.LineNumber = lineNumber;
@@ -32,20 +32,20 @@ namespace Thrift.Net.Tests.Utility
         /// <summary>
         /// Gets the line number in the input we expect a message to appear.
         /// </summary>
-        public int LineNumber { get; }
+        public int? LineNumber { get; }
 
         /// <summary>
         /// Gets the start position in the line where we expect a message to
         /// appear.
         /// </summary>
-        public int StartPosition { get; }
+        public int? StartPosition { get; }
 
         /// <summary>
         /// Gets the end position in the line where we expect the message to
         /// appear. NOTE: this is the position of the last character, rather
         /// than the character after it.
         /// </summary>
-        public int EndPosition { get; }
+        public int? EndPosition { get; }
 
         /// <summary>
         /// Creates a new <see cref="ParserInput" /> object from the specified
@@ -59,30 +59,34 @@ namespace Thrift.Net.Tests.Utility
         /// </returns>
         public static ParserInput FromString(string input)
         {
-            var lineNumber = 0;
-            var startPosition = 0;
-            var endPosition = 0;
+            int? lineNumber = null;
+            int? startPosition = null;
+            int? endPosition = null;
             var reader = new StringReader(input);
-            var currentLine = 1;
 
-            string line;
-            do
+            if (input.Contains('$'))
             {
-                line = reader.ReadLine();
-                if (line != null)
-                {
-                    if (line.Contains("$"))
-                    {
-                        lineNumber = currentLine;
-                        startPosition = line.IndexOf("$") + 1;
-                        endPosition = line.LastIndexOf("$") - 1;
-                        break;
-                    }
+                var currentLine = 1;
 
-                    currentLine++;
+                string line;
+                do
+                {
+                    line = reader.ReadLine();
+                    if (line != null)
+                    {
+                        if (line.Contains("$"))
+                        {
+                            lineNumber = currentLine;
+                            startPosition = line.IndexOf("$") + 1;
+                            endPosition = line.LastIndexOf("$") - 1;
+                            break;
+                        }
+
+                        currentLine++;
+                    }
                 }
+                while (line != null);
             }
-            while (line != null);
 
             return new ParserInput(
                 input.Replace("$", string.Empty),
