@@ -1,6 +1,5 @@
 namespace Thrift.Net.Compilation.Binding
 {
-    using Antlr4.Runtime;
     using Antlr4.Runtime.Misc;
     using Antlr4.Runtime.Tree;
     using Thrift.Net.Antlr;
@@ -56,6 +55,27 @@ namespace Thrift.Net.Compilation.Binding
             {
                 this.binderProvider = binderProvider;
                 this.binderMap = binderMap;
+            }
+
+            public override IBinder VisitNamespaceStatement([NotNull] NamespaceStatementContext context)
+            {
+                var documentBinder = this.binderMap.Get(context.Parent);
+                var namespaceBinder = new NamespaceBinder(documentBinder);
+                this.binderMap.Put(context, namespaceBinder);
+
+                base.VisitNamespaceStatement(context);
+
+                return namespaceBinder;
+            }
+
+            public override IBinder VisitDocument([NotNull] DocumentContext context)
+            {
+                var documentBinder = new DocumentBinder(null, this.binderProvider);
+                this.binderMap.Put(context, documentBinder);
+
+                base.VisitDocument(context);
+
+                return documentBinder;
             }
 
             public override IBinder VisitField([NotNull] ThriftParser.FieldContext context)

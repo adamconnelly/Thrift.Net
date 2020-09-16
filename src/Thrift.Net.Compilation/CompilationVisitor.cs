@@ -14,47 +14,11 @@ namespace Thrift.Net.Compilation
     /// </summary>
     public class CompilationVisitor : ThriftBaseVisitor<int?>
     {
-        /// <summary>
-        /// The list of namespace scopes that we'll use to set the C# namespace.
-        /// </summary>
-        private static readonly HashSet<string> RecognisedNamespaceScopes =
-            new HashSet<string>
-            {
-                "*",
-                "csharp",
-                "netcore",
-            };
-
-        /// <summary>
-        /// The list of namespace scopes that are allowed without causing an
-        /// error message to be reported.
-        /// </summary>
-        private static readonly HashSet<string> AllowedNamespaceScopes =
-            new HashSet<string>
-            {
-                "*",
-                "c_glib",
-                "cpp",
-                "csharp",
-                "delphi",
-                "go",
-                "java",
-                "js",
-                "lua",
-                "netcore",
-                "perl",
-                "php",
-                "py",
-                "py.twisted",
-                "rb",
-                "st",
-                "xsd",
-            };
-
-        private readonly Dictionary<string, Enum> enums = new Dictionary<string, Enum>();
-        private readonly List<Struct> structs = new List<Struct>();
         private readonly List<CompilationMessage> messages = new List<CompilationMessage>();
         private readonly IBinderProvider binderProvider;
+
+        // TODO: Remove and switch the duplicate enum check to use a binder method
+        private readonly Dictionary<string, Enum> enums = new Dictionary<string, Enum>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CompilationVisitor" /> class.
@@ -66,19 +30,9 @@ namespace Thrift.Net.Compilation
         }
 
         /// <summary>
-        /// Gets the namespace of the document.
+        /// Gets the document.
         /// </summary>
-        public string Namespace { get; private set; }
-
-        /// <summary>
-        /// Gets the enums defined in the document.
-        /// </summary>
-        public IReadOnlyCollection<Enum> Enums => this.enums.Values;
-
-        /// <summary>
-        /// Gets the structs defined in the document.
-        /// </summary>
-        public IReadOnlyCollection<Struct> Structs => this.structs;
+        public Document Document { get; private set; }
 
         /// <summary>
         /// Gets any messages reported during analysis.
@@ -86,30 +40,51 @@ namespace Thrift.Net.Compilation
         public IReadOnlyCollection<CompilationMessage> Messages => this.messages;
 
         /// <inheritdoc />
+        public override int? VisitDocument([NotNull] DocumentContext context)
+        {
+            var result = base.VisitDocument(context);
+
+            var documentBinder = this.binderProvider.GetBinder(context);
+            this.Document = documentBinder.Bind<Document>(context);
+
+            return result;
+        }
+
+        /// <inheritdoc />
         public override int? VisitNamespaceStatement(
             NamespaceStatementContext context)
         {
             var result = base.VisitNamespaceStatement(context);
 
-            if (context.namespaceScope != null && context.ns != null)
+            var namespaceBinder = this.binderProvider.GetBinder(context);
+            var @namespace = namespaceBinder.Bind<Namespace>(context);
+
+            if (@namespace.Scope != null && !@namespace.HasKnownScope)
             {
-                this.SetNamespace(context);
+                // The namespace scope is not in the list of known scopes.
+                // For example `namespace notalang mynamespace`
+                this.AddError(
+                    CompilerMessageId.NamespaceScopeUnknown,
+                    context.namespaceScope,
+                    context.namespaceScope.Text);
             }
-            else if (context.namespaceScope == null && context.ns == null)
+
+            if (@namespace.Scope == null && @namespace.NamespaceName == null)
             {
                 // Both the namespace and scope are missing. For example `namespace`.
                 this.AddError(
                     CompilerMessageId.NamespaceAndScopeMissing,
                     context.NAMESPACE().Symbol);
             }
-            else if (context.ns == null)
+            else if (@namespace.NamespaceName == null)
             {
+                // The namespace is missing. For example `namespace csharp`
                 this.AddError(
                     CompilerMessageId.NamespaceMissing,
                     context.NAMESPACE().Symbol,
                     context.ns ?? context.namespaceScope ?? context.NAMESPACE().Symbol);
             }
-            else if (context.namespaceScope == null)
+            else if (@namespace.Scope == null)
             {
                 // The namespace scope is missing. For example
                 // `namespace mynamespace`
@@ -162,8 +137,6 @@ namespace Thrift.Net.Compilation
                     CompilerMessageId.StructMustHaveAName,
                     context.STRUCT().Symbol);
             }
-
-            this.structs.Add(structDefinition);
 
             return result;
         }
@@ -246,24 +219,6 @@ namespace Thrift.Net.Compilation
                 // The enum has no members. For example
                 // `enum MyEnum {}`
                 this.AddWarning(CompilerMessageId.EnumEmpty, warningTarget);
-            }
-        }
-
-        private void SetNamespace(ThriftParser.NamespaceStatementContext context)
-        {
-            if (RecognisedNamespaceScopes.Contains(context.namespaceScope.Text))
-            {
-                this.Namespace = context.ns.Text;
-            }
-
-            if (!AllowedNamespaceScopes.Contains(context.namespaceScope.Text))
-            {
-                // The namespace scope is not in the list of known scopes.
-                // For example `namespace notalang mynamespace`
-                this.AddError(
-                    CompilerMessageId.NamespaceScopeUnknown,
-                    context.namespaceScope,
-                    context.namespaceScope.Text);
             }
         }
 

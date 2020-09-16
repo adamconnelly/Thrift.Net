@@ -76,7 +76,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// </summary>
         /// <param name="enums">The enums to add.</param>
         /// <returns>The builder.</returns>
-        public DocumentBuilder AddEnums(IReadOnlyCollection<Enum> enums)
+        public DocumentBuilder AddEnums(IEnumerable<Enum> enums)
         {
             foreach (var @enum in enums)
             {
@@ -118,7 +118,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// </summary>
         /// <param name="structs">The structs to add.</param>
         /// <returns>The builder.</returns>
-        public DocumentBuilder AddStructs(IReadOnlyCollection<Struct> structs)
+        public DocumentBuilder AddStructs(IEnumerable<Struct> structs)
         {
             foreach (var @struct in structs)
             {
@@ -151,6 +151,21 @@ namespace Thrift.Net.Compilation.Symbols.Builders
             configure(namespaceBuilder);
 
             return this.AddNamespace(namespaceBuilder.Build());
+        }
+
+        /// <summary>
+        /// Adds the namespaces to the document.
+        /// </summary>
+        /// <param name="namespaces">The namespaces to add.</param>
+        /// <returns>The builder.</returns>
+        public DocumentBuilder AddNamespaces(IEnumerable<Namespace> namespaces)
+        {
+            foreach (var @namespace in namespaces)
+            {
+                this.AddNamespace(@namespace);
+            }
+
+            return this;
         }
 
         /// <summary>

@@ -23,9 +23,7 @@ namespaceStatement:
     // `namespace fortran`
     NAMESPACE namespaceScope=.*? ns=IDENTIFIER?;
 
-definitions: definition*;
-
-definition: enumDefinition | structDefinition;
+definitions: (enumDefinition | structDefinition)*;
 
 enumDefinition: ENUM name=IDENTIFIER?
     '{'

@@ -6,12 +6,12 @@ namespace Thrift.Net.Tests.Compilation.Symbols
     public class NamespaceTests
     {
         [Theory]
-        [InlineData("*", true)]
+        [InlineData("*", false)]
         [InlineData("delphi", false)]
         [InlineData("csharp", true)]
         [InlineData("netcore", true)]
         [InlineData("netstd", true)]
-        public void CanGenerate_ScopesProvided_ReturnsCorrectValue(
+        public void HasCSharpScope_ScopesProvided_ReturnsCorrectValue(
             string scope, bool expected)
         {
             // Arrange
@@ -20,10 +20,10 @@ namespace Thrift.Net.Tests.Compilation.Symbols
                 .Build();
 
             // Act
-            var canGenerate = ns.CanGenerate;
+            var hasCSharpScope = ns.HasCSharpScope;
 
             // Assert
-            Assert.Equal(expected, canGenerate);
+            Assert.Equal(expected, hasCSharpScope);
         }
 
         [Theory]
@@ -46,7 +46,7 @@ namespace Thrift.Net.Tests.Compilation.Symbols
         [InlineData("xsd", true)]
         [InlineData("netstd", true)]
         [InlineData("fortran", false)]
-        public void IsKnownScope_ScopesProvided_ReturnsCorrectValue(
+        public void HasKnownScope_ScopesProvided_ReturnsCorrectValue(
             string scope, bool expected)
         {
             // Arrange

@@ -57,17 +57,15 @@ namespace Thrift.Net.Compilation.Symbols
         {
             get
             {
-                var @namespace = this.Namespaces.LastOrDefault(
-                    ns => Namespace.IsCSharpNamespaceScope(ns.Scope));
+                var @namespace = this.Namespaces
+                    .LastOrDefault(n => n.HasCSharpScope);
                 if (@namespace != null)
                 {
                     return @namespace.NamespaceName;
                 }
 
                 return this.Namespaces
-                    .FirstOrDefault(
-                        @namespace => @namespace.Scope == Namespace.AllNamespacesScope)
-                    ?.NamespaceName;
+                    .FirstOrDefault(n => n.AppliesToAllTargets)?.NamespaceName;
             }
         }
     }

@@ -3,7 +3,6 @@ namespace Thrift.Net.Compilation
     using System.IO;
     using System.Linq;
     using Thrift.Net.Compilation.Binding;
-    using Thrift.Net.Compilation.Symbols.Builders;
 
     /// <summary>
     /// An object used to compile thrift IDL into a model that can be used for
@@ -33,22 +32,7 @@ namespace Thrift.Net.Compilation
                 .Union(parserErrorListener.Messages)
                 .ToList();
 
-            var documentBuilder = new DocumentBuilder()
-                .SetNode(document)
-                .AddEnums(visitor.Enums)
-                .AddStructs(visitor.Structs);
-
-            // Temporarily just add a namespace until we implement the document
-            // binder properly.
-            if (!string.IsNullOrEmpty(visitor.Namespace))
-            {
-                documentBuilder.AddNamespace(builder => builder
-                    .SetScope("csharp")
-                    .SetNamespaceName(visitor.Namespace));
-            }
-
-            return new CompilationResult(
-                documentBuilder.Build(), combinedMessages);
+            return new CompilationResult(visitor.Document, combinedMessages);
         }
     }
 }

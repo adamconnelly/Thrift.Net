@@ -13,14 +13,14 @@ namespace Thrift.Net.Compilation.Symbols
         /// </summary>
         public const string AllNamespacesScope = "*";
 
-        // The list of scopes that the Thrift.Net compiler can use for generation.
+        // The set of scopes that the Thrift.Net compiler can use for generation.
         private static readonly HashSet<string> CSharpScopes =
             new HashSet<string>
             {
                 "csharp", "netcore", "netstd",
             };
 
-        // The set of scopes known the the Thrift.Net compiler. This can be used
+        // The set of scopes known to the Thrift.Net compiler. This can be used
         // to warn about invalid scopes.
         private static readonly HashSet<string> KnownNamespaceScopes =
             new HashSet<string>
@@ -67,17 +67,14 @@ namespace Thrift.Net.Compilation.Symbols
         public string Scope { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the compiler can use this namespace
-        /// when generating the C# code. NOTE: this doesn't mean that this namespace
-        /// will definitely be used if there are multiple namespaces declared with
-        /// scopes that the compiler can handle.
+        /// Gets a value indicating whether the namespace declaration's scope is
+        /// one that can be used for C# code generation.
         /// </summary>
-        public bool CanGenerate
+        public bool HasCSharpScope
         {
             get
             {
-                return this.Scope == AllNamespacesScope ||
-                    IsCSharpNamespaceScope(this.Scope);
+                return CSharpScopes.Contains(this.Scope);
             }
         }
 
@@ -108,15 +105,5 @@ namespace Thrift.Net.Compilation.Symbols
         /// Gets the namespace name.
         /// </summary>
         public string NamespaceName { get; }
-
-        /// <summary>
-        /// Checks whether the scope is a csharp scope.
-        /// </summary>
-        /// <param name="scope">The scope to check.</param>
-        /// <returns>true if the scope is a C# scope. false otherwise.</returns>
-        public static bool IsCSharpNamespaceScope(string scope)
-        {
-            return CSharpScopes.Contains(scope);
-        }
     }
 }
