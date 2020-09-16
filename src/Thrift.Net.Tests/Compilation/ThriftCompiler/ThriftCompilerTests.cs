@@ -55,7 +55,24 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
             var result = compiler.Compile(input.ToStream());
 
             // Assert
+            Assert.Equal(messageId, result.Errors.First().MessageId);
             Assert.Equal(expectedMessage, result.Errors.First().Message);
+        }
+
+        protected void AssertCompilerReturnsWarningMessage(
+            string input, CompilerMessageId messageId, params string[] messageParameters)
+        {
+            // Arrange
+            var expectedMessage = string.Format(
+                CompilerMessages.Get(messageId), messageParameters);
+            var compiler = new ThriftCompiler();
+
+            // Act
+            var result = compiler.Compile(input.ToStream());
+
+            // Assert
+            Assert.Equal(messageId, result.Warnings.First().MessageId);
+            Assert.Equal(expectedMessage, result.Warnings.First().Message);
         }
     }
 }

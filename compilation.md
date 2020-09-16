@@ -458,6 +458,27 @@ struct User {
 }
 ```
 
+### TC204 - slist Type is Deprecated
+
+_Level_: Warning
+
+The `slist` type is deprecated, and should no-longer be used. Please use the
+`string` type instead. For example:
+
+```thrift
+struct User {
+  slist Username
+}
+```
+
+To fix this issue, change the type of the field from `slist` to `string`:
+
+```thrift
+struct User {
+  string Username
+}
+```
+
 ### TC0300 - Generic Parser Error
 
 _Level_: Error

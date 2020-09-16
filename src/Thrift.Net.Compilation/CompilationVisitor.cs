@@ -207,6 +207,14 @@ namespace Thrift.Net.Compilation
                 }
             }
 
+            if (field.Type == FieldType.SList)
+            {
+                this.AddWarning(
+                    CompilerMessageId.SlistDeprecated,
+                    context.fieldType().IDENTIFIER().Symbol,
+                    field.Name);
+            }
+
             return base.VisitField(context);
         }
 

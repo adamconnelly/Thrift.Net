@@ -129,6 +129,17 @@ namespace Thrift.Net.Compilation
         StructFieldIdMustBeAPositiveInteger = 203,
 
         /// <summary>
+        /// The `slist` type is deprecated, and should no-longer be used. Please
+        /// use the `string` type instead. For example:
+        /// ```
+        /// struct User {
+        ///   slist Username
+        /// }
+        /// ```
+        /// </summary>
+        SlistDeprecated = 204,
+
+        /// <summary>
         /// A syntax error has been reported by the Antlr parser.
         /// </summary>
         GenericParseError = 300,
