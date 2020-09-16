@@ -12,6 +12,6 @@ namespace Thrift.Net.Compilation
         /// </summary>
         /// <param name="document">The document to generate code for.</param>
         /// <returns>The generated C#.</returns>
-        string Generate(ThriftDocument document);
+        string Generate(Document document);
     }
 }

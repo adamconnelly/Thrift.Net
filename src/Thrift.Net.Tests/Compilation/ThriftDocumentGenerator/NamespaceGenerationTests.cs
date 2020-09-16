@@ -14,7 +14,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
         public void Generate_NamespaceSupplied_SetsCorrectNamespace()
         {
             // Arrange
-            var document = new ThriftDocument(
+            var document = new Document(
                 "Thrift.Net.Tests", new List<Enum>(), new List<Struct>());
 
             // Act
@@ -30,7 +30,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
         public void Generate_NamespaceNotSupplied_DoesNotGenerateNamespace()
         {
             // Arrange
-            var document = new ThriftDocument(
+            var document = new Document(
                 null,
                 new List<Enum>
                 {

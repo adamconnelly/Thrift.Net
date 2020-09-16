@@ -3,6 +3,7 @@ namespace Thrift.Net.Compilation
     using System.IO;
     using System.Linq;
     using Thrift.Net.Compilation.Binding;
+    using Thrift.Net.Compilation.Symbols;
 
     /// <summary>
     /// An object used to compile thrift IDL into a model that can be used for
@@ -31,7 +32,7 @@ namespace Thrift.Net.Compilation
             var combinedMessages = visitor.Messages.Union(parserErrorListener.Messages).ToList();
 
             return new CompilationResult(
-                new Symbols.ThriftDocument(
+                new Document(
                     visitor.Namespace,
                     visitor.Enums,
                     visitor.Structs),

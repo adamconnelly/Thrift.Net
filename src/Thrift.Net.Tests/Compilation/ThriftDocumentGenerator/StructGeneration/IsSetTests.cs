@@ -17,7 +17,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void HasFieldsWithDefaultRequiredness_GeneratesIsSetStruct()
         {
             // Arrange
-            var document = new ThriftDocument(
+            var document = new Document(
                 "Thrift.Net.Examples",
                 new List<Enum>(),
                 new List<Struct>
@@ -48,7 +48,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void HasNoFields_DoesNotGenerateIsSetStruct()
         {
             // Arrange
-            var document = new ThriftDocument(
+            var document = new Document(
                 "Thrift.Net.Examples",
                 new List<Enum>(),
                 new List<Struct>
@@ -72,7 +72,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void OnlyHasRequiredFields_DoesNotGenerateIsSetStruct()
         {
             // Arrange
-            var document = new ThriftDocument(
+            var document = new Document(
                 "Thrift.Net.Examples",
                 new List<Enum>(),
                 new List<Struct>
@@ -104,7 +104,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void OnlyHasOptionalFields_GeneratesIsSetStruct()
         {
             // Arrange
-            var document = new ThriftDocument(
+            var document = new Document(
                 "Thrift.Net.Examples",
                 new List<Enum>(),
                 new List<Struct>
@@ -136,7 +136,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public async Task HasFields_DefaultsIsSetToFalseForEachField()
         {
             // Arrange
-            var document = new ThriftDocument(
+            var document = new Document(
                 null,
                 new List<Enum>(),
                 new List<Struct>
@@ -179,7 +179,7 @@ return user.IsSet.Field1 == false &&
         public async Task FieldSet_MarksIsSetTrueForField()
         {
             // Arrange
-            var document = new ThriftDocument(
+            var document = new Document(
                 null,
                 new List<Enum>(),
                 new List<Struct>

@@ -5,15 +5,15 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Describes a Thrift IDL file.
     /// </summary>
-    public class ThriftDocument
+    public class Document
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ThriftDocument" /> class.
+        /// Initializes a new instance of the <see cref="Document" /> class.
         /// </summary>
         /// <param name="namespace">The C# namespace of the document.</param>
         /// <param name="enums">Any enums found in the document.</param>
         /// <param name="structs">Any structs found in the document.</param>
-        public ThriftDocument(
+        public Document(
             string @namespace,
             IReadOnlyCollection<Enum> enums,
             IReadOnlyCollection<Struct> structs)

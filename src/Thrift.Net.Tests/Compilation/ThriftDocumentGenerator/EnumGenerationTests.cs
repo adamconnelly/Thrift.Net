@@ -70,9 +70,9 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
             return namespaceDeclaration.Members.First() as EnumDeclarationSyntax;
         }
 
-        private static ThriftDocument CreateDocument()
+        private static Document CreateDocument()
         {
-            return new ThriftDocument(
+            return new Document(
                 "Thrift.Net.Tests",
                 new List<Enum>
                 {

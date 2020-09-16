@@ -14,7 +14,7 @@ namespace Thrift.Net.Compilation
         /// </summary>
         /// <param name="document">The document to generate code from.</param>
         /// <returns>The generated code.</returns>
-        public string Generate(ThriftDocument document)
+        public string Generate(Document document)
         {
             var assembly = typeof(ThriftDocumentGenerator).Assembly;
             var rawTemplate = assembly.GetManifestResourceStream(

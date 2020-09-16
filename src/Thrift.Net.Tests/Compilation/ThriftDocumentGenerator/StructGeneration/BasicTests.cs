@@ -20,7 +20,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void Generate_StructsProvided_GeneratesStructs()
         {
             // Arrange
-            var document = new ThriftDocument(
+            var document = new Document(
                 "Thrift.Net.Examples",
                 new List<Enum>(),
                 new List<Struct>
@@ -47,7 +47,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void Generate_StructsHaveFields_GeneratesFields()
         {
             // Arrange
-            var document = new ThriftDocument(
+            var document = new Document(
                 "Thrift.Net.Examples",
                 new List<Enum>(),
                 new List<Struct>
@@ -88,7 +88,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
             FieldType type)
         {
             // Arrange
-            var document = new ThriftDocument(
+            var document = new Document(
                 "Thrift.Net.Examples",
                 new List<Enum>(),
                 new List<Struct>
@@ -140,7 +140,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void Generate_FieldsSupplied_GeneratesFieldIdConstants()
         {
             // Arrange
-            var document = new ThriftDocument(
+            var document = new Document(
                 "Thrift.Net.Examples",
                 new List<Enum>(),
                 new List<Struct>
