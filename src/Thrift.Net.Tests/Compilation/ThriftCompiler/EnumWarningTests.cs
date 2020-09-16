@@ -8,7 +8,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
         [Fact]
         public void Compile_EnumHasNoMembers_ReportsWarning()
         {
-            this.AssertCompilerReturnsWarningId(
+            this.AssertCompilerReturnsWarningMessage(
                 "enum $UserType$ {}",
                 CompilerMessageId.EnumEmpty);
         }
@@ -16,7 +16,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
         [Fact]
         public void Compile_EnumWithMissingNameHasNoMembers_ReportsWarning()
         {
-            this.AssertCompilerReturnsWarningId(
+            this.AssertCompilerReturnsWarningMessage(
                 "$enum$ {}",
                 CompilerMessageId.EnumEmpty);
         }

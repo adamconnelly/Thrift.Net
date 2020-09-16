@@ -8,7 +8,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
         [Fact]
         public void Compile_EnumNameMissing_ReportsError()
         {
-            this.AssertCompilerReturnsErrorId(
+            this.AssertCompilerReturnsErrorMessage(
                 "$struct$ {}",
                 CompilerMessageId.StructMustHaveAName);
         }

@@ -1,8 +1,6 @@
 namespace Thrift.Net.Tests.Compilation.ThriftCompiler
 {
-    using System.Linq;
     using Thrift.Net.Compilation;
-    using Thrift.Net.Compilation.Resources;
     using Thrift.Net.Tests.Extensions;
     using Xunit;
 
@@ -11,16 +9,8 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
         [Fact]
         public void Compile_UnrecognisedNamespace_ReportsError()
         {
-            this.AssertCompilerReturnsErrorId(
-                "namespace $notalang$ mynamespace",
-                CompilerMessageId.NamespaceScopeUnknown);
-        }
-
-        [Fact]
-        public void Compile_UnrecognisedNamespace_IncludesScopeInErrorMessage()
-        {
             this.AssertCompilerReturnsErrorMessage(
-                "namespace notalang mynamespace",
+                "namespace $notalang$ mynamespace",
                 CompilerMessageId.NamespaceScopeUnknown,
                 "notalang");
         }
@@ -59,7 +49,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
         [Fact]
         public void Compile_ScopeMissing_ReportsError()
         {
-            this.AssertCompilerReturnsErrorId(
+            this.AssertCompilerReturnsErrorMessage(
                 "$namespace mynamespace$",
                 CompilerMessageId.NamespaceScopeMissing);
         }
@@ -67,7 +57,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
         [Fact]
         public void Compile_NamespaceMissing_ReportsError()
         {
-            this.AssertCompilerReturnsErrorId(
+            this.AssertCompilerReturnsErrorMessage(
                 "$namespace csharp$",
                 CompilerMessageId.NamespaceMissing);
         }
@@ -75,7 +65,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
         [Fact]
         public void Compile_ScopeAndNamespaceMissing_ReportsError()
         {
-            this.AssertCompilerReturnsErrorId(
+            this.AssertCompilerReturnsErrorMessage(
                 "$namespace$",
                 CompilerMessageId.NamespaceAndScopeMissing);
         }

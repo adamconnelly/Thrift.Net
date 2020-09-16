@@ -8,7 +8,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
         [Fact]
         public void Compile_InputContainsSyntaxErrors_ErrorsReported()
         {
-            this.AssertCompilerReturnsErrorId(
+            this.AssertCompilerReturnsErrorMessage(
 @"$structe$ User {
     i32 Id
 }",
