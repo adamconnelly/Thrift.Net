@@ -72,17 +72,15 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
 
         private static Document CreateDocument()
         {
-            return new Document(
-                "Thrift.Net.Tests",
-                new List<Enum>
-                {
-                    new EnumBuilder()
-                        .SetName("UserType")
-                        .AddMember(builder => builder.SetName("User").SetValue(2))
-                        .AddMember(builder => builder.SetName("Administrator").SetValue(5))
-                        .Build(),
-                },
-                new List<Struct>());
+            return new DocumentBuilder()
+                .AddNamespace(builder => builder
+                    .SetScope("csharp")
+                    .SetNamespaceName("Thrift.Net.Tests"))
+                .AddEnum(builder => builder
+                    .SetName("UserType")
+                    .AddMember(builder => builder.SetName("User").SetValue(2))
+                    .AddMember(builder => builder.SetName("Administrator").SetValue(5)))
+                .Build();
         }
     }
 }

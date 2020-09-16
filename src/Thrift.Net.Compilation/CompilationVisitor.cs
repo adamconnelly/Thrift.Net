@@ -102,25 +102,21 @@ namespace Thrift.Net.Compilation
                     CompilerMessageId.NamespaceAndScopeMissing,
                     context.NAMESPACE().Symbol);
             }
+            else if (context.ns == null)
+            {
+                this.AddError(
+                    CompilerMessageId.NamespaceMissing,
+                    context.NAMESPACE().Symbol,
+                    context.ns ?? context.namespaceScope ?? context.NAMESPACE().Symbol);
+            }
             else if (context.namespaceScope == null)
             {
-                if (AllowedNamespaceScopes.Contains(context.ns.Text))
-                {
-                    // The namespace is missing. For example `namespace csharp`
-                    this.AddError(
-                        CompilerMessageId.NamespaceMissing,
-                        context.NAMESPACE().Symbol,
-                        context.ns);
-                }
-                else
-                {
-                    // The namespace scope is missing. For example
-                    // `namespace mynamespace`
-                    this.AddError(
-                        CompilerMessageId.NamespaceScopeMissing,
-                        context.NAMESPACE().Symbol,
-                        context.ns);
-                }
+                // The namespace scope is missing. For example
+                // `namespace mynamespace`
+                this.AddError(
+                    CompilerMessageId.NamespaceScopeMissing,
+                    context.NAMESPACE().Symbol,
+                    context.ns);
             }
 
             return result;

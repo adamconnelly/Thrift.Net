@@ -20,7 +20,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
             var result = compiler.Compile(input.ToStream());
 
             // Assert
-            Assert.Equal(expected, result.Document.Namespace);
+            Assert.Equal(expected, result.Document.CSharpNamespace);
         }
 
         [Fact]
@@ -36,7 +36,7 @@ namespace delphi SomeOtherNamespace";
             var result = compiler.Compile(input.ToStream());
 
             // Assert
-            Assert.Equal("Thrift.Net.Examples", result.Document.Namespace);
+            Assert.Equal("Thrift.Net.Examples", result.Document.CSharpNamespace);
         }
     }
 }

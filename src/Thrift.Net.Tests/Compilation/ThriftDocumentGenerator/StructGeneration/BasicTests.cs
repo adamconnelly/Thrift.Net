@@ -20,14 +20,13 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void Generate_StructsProvided_GeneratesStructs()
         {
             // Arrange
-            var document = new Document(
-                "Thrift.Net.Examples",
-                new List<Enum>(),
-                new List<Struct>
-                {
-                    new StructBuilder().SetName("User").Build(),
-                    new StructBuilder().SetName("Permission").Build(),
-                });
+            var document = new DocumentBuilder()
+                .AddNamespace(builder => builder
+                    .SetScope("csharp")
+                    .SetNamespaceName("Thrift.Net.Examples"))
+                .AddStruct(builder => builder.SetName("User"))
+                .AddStruct(builder => builder.SetName("Permission"))
+                .Build();
 
             // Act
             var output = this.Generator.Generate(document);
@@ -44,24 +43,22 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         }
 
         [Fact]
-        public void Generate_StructsHaveFields_GeneratesFields()
+        public void Generate_StructHasFields_GeneratesFields()
         {
             // Arrange
-            var document = new Document(
-                "Thrift.Net.Examples",
-                new List<Enum>(),
-                new List<Struct>
-                {
-                    new StructBuilder()
-                        .SetName("User")
-                        .AddField(builder => builder
+            var document = new DocumentBuilder()
+                .AddNamespace(builder => builder
+                    .SetScope("csharp")
+                    .SetNamespaceName("Thrift.Net.Examples"))
+                .AddStruct(builder => builder
+                    .SetName("User")
+                    .AddField(builder => builder
                             .SetType(FieldType.Bool)
                             .SetName("Field1"))
                         .AddField(builder => builder
                             .SetType(FieldType.Bool)
-                            .SetName("Field2"))
-                        .Build(),
-                });
+                            .SetName("Field2")))
+                .Build();
 
             // Act
             var output = this.Generator.Generate(document);
@@ -88,18 +85,16 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
             FieldType type)
         {
             // Arrange
-            var document = new Document(
-                "Thrift.Net.Examples",
-                new List<Enum>(),
-                new List<Struct>
-                {
-                    new StructBuilder()
-                        .SetName("User")
-                        .AddField(builder => builder
+            var document = new DocumentBuilder()
+                .AddNamespace(builder => builder
+                    .SetScope("csharp")
+                    .SetNamespaceName("Thrift.Net.Examples"))
+                .AddStruct(builder => builder
+                    .SetName("User")
+                    .AddField(builder => builder
                             .SetName("Field")
-                            .SetType(type))
-                        .Build(),
-                });
+                            .SetType(type)))
+                .Build();
 
             // Act
             var output = this.Generator.Generate(document);
@@ -140,31 +135,29 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void Generate_FieldsSupplied_GeneratesFieldIdConstants()
         {
             // Arrange
-            var document = new Document(
-                "Thrift.Net.Examples",
-                new List<Enum>(),
-                new List<Struct>
-                {
-                    new StructBuilder()
-                        .SetName("User")
-                        .AddField(builder => builder
-                            .SetName("Field1")
-                            .SetFieldId(-1)
-                            .SetType(FieldType.Bool))
-                        .AddField(builder => builder
-                            .SetName("Field2")
-                            .SetFieldId(-2)
-                            .SetType(FieldType.Bool))
-                        .AddField(builder => builder
-                            .SetName("Field3")
-                            .SetFieldId(1)
-                            .SetType(FieldType.Bool))
-                        .AddField(builder => builder
-                            .SetName("Field4")
-                            .SetFieldId(5)
-                            .SetType(FieldType.Bool))
-                        .Build(),
-                });
+            var document = new DocumentBuilder()
+                .AddNamespace(builder => builder
+                    .SetScope("csharp")
+                    .SetNamespaceName("Thrift.Net.Examples"))
+                .AddStruct(builder => builder
+                    .SetName("User")
+                    .AddField(builder => builder
+                        .SetName("Field1")
+                        .SetFieldId(-1)
+                        .SetType(FieldType.Bool))
+                    .AddField(builder => builder
+                        .SetName("Field2")
+                        .SetFieldId(-2)
+                        .SetType(FieldType.Bool))
+                    .AddField(builder => builder
+                        .SetName("Field3")
+                        .SetFieldId(1)
+                        .SetType(FieldType.Bool))
+                    .AddField(builder => builder
+                        .SetName("Field4")
+                        .SetFieldId(5)
+                        .SetType(FieldType.Bool)))
+                .Build();
 
             // Act
             var output = this.Generator.Generate(document);

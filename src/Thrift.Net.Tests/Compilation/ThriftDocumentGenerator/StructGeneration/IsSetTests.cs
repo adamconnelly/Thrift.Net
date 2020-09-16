@@ -17,21 +17,19 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void HasFieldsWithDefaultRequiredness_GeneratesIsSetStruct()
         {
             // Arrange
-            var document = new Document(
-                "Thrift.Net.Examples",
-                new List<Enum>(),
-                new List<Struct>
-                {
-                    new StructBuilder()
-                        .SetName("User")
-                        .AddField(builder => builder
-                            .SetType(FieldType.Bool)
-                            .SetName("Field1"))
-                        .AddField(builder => builder
-                            .SetType(FieldType.Bool)
-                            .SetName("Field2"))
-                        .Build(),
-                });
+            var document = new DocumentBuilder()
+                .AddNamespace(builder => builder
+                    .SetScope("csharp")
+                    .SetNamespaceName("Thrift.Net.Examples"))
+                .AddStruct(builder => builder
+                    .SetName("User")
+                    .AddField(builder => builder
+                        .SetType(FieldType.Bool)
+                        .SetName("Field1"))
+                    .AddField(builder => builder
+                        .SetType(FieldType.Bool)
+                        .SetName("Field2")))
+                .Build();
 
             // Act
             var output = this.Generator.Generate(document);
@@ -48,15 +46,12 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void HasNoFields_DoesNotGenerateIsSetStruct()
         {
             // Arrange
-            var document = new Document(
-                "Thrift.Net.Examples",
-                new List<Enum>(),
-                new List<Struct>
-                {
-                    new StructBuilder()
-                        .SetName("User")
-                        .Build(),
-                });
+            var document = new DocumentBuilder()
+                .AddNamespace(builder => builder
+                    .SetScope("csharp")
+                    .SetNamespaceName("Thrift.Net.Examples"))
+                .AddStruct(builder => builder.SetName("User"))
+                .Build();
 
             // Act
             var output = this.Generator.Generate(document);
@@ -72,23 +67,21 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void OnlyHasRequiredFields_DoesNotGenerateIsSetStruct()
         {
             // Arrange
-            var document = new Document(
-                "Thrift.Net.Examples",
-                new List<Enum>(),
-                new List<Struct>
-                {
-                    new StructBuilder()
-                        .SetName("User")
-                        .AddField(builder => builder
-                            .SetName("Field1")
-                            .SetType(FieldType.Bool)
-                            .SetRequiredness(FieldRequiredness.Required))
-                        .AddField(builder => builder
-                            .SetName("Field2")
-                            .SetType(FieldType.Bool)
-                            .SetRequiredness(FieldRequiredness.Required))
-                        .Build(),
-                });
+            var document = new DocumentBuilder()
+                .AddNamespace(builder => builder
+                    .SetScope("csharp")
+                    .SetNamespaceName("Thrift.Net.Examples"))
+                .AddStruct(builder => builder
+                    .SetName("User")
+                    .AddField(builder => builder
+                        .SetType(FieldType.Bool)
+                        .SetName("Field1")
+                        .SetRequiredness(FieldRequiredness.Required))
+                    .AddField(builder => builder
+                        .SetType(FieldType.Bool)
+                        .SetName("Field2")
+                        .SetRequiredness(FieldRequiredness.Required)))
+                .Build();
 
             // Act
             var output = this.Generator.Generate(document);
@@ -104,23 +97,21 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void OnlyHasOptionalFields_GeneratesIsSetStruct()
         {
             // Arrange
-            var document = new Document(
-                "Thrift.Net.Examples",
-                new List<Enum>(),
-                new List<Struct>
-                {
-                    new StructBuilder()
-                        .SetName("User")
-                        .AddField(builder => builder
-                            .SetName("Field1")
-                            .SetType(FieldType.Bool)
-                            .SetRequiredness(FieldRequiredness.Optional))
-                        .AddField(builder => builder
-                            .SetName("Field2")
-                            .SetType(FieldType.Bool)
-                            .SetRequiredness(FieldRequiredness.Optional))
-                        .Build(),
-                });
+            var document = new DocumentBuilder()
+                .AddNamespace(builder => builder
+                    .SetScope("csharp")
+                    .SetNamespaceName("Thrift.Net.Examples"))
+                .AddStruct(builder => builder
+                    .SetName("User")
+                    .AddField(builder => builder
+                        .SetName("Field1")
+                        .SetType(FieldType.Bool)
+                        .SetRequiredness(FieldRequiredness.Optional))
+                    .AddField(builder => builder
+                        .SetName("Field2")
+                        .SetType(FieldType.Bool)
+                        .SetRequiredness(FieldRequiredness.Optional)))
+                .Build();
 
             // Act
             var output = this.Generator.Generate(document);
@@ -136,25 +127,18 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public async Task HasFields_DefaultsIsSetToFalseForEachField()
         {
             // Arrange
-            var document = new Document(
-                null,
-                new List<Enum>(),
-                new List<Struct>
-                {
-                    new StructBuilder()
-                        .SetName("User")
-                        .AddField(builder => builder
-                            .SetName("Field1")
-                            .SetFieldId(0)
-                            .SetType(FieldType.Bool)
-                            .SetRequiredness(FieldRequiredness.Optional))
-                        .AddField(builder => builder
-                            .SetName("Field2")
-                            .SetFieldId(1)
-                            .SetType(FieldType.Bool)
-                            .SetRequiredness(FieldRequiredness.Optional))
-                        .Build(),
-                });
+            var document = new DocumentBuilder()
+                .AddStruct(builder => builder
+                    .SetName("User")
+                    .AddField(builder => builder
+                        .SetName("Field1")
+                        .SetFieldId(0)
+                        .SetType(FieldType.Bool))
+                    .AddField(builder => builder
+                        .SetName("Field2")
+                        .SetFieldId(1)
+                        .SetType(FieldType.Bool)))
+                .Build();
 
             // Act
             var output = this.Generator.Generate(document);
@@ -179,20 +163,14 @@ return user.IsSet.Field1 == false &&
         public async Task FieldSet_MarksIsSetTrueForField()
         {
             // Arrange
-            var document = new Document(
-                null,
-                new List<Enum>(),
-                new List<Struct>
-                {
-                    new StructBuilder()
-                        .SetName("User")
-                        .AddField(builder => builder
-                            .SetName("Field1")
-                            .SetFieldId(0)
-                            .SetType(FieldType.Bool)
-                            .SetRequiredness(FieldRequiredness.Optional))
-                        .Build(),
-                });
+            var document = new DocumentBuilder()
+                .AddStruct(builder => builder
+                    .SetName("User")
+                    .AddField(builder => builder
+                        .SetName("Field1")
+                        .SetFieldId(0)
+                        .SetType(FieldType.Bool)))
+                .Build();
 
             // Act
             var output = this.Generator.Generate(document);
