@@ -274,7 +274,7 @@ namespace Thrift.Net.Compilation
 
             var enumBinder = this.binderProvider
                 .GetBinder(enumMember.Node.Parent) as IEnumBinder;
-            if (enumBinder.IsEnumMemberAlreadyDefined(enumMember.Name, enumMember.Node))
+            if (enumBinder.IsEnumMemberAlreadyDeclared(enumMember.Name, enumMember.Node))
             {
                 this.AddError(
                     CompilerMessageId.EnumMemberDuplicated,

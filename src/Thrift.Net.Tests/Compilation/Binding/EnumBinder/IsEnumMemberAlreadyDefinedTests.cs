@@ -27,7 +27,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.EnumBinder
             this.SetupMember(enumNode.enumMember()[0], "User");
 
             // Act
-            var isAlreadyDefined = this.Binder.IsEnumMemberAlreadyDefined(
+            var isAlreadyDefined = this.Binder.IsEnumMemberAlreadyDeclared(
                 "User", enumNode.enumMember()[0]);
 
             // Assert
@@ -51,7 +51,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.EnumBinder
             this.SetupMember(enumNode.enumMember()[1], "User");
 
             // Act
-            var isAlreadyDefined = this.Binder.IsEnumMemberAlreadyDefined(
+            var isAlreadyDefined = this.Binder.IsEnumMemberAlreadyDeclared(
                 "User", enumNode.enumMember()[1]);
 
             // Assert
@@ -75,7 +75,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.EnumBinder
             this.SetupMember(enumNode.enumMember()[1], "User");
 
             // Act
-            var isAlreadyDefined = this.Binder.IsEnumMemberAlreadyDefined(
+            var isAlreadyDefined = this.Binder.IsEnumMemberAlreadyDeclared(
                 "User", enumNode.enumMember()[0]);
 
             // Assert

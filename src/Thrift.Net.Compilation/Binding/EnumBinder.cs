@@ -51,7 +51,7 @@ namespace Thrift.Net.Compilation.Binding
         }
 
         /// <inheritdoc />
-        public bool IsEnumMemberAlreadyDefined(string memberName, EnumMemberContext node)
+        public bool IsEnumMemberAlreadyDeclared(string memberName, EnumMemberContext node)
         {
             var parent = node.Parent as EnumDefinitionContext;
 

@@ -28,8 +28,8 @@ namespace Thrift.Net.Compilation.Binding
         /// <param name="memberName">The name to check for.</param>
         /// <param name="node">The node being defined.</param>
         /// <returns>
-        /// true if a member with the same name has already been defined, false otherwise.
+        /// true if a member with the same name has already been declared, false otherwise.
         /// </returns>
-        bool IsEnumMemberAlreadyDefined(string memberName, EnumMemberContext node);
+        bool IsEnumMemberAlreadyDeclared(string memberName, EnumMemberContext node);
     }
 }
