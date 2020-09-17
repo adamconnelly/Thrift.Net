@@ -206,7 +206,7 @@ namespace Thrift.Net.Compilation
             }
 
             if (enumDefinition.Name != null &&
-                documentBinder.IsEnumAlreadyDeclared(
+                documentBinder.IsMemberNameAlreadyDeclared(
                     enumDefinition.Name, enumDefinition.Node))
             {
                 this.AddError(

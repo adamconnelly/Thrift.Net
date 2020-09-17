@@ -7,7 +7,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a Thrift struct.
     /// </summary>
-    public class Struct : Symbol<StructDefinitionContext>
+    public class Struct : NamedSymbol<StructDefinitionContext>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Struct" /> class.
@@ -16,16 +16,10 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="name">The name of the struct.</param>
         /// <param name="fields">The struct's fields.</param>
         public Struct(StructDefinitionContext node, string name, IReadOnlyCollection<Field> fields)
-            : base(node)
+            : base(node, name)
         {
-            this.Name = name;
             this.Fields = fields;
         }
-
-        /// <summary>
-        /// Gets the name of the struct.
-        /// </summary>
-        public string Name { get; }
 
         /// <summary>
         /// Gets the fields of the struct.

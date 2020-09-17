@@ -6,7 +6,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Describes an enum.
     /// </summary>
-    public class Enum : Symbol<EnumDefinitionContext>
+    public class Enum : NamedSymbol<EnumDefinitionContext>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Enum" /> class.
@@ -15,16 +15,10 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="name">The name of the enum.</param>
         /// <param name="members">The enum members.</param>
         public Enum(EnumDefinitionContext node, string name, IReadOnlyCollection<EnumMember> members)
-            : base(node)
+            : base(node, name)
         {
-            this.Name = name;
             this.Members = members;
         }
-
-        /// <summary>
-        /// Gets the name of the enum.
-        /// </summary>
-        public string Name { get; }
 
         /// <summary>
         /// Gets the enum members.

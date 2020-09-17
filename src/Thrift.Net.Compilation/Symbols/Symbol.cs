@@ -21,6 +21,9 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc />
+        IParseTree ISymbol.Node => this.Node;
+
+        /// <inheritdoc />
         public TNode Node { get; private set; }
     }
 }

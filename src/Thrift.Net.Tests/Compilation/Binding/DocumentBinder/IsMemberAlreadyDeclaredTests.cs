@@ -8,12 +8,13 @@ namespace Thrift.Net.Tests.Compilation.Binding.DocumentBinder
     using Xunit;
     using static Thrift.Net.Antlr.ThriftParser;
 
-    public class IsEnumAlreadyDeclaredTests : DocumentBinderTests
+    public class IsMemberAlreadyDeclaredTests : DocumentBinderTests
     {
         private readonly IBinder enumBinder = Substitute.For<IBinder>();
+        private readonly IBinder structBinder = Substitute.For<IBinder>();
 
         [Fact]
-        public void NoOtherEnumsDeclared_ReturnsFalse()
+        public void NoOtherMembersDeclared_ReturnsFalse()
         {
             var input = "enum UserType {}";
             var documentNode = ParserInput
@@ -23,7 +24,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.DocumentBinder
             this.SetupMember(documentNode.definitions().enumDefinition()[0], "UserType");
 
             // Act
-            var isAlreadyDefined = this.Binder.IsEnumAlreadyDeclared(
+            var isAlreadyDefined = this.Binder.IsMemberNameAlreadyDeclared(
                 "UserType", documentNode.definitions().enumDefinition()[0]);
 
             // Assert
@@ -31,7 +32,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.DocumentBinder
         }
 
         [Fact]
-        public void EnumIsADuplicate_ReturnsTrue()
+        public void HasDuplicateEnum_ReturnsTrue()
         {
             var input =
 @"enum UserType {}
@@ -44,7 +45,7 @@ enum UserType {}";
             this.SetupMember(documentNode.definitions().enumDefinition()[1], "UserType");
 
             // Act
-            var isAlreadyDefined = this.Binder.IsEnumAlreadyDeclared(
+            var isAlreadyDefined = this.Binder.IsMemberNameAlreadyDeclared(
                 "UserType", documentNode.definitions().enumDefinition()[1]);
 
             // Assert
@@ -52,7 +53,7 @@ enum UserType {}";
         }
 
         [Fact]
-        public void EnumDeclaredFirst_ReturnsFalse()
+        public void MemberDeclaredFirst_ReturnsFalse()
         {
             var input =
 @"enum UserType {}
@@ -65,7 +66,7 @@ enum UserType {}";
             this.SetupMember(documentNode.definitions().enumDefinition()[1], "UserType");
 
             // Act
-            var isAlreadyDefined = this.Binder.IsEnumAlreadyDeclared(
+            var isAlreadyDefined = this.Binder.IsMemberNameAlreadyDeclared(
                 "UserType", documentNode.definitions().enumDefinition()[0]);
 
             // Assert
@@ -73,7 +74,7 @@ enum UserType {}";
         }
 
         [Fact]
-        public void EnumNotADuplicate_ReturnsFalse()
+        public void MemberNotADuplicate_ReturnsFalse()
         {
             var input =
 @"enum UserType {}
@@ -86,11 +87,32 @@ enum PermissionType {}";
             this.SetupMember(documentNode.definitions().enumDefinition()[1], "PermissionType");
 
             // Act
-            var isAlreadyDefined = this.Binder.IsEnumAlreadyDeclared(
+            var isAlreadyDefined = this.Binder.IsMemberNameAlreadyDeclared(
                 "PermissionType", documentNode.definitions().enumDefinition()[1]);
 
             // Assert
             Assert.False(isAlreadyDefined);
+        }
+
+        [Fact]
+        public void MultipleMemberTypesWithDuplicateNames_ReturnTrue()
+        {
+            var input =
+@"enum UserType {}
+struct UserType {}";
+            var documentNode = ParserInput
+                .FromString(input)
+                .ParseInput(parser => parser.document());
+
+            this.SetupMember(documentNode.definitions().enumDefinition()[0], "UserType");
+            this.SetupMember(documentNode.definitions().structDefinition()[0], "UserType");
+
+            // Act
+            var isAlreadyDefined = this.Binder.IsMemberNameAlreadyDeclared(
+                "UserType", documentNode.definitions().structDefinition()[0]);
+
+            // Assert
+            Assert.True(isAlreadyDefined);
         }
 
         private void SetupMember(EnumDefinitionContext enumNode, string enumName)
@@ -101,7 +123,18 @@ enum PermissionType {}";
                 .Build();
 
             this.BinderProvider.GetBinder(enumNode).Returns(this.enumBinder);
-            this.enumBinder.Bind<Enum>(enumNode).Returns(member);
+            this.enumBinder.Bind<INamedSymbol>(enumNode).Returns(member);
+        }
+
+        private void SetupMember(StructDefinitionContext structNode, string structName)
+        {
+            var member = new StructBuilder()
+                .SetNode(structNode)
+                .SetName(structName)
+                .Build();
+
+            this.BinderProvider.GetBinder(structNode).Returns(this.structBinder);
+            this.structBinder.Bind<INamedSymbol>(structNode).Returns(member);
         }
     }
 }

@@ -1,6 +1,7 @@
 namespace Thrift.Net.Compilation.Binding
 {
     using System.Linq;
+    using Antlr4.Runtime.Tree;
     using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Compilation.Symbols.Builders;
     using static Thrift.Net.Antlr.ThriftParser;
@@ -25,16 +26,21 @@ namespace Thrift.Net.Compilation.Binding
         }
 
         /// <inheritdoc />
-        public bool IsEnumAlreadyDeclared(string enumName, EnumDefinitionContext enumNode)
+        public bool IsMemberNameAlreadyDeclared(string memberName, IParseTree memberNode)
         {
-            var parent = enumNode.Parent as DefinitionsContext;
+            var parent = memberNode.Parent as DefinitionsContext;
 
-            return parent.enumDefinition()
+            if (parent.children.Count <= 1)
+            {
+                return false;
+            }
+
+            return parent.children
                 .Select(sibling => this.binderProvider
                     .GetBinder(sibling)
-                    .Bind<Enum>(sibling))
-                .Where(sibling => sibling.Name == enumName)
-                .TakeWhile(sibling => sibling.Node != enumNode)
+                    .Bind<INamedSymbol>(sibling))
+                .Where(sibling => sibling.Name == memberName)
+                .TakeWhile(sibling => sibling.Node != memberNode)
                 .Any();
         }
 

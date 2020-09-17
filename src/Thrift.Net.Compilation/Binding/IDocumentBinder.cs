@@ -1,5 +1,6 @@
 namespace Thrift.Net.Compilation.Binding
 {
+    using Antlr4.Runtime.Tree;
     using Thrift.Net.Compilation.Symbols;
     using static Thrift.Net.Antlr.ThriftParser;
 
@@ -10,14 +11,15 @@ namespace Thrift.Net.Compilation.Binding
     public interface IDocumentBinder : IBinder
     {
         /// <summary>
-        /// Checks whether an enum with the specified name has already been declared.
+        /// Checks whether another member with the specified name has already
+        /// been declared in the document.
         /// </summary>
-        /// <param name="enumName">The enum name.</param>
-        /// <param name="enumNode">The node being declared.</param>
+        /// <param name="memberName">The member's name.</param>
+        /// <param name="memberNode">The node being declared.</param>
         /// <returns>
-        /// true if an enum has with the same name has been declared before
-        /// <paramref ref="enumNode" />. false otherwise.
+        /// true if another member with the same name has been declared before
+        /// <paramref name="memberNode" />. false otherwise.
         /// </returns>
-        bool IsEnumAlreadyDeclared(string enumName, EnumDefinitionContext enumNode);
+        bool IsMemberNameAlreadyDeclared(string memberName, IParseTree memberNode);
     }
 }

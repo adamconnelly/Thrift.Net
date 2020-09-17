@@ -7,6 +7,10 @@ namespace Thrift.Net.Compilation.Symbols
     /// </summary>
     public interface ISymbol
     {
+        /// <summary>
+        /// Gets the node this symbol was bound from.
+        /// </summary>
+        IParseTree Node { get; }
     }
 
     /// <summary>
@@ -19,8 +23,8 @@ namespace Thrift.Net.Compilation.Symbols
         where TNode : IParseTree
     {
         /// <summary>
-        /// Gets the node this symbol was created from.
+        /// Gets the node this symbol was bound from.
         /// </summary>
-        TNode Node { get; }
+        new TNode Node { get; }
     }
 }
