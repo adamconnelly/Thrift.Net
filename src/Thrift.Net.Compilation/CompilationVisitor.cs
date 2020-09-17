@@ -138,6 +138,19 @@ namespace Thrift.Net.Compilation
                     CompilerMessageId.StructMustHaveAName,
                     context.STRUCT().Symbol);
             }
+            else
+            {
+                var parent = context.Parent as DefinitionsContext;
+                var documentBinder = this.binderProvider.GetBinder(parent.Parent) as IDocumentBinder;
+
+                if (documentBinder.IsMemberNameAlreadyDeclared(structDefinition.Name, structDefinition.Node))
+                {
+                    this.AddError(
+                        CompilerMessageId.NameAlreadyDeclared,
+                        context.name,
+                        structDefinition.Name);
+                }
+            }
 
             return result;
         }
@@ -210,7 +223,7 @@ namespace Thrift.Net.Compilation
                     enumDefinition.Name, enumDefinition.Node))
             {
                 this.AddError(
-                    CompilerMessageId.EnumDuplicated,
+                    CompilerMessageId.NameAlreadyDeclared,
                     enumDefinition.Node.name,
                     enumDefinition.Node.name.Text);
             }

@@ -86,7 +86,7 @@ CompilerMessageId.EnumMemberDuplicated,
 enum $UserType$ {
     User
 }",
-CompilerMessageId.EnumDuplicated,
+CompilerMessageId.NameAlreadyDeclared,
 "UserType");
         }
     }

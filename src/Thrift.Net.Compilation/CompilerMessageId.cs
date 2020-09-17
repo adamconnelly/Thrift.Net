@@ -54,14 +54,14 @@ namespace Thrift.Net.Compilation
         EnumMemberDuplicated = 7,
 
         /// <summary>
-        /// An enum with the same name has been defined twice.
+        /// Another item has already been declared with the same name
         /// For example:
         /// ```thrift
         /// enum UserType {}
-        /// enum UserType {}
+        /// struct UserType {}
         /// ```
         /// </summary>
-        EnumDuplicated = 8,
+        NameAlreadyDeclared = 8,
 
         /// <summary>
         /// The specified namespace scope is not in the list of known namespaces.

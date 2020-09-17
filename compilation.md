@@ -286,15 +286,15 @@ enum UserType {
 }
 ```
 
-### TC0008 - Enum Duplicated
+### TC0008 - Name Already Declared
 
 _Level_: Error
 
-The same enum has been defined twice. For example:
+Another item has already been declared with the same name. For example:
 
 ```thrift
 enum UserType {}
-enum UserType {}
+struct UserType {}
 ```
 
 To fix this issue rename or remove the duplicate. For example:

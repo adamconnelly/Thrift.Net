@@ -83,7 +83,7 @@
     <value>Enum member '{0}' has already been defined</value>
   </data>
   <data name="TC0008" xml:space="preserve">
-    <value>Enum '{0}' has already been defined</value>
+    <value>Another item called '{0}' has already been declared. Please choose another name.</value>
   </data>
   <data name="TC0100" xml:space="preserve">
     <value>'{0}' is not a valid namespace scope</value>

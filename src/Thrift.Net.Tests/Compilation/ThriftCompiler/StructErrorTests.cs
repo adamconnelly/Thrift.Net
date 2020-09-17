@@ -6,11 +6,21 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
     public class StructErrorTests : ThriftCompilerTests
     {
         [Fact]
-        public void Compile_EnumNameMissing_ReportsError()
+        public void Compile_StructNameMissing_ReportsError()
         {
             this.AssertCompilerReturnsErrorMessage(
                 "$struct$ {}",
                 CompilerMessageId.StructMustHaveAName);
+        }
+
+        [Fact]
+        public void Compile_StructNameAlreadyUsed_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"enum User {}
+struct $User$ {}",
+CompilerMessageId.NameAlreadyDeclared,
+"User");
         }
 
         [Fact]
