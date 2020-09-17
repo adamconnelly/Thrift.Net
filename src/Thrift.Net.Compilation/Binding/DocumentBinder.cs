@@ -9,7 +9,7 @@ namespace Thrift.Net.Compilation.Binding
     /// Used to bind <see cref="Document" /> objects from <see cref="DocumentContext" />
     /// nodes.
     /// </summary>
-    public class DocumentBinder : Binder<DocumentContext, Document>
+    public class DocumentBinder : Binder<DocumentContext, Document>, IDocumentBinder
     {
         private readonly IBinderProvider binderProvider;
 
@@ -22,6 +22,20 @@ namespace Thrift.Net.Compilation.Binding
             : base(parent)
         {
             this.binderProvider = binderProvider;
+        }
+
+        /// <inheritdoc />
+        public bool IsEnumAlreadyDeclared(string enumName, EnumDefinitionContext enumNode)
+        {
+            var parent = enumNode.Parent as DefinitionsContext;
+
+            return parent.enumDefinition()
+                .Select(sibling => this.binderProvider
+                    .GetBinder(sibling)
+                    .Bind<Enum>(sibling))
+                .Where(sibling => sibling.Name == enumName)
+                .TakeWhile(sibling => sibling.Node != enumNode)
+                .Any();
         }
 
         /// <inheritdoc />

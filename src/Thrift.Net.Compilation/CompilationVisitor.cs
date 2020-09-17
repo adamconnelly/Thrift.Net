@@ -17,9 +17,6 @@ namespace Thrift.Net.Compilation
         private readonly List<CompilationMessage> messages = new List<CompilationMessage>();
         private readonly IBinderProvider binderProvider;
 
-        // TODO: Remove and switch the duplicate enum check to use a binder method
-        private readonly Dictionary<string, Enum> enums = new Dictionary<string, Enum>();
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CompilationVisitor" /> class.
         /// </summary>
@@ -105,7 +102,11 @@ namespace Thrift.Net.Compilation
             var binder = this.binderProvider.GetBinder(context);
             var enumDefinition = binder.Bind<Enum>(context);
 
-            this.AddEnumMessages(enumDefinition);
+            var definitionsNode = context.Parent as DefinitionsContext;
+            var documentNode = definitionsNode.Parent as DocumentContext;
+            var documentBinder = this.binderProvider.GetBinder(documentNode) as IDocumentBinder;
+
+            this.AddEnumMessages(enumDefinition, documentBinder);
 
             return result;
         }
@@ -194,7 +195,7 @@ namespace Thrift.Net.Compilation
             return base.VisitField(context);
         }
 
-        private void AddEnumMessages(Enum enumDefinition)
+        private void AddEnumMessages(Enum enumDefinition, IDocumentBinder documentBinder)
         {
             if (enumDefinition.Name == null)
             {
@@ -204,7 +205,9 @@ namespace Thrift.Net.Compilation
                     enumDefinition.Node.ENUM().Symbol);
             }
 
-            if (enumDefinition.Name != null && !this.enums.TryAdd(enumDefinition.Name, enumDefinition))
+            if (enumDefinition.Name != null &&
+                documentBinder.IsEnumAlreadyDeclared(
+                    enumDefinition.Name, enumDefinition.Node))
             {
                 this.AddError(
                     CompilerMessageId.EnumDuplicated,
