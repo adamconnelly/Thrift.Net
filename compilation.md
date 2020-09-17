@@ -370,6 +370,26 @@ To fix this issue provide a namespace:
 namespace csharp Thrift.Net.Examples
 ```
 
+### TC0104 - Namespace Scope Already Specified
+
+_Level_: Error
+
+Another namespace statement has already been declared with the same scope. For
+example:
+
+```thrift
+namespace csharp Namespace.A
+namespace csharp Namespace.B
+          ^^^^^^
+```
+
+To fix this issue remove the duplicate declaration, or change its scope:
+
+```thrift
+namespace csharp Namespace.A
+namespace netstd Namespace.B
+```
+
 ### TC0200 - Struct Name Missing
 
 _Level_: Error

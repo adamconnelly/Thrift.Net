@@ -69,5 +69,15 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
                 "$namespace$",
                 CompilerMessageId.NamespaceAndScopeMissing);
         }
+
+        [Fact]
+        public void Compile_DuplicateScope_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"namespace csharp Thrift.Net.Examples.A
+namespace $csharp$ Thrift.Net.Examples.B",
+CompilerMessageId.NamespaceScopeAlreadySpecified,
+"csharp");
+        }
     }
 }

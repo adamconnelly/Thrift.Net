@@ -45,6 +45,20 @@ namespace Thrift.Net.Compilation.Binding
         }
 
         /// <inheritdoc />
+        public bool IsNamespaceForScopeAlreadyDeclared(Namespace @namespace)
+        {
+            var headerNode = @namespace.Node.Parent as HeaderContext;
+
+            return headerNode.namespaceStatement()
+                .Select(node => this.binderProvider
+                    .GetBinder(node)
+                    .Bind<Namespace>(node))
+                .Where(n => n.Scope == @namespace.Scope)
+                .TakeWhile(n => n.Node != @namespace.Node)
+                .Any();
+        }
+
+        /// <inheritdoc />
         protected override Document Bind(DocumentContext node)
         {
             var documentBuilder = new DocumentBuilder()

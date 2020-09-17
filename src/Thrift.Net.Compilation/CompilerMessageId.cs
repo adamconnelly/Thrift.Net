@@ -88,6 +88,15 @@ namespace Thrift.Net.Compilation
         NamespaceMissing = 103,
 
         /// <summary>
+        /// The same namespace scope has been specified multiple times. For example:
+        /// ```
+        /// namespace csharp Thrift.Net.Examples.A
+        /// namespace csharp Thrift.Net.Examples.B
+        /// ```
+        /// </summary>
+        NamespaceScopeAlreadySpecified = 104,
+
+        /// <summary>
         /// A struct has been defined without a name. For example:
         /// `struct {}`.
         /// </summary>

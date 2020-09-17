@@ -21,5 +21,16 @@ namespace Thrift.Net.Compilation.Binding
         /// <paramref name="memberNode" />. false otherwise.
         /// </returns>
         bool IsMemberNameAlreadyDeclared(string memberName, IParseTree memberNode);
+
+        /// <summary>
+        /// Checks whether another namespace statement has already been declared
+        /// for the same scope.
+        /// </summary>
+        /// <param name="namespace">The namespace being declared.</param>
+        /// <returns>
+        /// true if another namespace statement has already been declared with
+        /// the same scope. false otherwise.
+        /// </returns>
+        bool IsNamespaceForScopeAlreadyDeclared(Namespace @namespace);
     }
 }

@@ -91,6 +91,26 @@ namespace Thrift.Net.Compilation
                     context.ns);
             }
 
+            if (@namespace.Scope != null)
+            {
+                var headerNode = @namespace.Node.Parent as HeaderContext;
+                var documentNode = headerNode.Parent as DocumentContext;
+                var documentBinder = this.binderProvider.GetBinder(documentNode) as IDocumentBinder;
+
+                if (documentBinder.IsNamespaceForScopeAlreadyDeclared(@namespace))
+                {
+                    // The namespace scope has already been specified. For example:
+                    // ```
+                    // namespace csharp Thrift.Net.Examples.A
+                    // namespace csharp Thrift.Net.Examples.B
+                    // ```
+                    this.AddError(
+                        CompilerMessageId.NamespaceScopeAlreadySpecified,
+                        @namespace.Node.namespaceScope,
+                        @namespace.Scope);
+                }
+            }
+
             return result;
         }
 
@@ -134,6 +154,7 @@ namespace Thrift.Net.Compilation
 
             if (structDefinition.Name == null)
             {
+                // A struct has been declared with no name. For example `struct {}`.
                 this.AddError(
                     CompilerMessageId.StructMustHaveAName,
                     context.STRUCT().Symbol);
@@ -145,6 +166,12 @@ namespace Thrift.Net.Compilation
 
                 if (documentBinder.IsMemberNameAlreadyDeclared(structDefinition.Name, structDefinition.Node))
                 {
+                    // Another type has already been declared with the same name.
+                    // For example:
+                    // ```
+                    // enum User {}
+                    // struct User {}
+                    // ```
                     this.AddError(
                         CompilerMessageId.NameAlreadyDeclared,
                         context.name,
@@ -163,6 +190,13 @@ namespace Thrift.Net.Compilation
             var parentBinder = this.binderProvider.GetBinder(context.Parent) as IFieldContainerBinder;
             if (parentBinder.IsFieldNameAlreadyDefined(field.Name, context))
             {
+                // The field name has already been declared. For example:
+                // ```
+                // struct User {
+                //     1: string Username
+                //     2: string Username
+                // }
+                // ```
                 this.AddError(
                     CompilerMessageId.StructFieldNameAlreadyDefined,
                     context.name,
@@ -171,6 +205,12 @@ namespace Thrift.Net.Compilation
 
             if (field.IsFieldIdImplicit)
             {
+                // A field has been declared with no field Id. For example:
+                // ```
+                // struct User {
+                //     string Username
+                // }
+                // ```
                 this.AddWarning(
                     CompilerMessageId.FieldIdNotSpecified,
                     context.name,
@@ -182,6 +222,13 @@ namespace Thrift.Net.Compilation
                 {
                     if (parentBinder.IsFieldIdAlreadyDefined(field.FieldId.Value, context))
                     {
+                        // The field Id has already been declared. For example:
+                        // ```
+                        // struct User {
+                        //     1: i32 Id
+                        //     1: string Username
+                        // }
+                        // ```
                         this.AddError(
                             CompilerMessageId.StructFieldIdAlreadyDefined,
                             context.fieldId,
@@ -190,6 +237,12 @@ namespace Thrift.Net.Compilation
                 }
                 else
                 {
+                    // A negative field Id has been specified. For example:
+                    // ```
+                    // struct User {
+                    //     -1: string Username
+                    // }
+                    // ```
                     this.AddError(
                         CompilerMessageId.StructFieldIdMustBeAPositiveInteger,
                         context.fieldId,
@@ -199,6 +252,12 @@ namespace Thrift.Net.Compilation
 
             if (field.Type == FieldType.SList)
             {
+                // A field has been declared using the slist type. For example:
+                // ```
+                // struct User {
+                //     1: slist Username
+                // }
+                // ```
                 this.AddWarning(
                     CompilerMessageId.SlistDeprecated,
                     context.fieldType().IDENTIFIER().Symbol,
@@ -222,6 +281,11 @@ namespace Thrift.Net.Compilation
                 documentBinder.IsMemberNameAlreadyDeclared(
                     enumDefinition.Name, enumDefinition.Node))
             {
+                // Another type has already been declared with the same name:
+                // ```
+                // struct UserType {}
+                // enum UserType {}
+                // ```
                 this.AddError(
                     CompilerMessageId.NameAlreadyDeclared,
                     enumDefinition.Node.name,
@@ -289,6 +353,14 @@ namespace Thrift.Net.Compilation
                 .GetBinder(enumMember.Node.Parent) as IEnumBinder;
             if (enumBinder.IsEnumMemberAlreadyDeclared(enumMember.Name, enumMember.Node))
             {
+
+                // The same enum member has been declared twice:
+                // ```
+                // enum UserType {
+                //     User
+                //     User
+                // }
+                // ```
                 this.AddError(
                     CompilerMessageId.EnumMemberDuplicated,
                     enumMember.Node.IDENTIFIER().Symbol,

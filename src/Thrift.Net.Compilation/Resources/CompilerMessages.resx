@@ -97,6 +97,9 @@
   <data name="TC0103" xml:space="preserve">
     <value>A namespace must be specified</value>
   </data>
+  <data name="TC0104" xml:space="preserve">
+    <value>A namespace has already been specified for the '{0}' target. Please use a different namespace scope.</value>
+  </data>
   <data name="TC0200" xml:space="preserve">
     <value>A struct name must be specified</value>
   </data>
