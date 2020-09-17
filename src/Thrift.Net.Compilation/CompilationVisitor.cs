@@ -353,7 +353,6 @@ namespace Thrift.Net.Compilation
                 .GetBinder(enumMember.Node.Parent) as IEnumBinder;
             if (enumBinder.IsEnumMemberAlreadyDeclared(enumMember.Name, enumMember.Node))
             {
-
                 // The same enum member has been declared twice:
                 // ```
                 // enum UserType {
