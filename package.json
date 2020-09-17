@@ -8,7 +8,9 @@
     "lint:markdown": "npx markdownlint '**/*.md' --ignore node_modules",
     "format:markdown": "npx prettier --write '**/*.md'",
     "antlr:grun": "java -jar ./src/Thrift.Net.Antlr/lib/antlr-4.8-complete.jar -o .antlr -Xexact-output-dir ./src/Thrift.Net.Antlr/Thrift.g4 && javac -cp ./src/Thrift.Net.Antlr/lib/antlr-4.8-complete.jar ./.antlr/Thrift*.java && echo 'Starting grun' && java -cp ./.antlr:./src/Thrift.Net.Antlr/lib/antlr-4.8-complete.jar org.antlr.v4.gui.TestRig Thrift document -gui",
-    "compiler": "dotnet run --project ./src/Thrift.Net.Compiler --"
+    "compiler": "dotnet run --project ./src/Thrift.Net.Compiler --",
+    "publish:compiler:linux-x64": "dotnet publish -c 'Release' -r linux-x64 -o ./artifacts/linux-x64 ./src/Thrift.Net.Compiler",
+    "publish:compiler:win-x64": "dotnet publish -c 'Release' -r win-x64 -o ./artifacts/win-x64 ./src/Thrift.Net.Compiler"
   },
   "repository": {
     "type": "git",
