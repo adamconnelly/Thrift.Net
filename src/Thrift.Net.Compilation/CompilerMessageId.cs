@@ -97,6 +97,15 @@ namespace Thrift.Net.Compilation
         NamespaceScopeAlreadySpecified = 104,
 
         /// <summary>
+        /// The namespace statement has been terminated with a list separator.
+        /// For example:
+        /// ```
+        /// namespace csharp Thrift.Net.Examples,
+        /// namespace netstd Thrift.Net.Examples;
+        /// </summary>
+        NamespaceStatementTerminatedBySeparator = 105,
+
+        /// <summary>
         /// A struct has been defined without a name. For example:
         /// `struct {}`.
         /// </summary>

@@ -7,21 +7,24 @@ header: (includeStatement | cppIncludeStatement | namespaceStatement)*;
 includeStatement: 'include' LITERAL;
 cppIncludeStatement: 'cppInclude' LITERAL;
 
-namespaceStatement:
-    // Successful parse
-    // `namespace csharp Thrift.Net.Examples`
-    NAMESPACE namespaceScope=KNOWN_NAMESPACE_SCOPES ns=IDENTIFIER |
+namespaceStatement: (
+        // Successful parse
+        // `namespace csharp Thrift.Net.Examples`
+        NAMESPACE namespaceScope=KNOWN_NAMESPACE_SCOPES ns=IDENTIFIER |
 
-    // Missing namespace
-    // `namespace csharp`
-    NAMESPACE namespaceScope=KNOWN_NAMESPACE_SCOPES |
+        // Missing namespace
+        // `namespace csharp`
+        NAMESPACE namespaceScope=KNOWN_NAMESPACE_SCOPES |
 
-    // Various other error scenarios
-    // `namespace`
-    // `namespace fortran Thrift.Net.Examples`
-    // `namespace Thrift.Net.Examples`
-    // `namespace fortran`
-    NAMESPACE namespaceScope=.*? ns=IDENTIFIER?;
+        // Various other error scenarios
+        // `namespace`
+        // `namespace fortran Thrift.Net.Examples`
+        // `namespace Thrift.Net.Examples`
+        // `namespace fortran`
+        NAMESPACE namespaceScope=.*? ns=IDENTIFIER?
+    ) separator=LIST_SEPARATOR?; // LIST_SEPARATOR is not part of the Thrift spec,
+                                 // but allowing it lets us handle the situation
+                                 // where someone has added a separator by accident
 
 definitions: (enumDefinition | structDefinition)*;
 

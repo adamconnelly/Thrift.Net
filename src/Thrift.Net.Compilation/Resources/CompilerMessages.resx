@@ -100,6 +100,9 @@
   <data name="TC0104" xml:space="preserve">
     <value>A namespace has already been specified for the '{0}' target. Please use a different namespace scope.</value>
   </data>
+  <data name="TC0105" xml:space="preserve">
+    <value>Namespace statements cannot end with '{0}'. Please remove the '{0}' character.</value>
+  </data>
   <data name="TC0200" xml:space="preserve">
     <value>A struct name must be specified</value>
   </data>

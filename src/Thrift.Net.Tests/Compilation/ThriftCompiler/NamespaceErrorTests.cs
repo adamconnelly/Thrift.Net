@@ -79,5 +79,23 @@ namespace $csharp$ Thrift.Net.Examples.B",
 CompilerMessageId.NamespaceScopeAlreadySpecified,
 "csharp");
         }
+
+        [Fact]
+        public void Compile_NamespaceTerminatedBySemicolon_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"namespace csharp Thrift.Net.Examples.A$;$",
+CompilerMessageId.NamespaceStatementTerminatedBySeparator,
+";");
+        }
+
+        [Fact]
+        public void Compile_NamespaceTerminatedByComma_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"namespace csharp Thrift.Net.Examples.A$,$",
+CompilerMessageId.NamespaceStatementTerminatedBySeparator,
+",");
+        }
     }
 }

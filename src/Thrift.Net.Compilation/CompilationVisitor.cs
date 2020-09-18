@@ -111,6 +111,20 @@ namespace Thrift.Net.Compilation
                 }
             }
 
+            if (@namespace.Node.separator != null)
+            {
+                // The namespace statement includes a list separator, which is
+                // not allowed. For example:
+                // ```
+                // namespace csharp Thrift.Net.Examples,
+                // namespace netstd Thrift.Net.Examples;
+                // ```
+                this.AddError(
+                    CompilerMessageId.NamespaceStatementTerminatedBySeparator,
+                    @namespace.Node.separator,
+                    @namespace.Node.separator.Text);
+            }
+
             return result;
         }
 
