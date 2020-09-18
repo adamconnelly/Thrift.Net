@@ -30,6 +30,7 @@ namespace Thrift.Net.Compilation
             // TODO: Get the semantic version
             template.Add("version", assembly.GetName().Version.ToString());
             template.Add("model", document);
+            template.Add("typeMap", ThriftTypeGenerationInfo.TypeMap);
 
             return template.Render();
         }

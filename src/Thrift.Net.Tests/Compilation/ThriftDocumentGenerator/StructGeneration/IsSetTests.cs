@@ -7,8 +7,10 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Scripting;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using Microsoft.CodeAnalysis.Scripting;
     using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Compilation.Symbols.Builders;
+    using Thrift.Protocol;
     using Xunit;
 
     public class IsSetTests : ThriftDocumentGeneratorTests
@@ -151,7 +153,8 @@ var user = new User();
 return user.IsSet.Field1 == false &&
     user.IsSet.Field2 == false;";
 
-            var script = CSharpScript.Create(scriptContents);
+            var script = CSharpScript.Create(
+                scriptContents, ScriptOptions.Default.WithReferences(typeof(TBase).Assembly));
             script.Compile();
 
             var result = (bool)(await script.RunAsync()).ReturnValue;
@@ -183,7 +186,8 @@ var user = new User();
 user.Field1 = true;
 return user.IsSet.Field1;";
 
-            var script = CSharpScript.Create(scriptContents);
+            var script = CSharpScript.Create(
+                scriptContents, ScriptOptions.Default.WithReferences(typeof(TBase).Assembly));
             script.Compile();
 
             var result = (bool)(await script.RunAsync()).ReturnValue;
