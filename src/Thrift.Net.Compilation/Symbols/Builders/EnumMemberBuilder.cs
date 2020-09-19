@@ -6,13 +6,8 @@ namespace Thrift.Net.Compilation.Symbols.Builders
     /// <summary>
     /// Used to build <see cref="EnumMember" /> objects.
     /// </summary>
-    public class EnumMemberBuilder
+    public class EnumMemberBuilder : SymbolBuilder<EnumMemberContext, EnumMember, EnumMemberBuilder>
     {
-        /// <summary>
-        /// Gets the node associated with the enum member.
-        /// </summary>
-        public EnumMemberContext Node { get; private set; }
-
         /// <summary>
         /// Gets the name of the enum member.
         /// </summary>
@@ -32,18 +27,6 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// Gets the reason the enum value is invalid.
         /// </summary>
         public InvalidEnumValueReason InvalidValueReason { get; private set; }
-
-        /// <summary>
-        /// Sets the node associated with the enum member.
-        /// </summary>
-        /// <param name="node">The node associated with the enum member.</param>
-        /// <returns>The builder.</returns>
-        public EnumMemberBuilder SetNode(EnumMemberContext node)
-        {
-            this.Node = node;
-
-            return this;
-        }
 
         /// <summary>
         /// Sets the name of the enum member.
@@ -97,7 +80,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// Builds the enum member.
         /// </summary>
         /// <returns>The enum member.</returns>
-        public EnumMember Build()
+        public override EnumMember Build()
         {
             return new EnumMember(
                 this.Node,

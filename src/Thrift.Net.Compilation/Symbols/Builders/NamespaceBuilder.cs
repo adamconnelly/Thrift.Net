@@ -5,13 +5,8 @@ namespace Thrift.Net.Compilation.Symbols.Builders
     /// <summary>
     /// Used to build <see cref="Namespace" /> objects.
     /// </summary>
-    public class NamespaceBuilder
+    public class NamespaceBuilder : SymbolBuilder<NamespaceStatementContext, Namespace, NamespaceBuilder>
     {
-        /// <summary>
-        /// Gets the node used to create the namespace object.
-        /// </summary>
-        public NamespaceStatementContext Node { get; private set; }
-
         /// <summary>
         /// Gets the code generation scope that this namespace applies to.
         /// </summary>
@@ -35,18 +30,6 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         }
 
         /// <summary>
-        /// Sets the node used to create the namespace object.
-        /// </summary>
-        /// <param name="node">The node used to create the namespace object.</param>
-        /// <returns>The builder.</returns>
-        public NamespaceBuilder SetNode(NamespaceStatementContext node)
-        {
-            this.Node = node;
-
-            return this;
-        }
-
-        /// <summary>
         /// Sets the namespace.
         /// </summary>
         /// <param name="namespaceName">The namespace.</param>
@@ -62,9 +45,12 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// Builds the namespace.
         /// </summary>
         /// <returns>The namespace.</returns>
-        public Namespace Build()
+        public override Namespace Build()
         {
-            return new Namespace(this.Node, this.Scope, this.NamespaceName);
+            return new Namespace(
+                this.Node,
+                this.Scope,
+                this.NamespaceName);
         }
     }
 }

@@ -6,11 +6,12 @@ namespace Thrift.Net.Tests.Compilation.Binding.EnumMemberBinder
     public abstract class EnumMemberBinderTests
     {
         private readonly IEnumBinder parentBinder = Substitute.For<IEnumBinder>();
+        private readonly IBinderProvider binderProvider = Substitute.For<IBinderProvider>();
         private readonly EnumMemberBinder binder;
 
         public EnumMemberBinderTests()
         {
-            this.binder = new EnumMemberBinder(this.parentBinder);
+            this.binder = new EnumMemberBinder(this.parentBinder, this.binderProvider);
         }
 
         public IEnumBinder ParentBinder => this.parentBinder;

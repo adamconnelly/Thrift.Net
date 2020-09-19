@@ -1,20 +1,14 @@
 namespace Thrift.Net.Compilation.Symbols.Builders
 {
     using System.Collections.Generic;
-    using Antlr4.Runtime.Tree;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
     /// Used to build <see cref="Struct" /> objects.
     /// </summary>
-    public class StructBuilder
+    public class StructBuilder : SymbolBuilder<StructDefinitionContext, Struct, StructBuilder>
     {
         private readonly List<Field> fields = new List<Field>();
-
-        /// <summary>
-        /// Gets the node associated with the struct.
-        /// </summary>
-        public StructDefinitionContext Node { get; private set; }
 
         /// <summary>
         /// Gets the name of the struct.
@@ -25,18 +19,6 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// Gets the fields of the struct.
         /// </summary>
         public IReadOnlyCollection<Field> Fields => this.fields;
-
-        /// <summary>
-        /// Sets the node associated with the struct.
-        /// </summary>
-        /// <param name="node">The node associated with the struct.</param>
-        /// <returns>The builder.</returns>
-        public StructBuilder SetNode(StructDefinitionContext node)
-        {
-            this.Node = node;
-
-            return this;
-        }
 
         /// <summary>
         /// Sets the name of the struct.
@@ -96,9 +78,12 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// Builds the struct.
         /// </summary>
         /// <returns>The struct.</returns>
-        public Struct Build()
+        public override Struct Build()
         {
-            return new Struct(this.Node, this.Name, this.Fields);
+            return new Struct(
+                this.Node,
+                this.Name,
+                this.Fields);
         }
     }
 }

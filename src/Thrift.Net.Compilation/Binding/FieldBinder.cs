@@ -36,6 +36,7 @@ namespace Thrift.Net.Compilation.Binding
 
             var builder = new FieldBuilder()
                 .SetNode(node)
+                .SetBinderProvider(this.binderProvider)
                 .SetFieldId(this.GetFieldId(node))
                 .SetIsFieldIdImplicit(node.fieldId == null)
                 .SetRawFieldId(node.fieldId?.Text)

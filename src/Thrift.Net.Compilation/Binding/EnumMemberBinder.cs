@@ -10,13 +10,17 @@ namespace Thrift.Net.Compilation.Binding
     /// </summary>
     public class EnumMemberBinder : Binder<EnumMemberContext, EnumMember, IEnumBinder>
     {
+        private readonly IBinderProvider binderProvider;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="EnumMemberBinder" /> class.
         /// </summary>
         /// <param name="parent">The parent binder.</param>
-        public EnumMemberBinder(IEnumBinder parent)
+        /// <param name="binderProvider">Used to get binders for fields.</param>
+        public EnumMemberBinder(IEnumBinder parent, IBinderProvider binderProvider)
             : base(parent)
         {
+            this.binderProvider = binderProvider;
         }
 
         /// <inheritdoc />
@@ -24,6 +28,7 @@ namespace Thrift.Net.Compilation.Binding
         {
             var builder = new EnumMemberBuilder()
                 .SetNode(node)
+                .SetBinderProvider(this.binderProvider)
                 .SetName(node.IDENTIFIER()?.Symbol.Text)
                 .SetRawValue(node.enumValue?.Text);
 

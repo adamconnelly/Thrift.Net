@@ -63,6 +63,7 @@ namespace Thrift.Net.Compilation.Binding
         {
             var documentBuilder = new DocumentBuilder()
                 .SetNode(node)
+                .SetBinderProvider(this.binderProvider)
                 .AddNamespaces(node.header()?.namespaceStatement()
                     .Select(namespaceNode => this.binderProvider
                         .GetBinder(namespaceNode)

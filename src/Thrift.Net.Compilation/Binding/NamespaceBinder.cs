@@ -10,13 +10,17 @@ namespace Thrift.Net.Compilation.Binding
     /// </summary>
     public class NamespaceBinder : Binder<NamespaceStatementContext, Namespace>
     {
+        private readonly IBinderProvider binderProvider;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="NamespaceBinder" /> class.
         /// </summary>
         /// <param name="parent">The parent binder.</param>
-        public NamespaceBinder(IBinder parent)
+        /// <param name="binderProvider">Used to get binders for nodes.</param>
+        public NamespaceBinder(IBinder parent, IBinderProvider binderProvider)
             : base(parent)
         {
+            this.binderProvider = binderProvider;
         }
 
         /// <inheritdoc />
@@ -24,6 +28,7 @@ namespace Thrift.Net.Compilation.Binding
         {
             var builder = new NamespaceBuilder()
                 .SetNode(node)
+                .SetBinderProvider(this.binderProvider)
                 .SetScope(node.namespaceScope?.Text)
                 .SetNamespaceName(node.ns?.Text);
 

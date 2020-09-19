@@ -1,20 +1,14 @@
 namespace Thrift.Net.Compilation.Symbols.Builders
 {
     using System.Collections.Generic;
-    using Antlr4.Runtime.Tree;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
     /// A builder that can be used to create <see cref="Enum" /> objects.
     /// </summary>
-    public class EnumBuilder
+    public class EnumBuilder : SymbolBuilder<EnumDefinitionContext, Enum, EnumBuilder>
     {
         private readonly List<EnumMember> members = new List<EnumMember>();
-
-        /// <summary>
-        /// Gets the tree node associated with the enum.
-        /// </summary>
-        public EnumDefinitionContext Node { get; private set; }
 
         /// <summary>
         /// Gets the name of the enum.
@@ -25,18 +19,6 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// Gets the enum members.
         /// </summary>
         public IReadOnlyCollection<EnumMember> Members => this.members;
-
-        /// <summary>
-        /// Sets the node associated with the enum.
-        /// </summary>
-        /// <param name="node">The node associated with the enum.</param>
-        /// <returns>The builder.</returns>
-        public EnumBuilder SetNode(EnumDefinitionContext node)
-        {
-            this.Node = node;
-
-            return this;
-        }
 
         /// <summary>
         /// Sets the name of the enum.
@@ -96,7 +78,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// Builds the enum.
         /// </summary>
         /// <returns>The enum.</returns>
-        public Enum Build()
+        public override Enum Build()
         {
             return new Enum(this.Node, this.Name, this.Members);
         }

@@ -1,21 +1,17 @@
 namespace Thrift.Net.Compilation.Symbols.Builders
 {
     using System.Collections.Generic;
+    using Thrift.Net.Compilation.Binding;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
     /// Used to build <see cref="Document" /> objects.
     /// </summary>
-    public class DocumentBuilder
+    public class DocumentBuilder : SymbolBuilder<DocumentContext, Document, DocumentBuilder>
     {
         private readonly List<Namespace> namespaces = new List<Namespace>();
         private readonly List<Enum> enums = new List<Enum>();
         private readonly List<Struct> structs = new List<Struct>();
-
-        /// <summary>
-        /// Gets the node the document was created from.
-        /// </summary>
-        public DocumentContext Node { get; private set; }
 
         /// <summary>
         /// Gets any namespaces that have been defined.
@@ -31,18 +27,6 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// Gets any structs that have been defined.
         /// </summary>
         public IReadOnlyCollection<Struct> Structs => this.structs;
-
-        /// <summary>
-        /// Sets the node the document was created from.
-        /// </summary>
-        /// <param name="node">The node the document was created from.</param>
-        /// <returns>The builder.</returns>
-        public DocumentBuilder SetNode(DocumentContext node)
-        {
-            this.Node = node;
-
-            return this;
-        }
 
         /// <summary>
         /// Adds the enum to the document.
@@ -172,7 +156,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// Builds the document.
         /// </summary>
         /// <returns>The document.</returns>
-        public Document Build()
+        public override Document Build()
         {
             return new Document(
                 this.Node,

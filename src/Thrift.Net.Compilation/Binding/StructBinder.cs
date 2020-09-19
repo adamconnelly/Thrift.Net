@@ -85,6 +85,7 @@ namespace Thrift.Net.Compilation.Binding
         {
             var builder = new StructBuilder()
                 .SetNode(node)
+                .SetBinderProvider(this.binderProvider)
                 .SetName(node.name?.Text)
                 .AddFields(node.field().Select(this.GetField));
 

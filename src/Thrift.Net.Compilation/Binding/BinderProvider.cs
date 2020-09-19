@@ -60,7 +60,7 @@ namespace Thrift.Net.Compilation.Binding
             public override IBinder VisitNamespaceStatement([NotNull] NamespaceStatementContext context)
             {
                 var documentBinder = this.binderMap.Get(context.Parent);
-                var namespaceBinder = new NamespaceBinder(documentBinder);
+                var namespaceBinder = new NamespaceBinder(documentBinder, this.binderProvider);
                 this.binderMap.Put(context, namespaceBinder);
 
                 base.VisitNamespaceStatement(context);
@@ -124,7 +124,7 @@ namespace Thrift.Net.Compilation.Binding
             public override IBinder VisitEnumMember([NotNull] EnumMemberContext context)
             {
                 var parentBinder = this.binderMap.Get(context.Parent) as IEnumBinder;
-                var memberBinder = new EnumMemberBinder(parentBinder);
+                var memberBinder = new EnumMemberBinder(parentBinder, this.binderProvider);
                 this.binderMap.Put(context, memberBinder);
 
                 base.VisitEnumMember(context);

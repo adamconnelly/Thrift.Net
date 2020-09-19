@@ -81,6 +81,7 @@ namespace Thrift.Net.Compilation.Binding
 
             var builder = new EnumBuilder()
                 .SetNode(node)
+                .SetBinderProvider(this.binderProvider)
                 .SetName(node.name?.Text)
                 .AddMembers(members);
 

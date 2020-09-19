@@ -6,13 +6,8 @@ namespace Thrift.Net.Compilation.Symbols.Builders
     /// <summary>
     /// Used to build <see cref="Field" /> objects.
     /// </summary>
-    public class FieldBuilder
+    public class FieldBuilder : SymbolBuilder<FieldContext, Field, FieldBuilder>
     {
-        /// <summary>
-        /// Gets the node associated with the field.
-        /// </summary>
-        public FieldContext Node { get; private set; }
-
         /// <summary>
         /// Gets the field's name.
         /// </summary>
@@ -44,18 +39,6 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// rather than being explicitly defined in the Thrift IDL.
         /// </summary>
         public bool IsFieldIdImplicit { get; private set; }
-
-        /// <summary>
-        /// Sets the node associated with the field.
-        /// </summary>
-        /// <param name="node">The node associated with the field.</param>
-        /// <returns>The builder.</returns>
-        public FieldBuilder SetNode(FieldContext node)
-        {
-            this.Node = node;
-
-            return this;
-        }
 
         /// <summary>
         /// Sets the name of the field.
@@ -136,7 +119,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// Builds the field.
         /// </summary>
         /// <returns>The field.</returns>
-        public Field Build()
+        public override Field Build()
         {
             return new Field(
                 this.Node,
