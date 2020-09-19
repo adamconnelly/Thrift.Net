@@ -68,5 +68,16 @@ CompilerMessageId.StructFieldIdMustBeAPositiveInteger,
 CompilerMessageId.StructFieldIdMustBeAPositiveInteger,
 "-5");
         }
+
+        [Fact]
+        public void Compile_FieldTypeCannotBeResolved_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"struct User {
+    1: $UserType$ Username
+}",
+CompilerMessageId.UnknownType,
+"UserType");
+        }
     }
 }

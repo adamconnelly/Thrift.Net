@@ -540,9 +540,9 @@ struct User {
 ```
 
 **NOTE:** _The official Thrift compiler doesn't allow negative field Ids to be_
-_specified in IDL files by default, but allows you to opt-in via the
-`--allow-neg-keys`_ _flag. The Thrift.Net compiler will not support that
-behaviour unless it's asked_ _for._
+_specified in IDL files by default, but allows you to opt-in via the_
+_`--allow-neg-keys` flag. The Thrift.Net compiler will not support that_
+_behaviour unless it's asked for._
 
 ### TC0300 - Generic Parser Error
 
@@ -560,3 +560,33 @@ struct User {
 ```
 
 Since this is an unexpected error, we can't really say what to do to resolve it.
+
+### TC0400 - Unknown Type
+
+_Level_: Error
+
+A field references a type that cannot be found. For example:
+
+```thrift
+enum UserType {
+  User,
+  Administrator
+}
+
+struct User {
+  1: UserTyp Type
+}
+```
+
+To resolve this issue, make sure there are no mistakes in the type name:
+
+```thrift
+enum UserType {
+  User,
+  Administrator
+}
+
+struct User {
+  1: UserType Type
+}
+```

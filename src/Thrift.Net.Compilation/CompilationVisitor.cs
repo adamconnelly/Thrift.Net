@@ -278,6 +278,20 @@ namespace Thrift.Net.Compilation
                     field.Name);
             }
 
+            if (!field.Type.IsResolved)
+            {
+                // A field has referenced a type that doesn't exist. For example:
+                // ```
+                // struct User {
+                //     1: UserType Type
+                // }
+                // ```
+                this.AddError(
+                    CompilerMessageId.UnknownType,
+                    field.Node.fieldType().IDENTIFIER().Symbol,
+                    field.Type.Name);
+            }
+
             return base.VisitField(context);
         }
 

@@ -125,4 +125,7 @@
     <!-- Generic Antlr parsing error - just report the message from Antlr -->
     <value>{0}</value>
   </data>
+  <data name="TC0400" xml:space="preserve">
+    <value>'{0}' could not be found. Please check the type's name is spelled correctly.</value>
+  </data>
 </root>

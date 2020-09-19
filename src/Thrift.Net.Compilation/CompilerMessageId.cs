@@ -172,5 +172,15 @@ namespace Thrift.Net.Compilation
         /// A syntax error has been reported by the Antlr parser.
         /// </summary>
         GenericParseError = 300,
+
+        /// <summary>
+        /// The specified type could not be resolved. For example:
+        /// ```
+        /// struct User {
+        ///   UserType Type
+        /// }
+        /// ```
+        /// </summary>
+        UnknownType = 400,
     }
 }
