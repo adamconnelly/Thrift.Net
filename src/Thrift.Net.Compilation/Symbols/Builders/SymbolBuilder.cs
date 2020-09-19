@@ -8,11 +8,12 @@ namespace Thrift.Net.Compilation.Symbols.Builders
     /// </summary>
     /// <typeparam name="TNode">The type of node associated with the symbol.</typeparam>
     /// <typeparam name="TSymbol">The type of symbol the builder builds.</typeparam>
+    /// <typeparam name="TParent">The type of the parent symbol.</typeparam>
     /// <typeparam name="TBuilder">The type of the builder.</typeparam>
-    public abstract class SymbolBuilder<TNode, TSymbol, TBuilder>
+    public abstract class SymbolBuilder<TNode, TSymbol, TParent, TBuilder>
         where TNode : IParseTree
         where TSymbol : ISymbol
-        where TBuilder : SymbolBuilder<TNode, TSymbol, TBuilder>
+        where TBuilder : SymbolBuilder<TNode, TSymbol, TParent, TBuilder>
     {
         /// <summary>
         /// Gets the node associated with the symbol.
@@ -23,6 +24,11 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// Gets the binder provider.
         /// </summary>
         public IBinderProvider BinderProvider { get; private set; }
+
+        /// <summary>
+        /// Gets the parent symbol.
+        /// </summary>
+        public TParent Parent { get; private set; }
 
         /// <summary>
         /// Sets the node associated with the symbol.
@@ -44,6 +50,18 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         public TBuilder SetBinderProvider(IBinderProvider binderProvider)
         {
             this.BinderProvider = binderProvider;
+
+            return (TBuilder)this;
+        }
+
+        /// <summary>
+        /// Sets the parent symbol.
+        /// </summary>
+        /// <param name="parent">The parent symbol.</param>
+        /// <returns>The builder.</returns>
+        public TBuilder SetParent(TParent parent)
+        {
+            this.Parent = parent;
 
             return (TBuilder)this;
         }

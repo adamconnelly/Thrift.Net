@@ -15,9 +15,11 @@ namespace Thrift.Net.Compilation.Symbols
         /// Initializes a new instance of the <see cref="Symbol{T}" /> class.
         /// </summary>
         /// <param name="node">The node associated with this symbol.</param>
-        protected Symbol(TNode node)
+        /// <param name="parent">The parent symbol.</param>
+        protected Symbol(TNode node, ISymbol parent)
         {
             this.Node = node;
+            this.Parent = parent;
         }
 
         /// <inheritdoc />
@@ -25,5 +27,8 @@ namespace Thrift.Net.Compilation.Symbols
 
         /// <inheritdoc />
         public TNode Node { get; private set; }
+
+        /// <inheritdoc />
+        public ISymbol Parent { get; }
     }
 }

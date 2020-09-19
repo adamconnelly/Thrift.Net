@@ -7,7 +7,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
     /// <summary>
     /// Used to build <see cref="Document" /> objects.
     /// </summary>
-    public class DocumentBuilder : SymbolBuilder<DocumentContext, Document, DocumentBuilder>
+    public class DocumentBuilder : SymbolBuilder<DocumentContext, Document, ISymbol, DocumentBuilder>
     {
         private readonly List<Namespace> namespaces = new List<Namespace>();
         private readonly List<Enum> enums = new List<Enum>();
@@ -160,6 +160,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         {
             return new Document(
                 this.Node,
+                this.Parent,
                 this.Namespaces,
                 this.Enums,
                 this.Structs);

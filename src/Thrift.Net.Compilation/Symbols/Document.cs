@@ -13,15 +13,17 @@ namespace Thrift.Net.Compilation.Symbols
         /// Initializes a new instance of the <see cref="Document" /> class.
         /// </summary>
         /// <param name="node">The document node.</param>
+        /// <param name="parent">The parent symbol.</param>
         /// <param name="namespaces">The namespaces defined in the document.</param>
         /// <param name="enums">Any enums found in the document.</param>
         /// <param name="structs">Any structs found in the document.</param>
         public Document(
             DocumentContext node,
+            ISymbol parent,
             IReadOnlyCollection<Namespace> @namespaces,
             IReadOnlyCollection<Enum> enums,
             IReadOnlyCollection<Struct> structs)
-            : base(node)
+            : base(node, parent)
         {
             this.Namespaces = @namespaces;
             this.Enums = enums;

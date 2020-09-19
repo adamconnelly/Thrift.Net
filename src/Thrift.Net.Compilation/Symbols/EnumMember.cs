@@ -11,17 +11,19 @@ namespace Thrift.Net.Compilation.Symbols
         /// Initializes a new instance of the <see cref="EnumMember" /> class.
         /// </summary>
         /// <param name="node">The node associated with the symbol.</param>
+        /// <param name="parent">The enum that contains this member.</param>
         /// <param name="name">The name of the enum member.</param>
         /// <param name="value">The value of the enum member.</param>
         /// <param name="rawValue">The raw text representation of the value.</param>
         /// <param name="invalidValueReason">The reason the enum value failed to parse.</param>
         public EnumMember(
             EnumMemberContext node,
+            Enum parent,
             string name,
             int? value,
             string rawValue,
             InvalidEnumValueReason invalidValueReason)
-            : base(node)
+            : base(node, parent)
         {
             this.Name = name;
             this.Value = value;

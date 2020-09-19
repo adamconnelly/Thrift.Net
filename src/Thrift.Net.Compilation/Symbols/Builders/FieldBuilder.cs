@@ -6,7 +6,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
     /// <summary>
     /// Used to build <see cref="Field" /> objects.
     /// </summary>
-    public class FieldBuilder : SymbolBuilder<FieldContext, Field, FieldBuilder>
+    public class FieldBuilder : SymbolBuilder<FieldContext, Field, Struct, FieldBuilder>
     {
         /// <summary>
         /// Gets the field's name.
@@ -123,6 +123,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         {
             return new Field(
                 this.Node,
+                this.Parent,
                 this.FieldId,
                 this.RawFieldId,
                 this.Requiredness,

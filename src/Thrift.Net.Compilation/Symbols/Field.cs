@@ -11,6 +11,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// Initializes a new instance of the <see cref="Field" /> class.
         /// </summary>
         /// <param name="node">The node associated with the symbol.</param>
+        /// <param name="parent">The struct that contains this field.</param>
         /// <param name="fieldId">The field's Id.</param>
         /// <param name="rawFieldId">The raw text representing the field Id.</param>
         /// <param name="requiredness">The level of requiredness of the field.</param>
@@ -22,13 +23,14 @@ namespace Thrift.Net.Compilation.Symbols
         /// </param>
         public Field(
             FieldContext node,
+            Struct parent,
             int? fieldId,
             string rawFieldId,
             FieldRequiredness requiredness,
             FieldType type,
             string name,
             bool isFieldIdImplicit)
-            : base(node)
+            : base(node, parent)
         {
             this.FieldId = fieldId;
             this.RawFieldId = rawFieldId;

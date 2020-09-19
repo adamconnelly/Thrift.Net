@@ -5,7 +5,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
     /// <summary>
     /// Used to build <see cref="Namespace" /> objects.
     /// </summary>
-    public class NamespaceBuilder : SymbolBuilder<NamespaceStatementContext, Namespace, NamespaceBuilder>
+    public class NamespaceBuilder : SymbolBuilder<NamespaceStatementContext, Namespace, Document, NamespaceBuilder>
     {
         /// <summary>
         /// Gets the code generation scope that this namespace applies to.
@@ -49,6 +49,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         {
             return new Namespace(
                 this.Node,
+                this.Parent,
                 this.Scope,
                 this.NamespaceName);
         }

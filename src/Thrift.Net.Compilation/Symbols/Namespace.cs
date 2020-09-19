@@ -49,13 +49,17 @@ namespace Thrift.Net.Compilation.Symbols
         /// Initializes a new instance of the <see cref="Namespace" /> class.
         /// </summary>
         /// <param name="node">The node the namespace was created from.</param>
+        /// <param name="parent">The document containing this namespace.</param>
         /// <param name="scope">
         /// The generator (i.e. language) that this namespace applies to.
         /// </param>
         /// <param name="namespaceName">The namespace.</param>
         public Namespace(
-            NamespaceStatementContext node, string scope, string namespaceName)
-            : base(node)
+            NamespaceStatementContext node,
+            Document parent,
+            string scope,
+            string namespaceName)
+            : base(node, parent)
         {
             this.Scope = scope;
             this.NamespaceName = namespaceName;

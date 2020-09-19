@@ -11,6 +11,12 @@ namespace Thrift.Net.Compilation.Symbols
         /// Gets the node this symbol was bound from.
         /// </summary>
         IParseTree Node { get; }
+
+        /// <summary>
+        /// Gets the parent symbol. This can be used to walk up the tree for
+        /// type resolution.
+        /// </summary>
+        ISymbol Parent { get; }
     }
 
     /// <summary>

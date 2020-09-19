@@ -6,7 +6,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
     /// <summary>
     /// Used to build <see cref="Struct" /> objects.
     /// </summary>
-    public class StructBuilder : SymbolBuilder<StructDefinitionContext, Struct, StructBuilder>
+    public class StructBuilder : SymbolBuilder<StructDefinitionContext, Struct, Document, StructBuilder>
     {
         private readonly List<Field> fields = new List<Field>();
 
@@ -82,6 +82,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         {
             return new Struct(
                 this.Node,
+                this.Parent,
                 this.Name,
                 this.Fields);
         }

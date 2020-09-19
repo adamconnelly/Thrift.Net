@@ -6,7 +6,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents the type of a field.
     /// </summary>
-    public class FieldType : Symbol<IParseTree>
+    public class FieldType : Symbol<IParseTree> // TODO: Should FieldType be a symbol?
     {
         /// <summary>
         /// The 'bool' base type.
@@ -93,7 +93,7 @@ namespace Thrift.Net.Compilation.Symbols
             int identifierPartsCount,
             bool isResolved,
             string csharpTypeName)
-            : base(node)
+            : base(node, null)
         {
             this.Name = name;
             this.IdentifierPartsCount = identifierPartsCount;

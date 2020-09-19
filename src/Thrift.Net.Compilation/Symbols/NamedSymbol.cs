@@ -15,9 +15,10 @@ namespace Thrift.Net.Compilation.Symbols
         /// Initializes a new instance of the <see cref="NamedSymbol{TNode}" /> class.
         /// </summary>
         /// <param name="node">The node that this symbol was bound from.</param>
+        /// <param name="parent">The parent symbol.</param>
         /// <param name="name">The name of the symbol.</param>
-        protected NamedSymbol(TNode node, string name)
-            : base(node)
+        protected NamedSymbol(TNode node, ISymbol parent, string name)
+            : base(node, parent)
         {
             this.Name = name;
         }

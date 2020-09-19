@@ -12,10 +12,15 @@ namespace Thrift.Net.Compilation.Symbols
         /// Initializes a new instance of the <see cref="Enum" /> class.
         /// </summary>
         /// <param name="node">The node associated with the symbol.</param>
+        /// <param name="parent">The document that contains this enum.</param>
         /// <param name="name">The name of the enum.</param>
         /// <param name="members">The enum members.</param>
-        public Enum(EnumDefinitionContext node, string name, IReadOnlyCollection<EnumMember> members)
-            : base(node, name)
+        public Enum(
+            EnumDefinitionContext node,
+            Document parent,
+            string name,
+            IReadOnlyCollection<EnumMember> members)
+            : base(node, parent, name)
         {
             this.Members = members;
         }
