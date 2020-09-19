@@ -56,7 +56,7 @@ namespace Thrift.Net.Compilation.Binding
         /// <inheritdoc />
         public virtual FieldType ResolveType(string typeName)
         {
-            return this.parent.ResolveType(typeName);
+            return this.parent?.ResolveType(typeName);
         }
 
         /// <inheritdoc />
