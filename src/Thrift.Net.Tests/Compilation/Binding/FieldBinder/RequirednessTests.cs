@@ -3,6 +3,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
     using NSubstitute;
     using Thrift.Net.Compilation.Binding;
     using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Symbols.Builders;
     using Thrift.Net.Tests.Utility;
     using Xunit;
 
@@ -21,6 +22,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
         public void Bind_FieldRequirednessNotSupplied_UsesDefault()
         {
             // Arrange
+            var @struct = new StructBuilder().Build();
             this.containerBinder.DefaultFieldRequiredness
                 .Returns(FieldRequiredness.Optional);
 
@@ -29,7 +31,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
                 .ParseInput(parser => parser.field());
 
             // Act
-            var field = this.binder.Bind<Field>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext, @struct);
 
             // Assert
             Assert.Equal(FieldRequiredness.Optional, field.Requiredness);
@@ -39,12 +41,13 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
         public void Bind_FieldRequirednessRequired_SetsRequiredness()
         {
             // Arrange
+            var @struct = new StructBuilder().Build();
             var fieldContext = ParserInput
                 .FromString("required i32 Id")
                 .ParseInput(parser => parser.field());
 
             // Act
-            var field = this.binder.Bind<Field>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext, @struct);
 
             // Assert
             Assert.Equal(FieldRequiredness.Required, field.Requiredness);
@@ -54,12 +57,13 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
         public void Bind_FieldRequirednessOptional_SetsRequiredness()
         {
             // Arrange
+            var @struct = new StructBuilder().Build();
             var fieldContext = ParserInput
                 .FromString("optional i32 Id")
                 .ParseInput(parser => parser.field());
 
             // Act
-            var field = this.binder.Bind<Field>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext, @struct);
 
             // Assert
             Assert.Equal(FieldRequiredness.Optional, field.Requiredness);

@@ -1,6 +1,5 @@
 namespace Thrift.Net.Compilation.Symbols.Builders
 {
-    using Antlr4.Runtime.Tree;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
@@ -28,11 +27,6 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// Gets the level of requiredness of this field.
         /// </summary>
         public FieldRequiredness Requiredness { get; private set; }
-
-        /// <summary>
-        /// Gets the data type of the field.
-        /// </summary>
-        public FieldType Type { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether the field Id was generated implicitly,
@@ -92,18 +86,6 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         }
 
         /// <summary>
-        /// Sets the field's type.
-        /// </summary>
-        /// <param name="type">The field's type.</param>
-        /// <returns>The field builder.</returns>
-        public FieldBuilder SetType(FieldType type)
-        {
-            this.Type = type;
-
-            return this;
-        }
-
-        /// <summary>
         /// Sets whether the field Id is implicit (i.e. not defined in the IDL).
         /// </summary>
         /// <param name="isImplicit">Indicates whether the field is implicit.</param>
@@ -127,9 +109,9 @@ namespace Thrift.Net.Compilation.Symbols.Builders
                 this.FieldId,
                 this.RawFieldId,
                 this.Requiredness,
-                this.Type,
                 this.Name,
-                this.IsFieldIdImplicit);
+                this.IsFieldIdImplicit,
+                this.BinderProvider);
         }
     }
 }

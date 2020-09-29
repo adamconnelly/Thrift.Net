@@ -10,7 +10,7 @@ namespace Thrift.Net.Compilation.Binding
     /// Used to bind <see cref="Document" /> objects from <see cref="DocumentContext" />
     /// nodes.
     /// </summary>
-    public class DocumentBinder : Binder<DocumentContext, Document>, IDocumentBinder
+    public class DocumentBinder : Binder<DocumentContext, Document>
     {
         private readonly IBinderProvider binderProvider;
 
@@ -26,56 +26,12 @@ namespace Thrift.Net.Compilation.Binding
         }
 
         /// <inheritdoc />
-        public bool IsMemberNameAlreadyDeclared(string memberName, IParseTree memberNode)
-        {
-            var parent = memberNode.Parent as DefinitionsContext;
-
-            if (parent.children.Count <= 1)
-            {
-                return false;
-            }
-
-            return parent.children
-                .Select(sibling => this.binderProvider
-                    .GetBinder(sibling)
-                    .Bind<INamedSymbol>(sibling))
-                .Where(sibling => sibling.Name == memberName)
-                .TakeWhile(sibling => sibling.Node != memberNode)
-                .Any();
-        }
-
-        /// <inheritdoc />
-        public bool IsNamespaceForScopeAlreadyDeclared(Namespace @namespace)
-        {
-            var headerNode = @namespace.Node.Parent as HeaderContext;
-
-            return headerNode.namespaceStatement()
-                .Select(node => this.binderProvider
-                    .GetBinder(node)
-                    .Bind<Namespace>(node))
-                .Where(n => n.Scope == @namespace.Scope)
-                .TakeWhile(n => n.Node != @namespace.Node)
-                .Any();
-        }
-
-        /// <inheritdoc />
-        protected override Document Bind(DocumentContext node)
+        protected override Document Bind(DocumentContext node, ISymbol parent)
         {
             var documentBuilder = new DocumentBuilder()
                 .SetNode(node)
-                .SetBinderProvider(this.binderProvider)
-                .AddNamespaces(node.header()?.namespaceStatement()
-                    .Select(namespaceNode => this.binderProvider
-                        .GetBinder(namespaceNode)
-                        .Bind<Namespace>(namespaceNode)))
-                .AddEnums(node.definitions().enumDefinition()
-                    .Select(enumNode => this.binderProvider
-                        .GetBinder(enumNode)
-                        .Bind<Enum>(enumNode)))
-                .AddStructs(node.definitions().structDefinition()
-                    .Select(structNode => this.binderProvider
-                        .GetBinder(structNode)
-                        .Bind<Struct>(structNode)));
+                .SetParent(parent)
+                .SetBinderProvider(this.binderProvider);
 
             return documentBuilder.Build();
         }

@@ -1,4 +1,4 @@
-namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
+namespace Thrift.Net.Tests.Compilation.Binding.FieldTypeBinder
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -6,6 +6,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
     using NSubstitute;
     using Thrift.Net.Compilation.Binding;
     using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Symbols.Builders;
     using Thrift.Net.Tests.Utility;
     using Xunit;
 
@@ -29,12 +30,13 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
         public void Bind_BaseType_ResolvesType(FieldType expectedType)
         {
             // Arrange
+            var field = new FieldBuilder().Build();
             var fieldTypeContext = ParserInput
                 .FromString(expectedType.Name)
                 .ParseInput(parser => parser.fieldType());
 
             // Act
-            var type = this.binder.Bind<FieldType>(fieldTypeContext);
+            var type = this.binder.Bind<FieldType>(fieldTypeContext, field);
 
             // Assert
             Assert.Same(expectedType, type);
@@ -44,6 +46,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
         public void Bind_NotBaseType_ResolvesTypeUsingParent()
         {
             // Arrange
+            var field = Substitute.For<ISymbol>();
             var input = "UserType";
             var fieldTypeContext = ParserInput
                 .FromString(input)
@@ -52,10 +55,11 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
             var targetTypeNode = Substitute.For<IParseTree>();
             var resolvedType = FieldType.CreateResolvedType(
                 targetTypeNode, input, "UserType");
-            this.parentBinder.ResolveType(input).Returns(resolvedType);
+
+            field.ResolveType(input).Returns(resolvedType);
 
             // Act
-            var type = this.binder.Bind<FieldType>(fieldTypeContext);
+            var type = this.binder.Bind<FieldType>(fieldTypeContext, field);
 
             // Assert
             Assert.Same(resolvedType, type);
@@ -65,13 +69,14 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
         public void Bind_TypeCannotResolve_ReturnsUnresolvedType()
         {
             // Arrange
+            var field = new FieldBuilder().Build();
             var input = "NonExistentType";
             var fieldTypeContext = ParserInput
                 .FromString(input)
                 .ParseInput(parser => parser.fieldType());
 
             // Act
-            var type = this.binder.Bind<FieldType>(fieldTypeContext);
+            var type = this.binder.Bind<FieldType>(fieldTypeContext, field);
 
             // Assert
             Assert.False(type.IsResolved);
@@ -85,12 +90,13 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
             string identifier, int parts)
         {
             // Arrange
+            var field = new FieldBuilder().Build();
             var fieldTypeContext = ParserInput
                 .FromString(identifier)
                 .ParseInput(parser => parser.fieldType());
 
             // Act
-            var type = this.binder.Bind<FieldType>(fieldTypeContext);
+            var type = this.binder.Bind<FieldType>(fieldTypeContext, field);
 
             // Assert
             Assert.Equal(parts, type.IdentifierPartsCount);
@@ -104,15 +110,16 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
             // parts.
             //
             // Arrange
+            var field = Substitute.For<ISymbol>();
             var fieldTypeContext = ParserInput
                 .FromString("One.Two.Three")
                 .ParseInput(parser => parser.fieldType());
 
             // Act
-            this.binder.Bind<FieldType>(fieldTypeContext);
+            this.binder.Bind<FieldType>(fieldTypeContext, field);
 
             // Assert
-            this.parentBinder.DidNotReceive().ResolveType(Arg.Any<string>());
+            field.DidNotReceive().ResolveType(Arg.Any<string>());
         }
     }
 }

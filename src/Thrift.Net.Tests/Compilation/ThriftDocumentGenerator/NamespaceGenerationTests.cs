@@ -5,6 +5,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Compilation.Symbols.Builders;
+    using Thrift.Net.Tests.Extensions;
     using Xunit;
     using ThriftDocumentGenerator = Thrift.Net.Compilation.ThriftDocumentGenerator;
 
@@ -14,14 +15,11 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
         public void Generate_NamespaceSupplied_SetsCorrectNamespace()
         {
             // Arrange
-            var document = new DocumentBuilder()
-                .AddNamespace(builder => builder
-                    .SetScope("csharp")
-                    .SetNamespaceName("Thrift.Net.Tests"))
-                .Build();
+            var input = "namespace csharp Thrift.Net.Tests";
+            var compilationResult = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(document);
+            var output = this.Generator.Generate(compilationResult.Document);
 
             // Assert
             var (root, _, _) = ParseCSharp(output);
@@ -32,13 +30,12 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
         [Fact]
         public void Generate_NamespaceNotSupplied_DoesNotGenerateNamespace()
         {
-            // Arrange
-            var document = new DocumentBuilder()
-                .AddEnum(builder => builder.SetName("UserType"))
-                .Build();
+            // Arrange;
+            var input = "enum UserType {}";
+            var compilationResult = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(document);
+            var output = this.Generator.Generate(compilationResult.Document);
 
             // Assert
             var (root, _, _) = ParseCSharp(output);

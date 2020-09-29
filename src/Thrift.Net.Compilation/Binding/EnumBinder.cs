@@ -9,7 +9,7 @@ namespace Thrift.Net.Compilation.Binding
     /// Used to bind <see cref="EnumDefinitionContext" /> objects to
     /// <see cref="Enum" /> objects.
     /// </summary>
-    public class EnumBinder : Binder<EnumDefinitionContext, Enum>, IEnumBinder
+    public class EnumBinder : Binder<EnumDefinitionContext, Enum>
     {
         private readonly IBinderProvider binderProvider;
 
@@ -25,65 +25,14 @@ namespace Thrift.Net.Compilation.Binding
         }
 
         /// <inheritdoc />
-        public int GetEnumValue(EnumMemberContext node)
+        protected override Enum Bind(EnumDefinitionContext node, ISymbol parent)
         {
-            var parent = node.Parent as EnumDefinitionContext;
-
-            // If there's only a single member, don't bother doing any more work
-            if (parent.enumMember().Length == 1)
-            {
-                return 0;
-            }
-
-            var members = parent.enumMember()
-                .TakeWhile(memberNode => memberNode != node)
-                .Select(memberNode => this.binderProvider
-                    .GetBinder(memberNode)
-                    .Bind<EnumMember>(memberNode))
-                .Where(member => member.Value != null);
-
-            if (members.Any())
-            {
-                return members.Last().Value.Value + 1;
-            }
-
-            return 0;
-        }
-
-        /// <inheritdoc />
-        public bool IsEnumMemberAlreadyDeclared(string memberName, EnumMemberContext node)
-        {
-            var parent = node.Parent as EnumDefinitionContext;
-
-            // If there's only a single member, don't bother doing any more work
-            if (parent.enumMember().Length == 1)
-            {
-                return false;
-            }
-
-            var matchingMembers = parent.enumMember()
-                .Select(memberNode => this.binderProvider
-                    .GetBinder(memberNode)
-                    .Bind<EnumMember>(memberNode))
-                .Where(member => member.Name == memberName)
-                .TakeWhile(member => member.Node != node);
-
-            return matchingMembers.Any();
-        }
-
-        /// <inheritdoc />
-        protected override Enum Bind(EnumDefinitionContext node)
-        {
-            var members = node.enumMember()
-                .Select(memberNode => this.binderProvider
-                    .GetBinder(memberNode)
-                    .Bind<EnumMember>(memberNode));
-
+            // TODO: Can we make the parent typed?
             var builder = new EnumBuilder()
                 .SetNode(node)
+                .SetParent(parent as Document)
                 .SetBinderProvider(this.binderProvider)
-                .SetName(node.name?.Text)
-                .AddMembers(members);
+                .SetName(node.name?.Text);
 
             return builder.Build();
         }

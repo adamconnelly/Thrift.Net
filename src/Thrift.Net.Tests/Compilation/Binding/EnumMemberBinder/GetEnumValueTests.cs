@@ -1,16 +1,18 @@
-namespace Thrift.Net.Tests.Compilation.Binding.EnumBinder
+namespace Thrift.Net.Tests.Compilation.Binding.EnumMemberBinder
 {
-    using NSubstitute;
-    using Thrift.Net.Compilation.Binding;
     using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Compilation.Symbols.Builders;
     using Thrift.Net.Tests.Utility;
     using Xunit;
-    using static Thrift.Net.Antlr.ThriftParser;
 
-    public class GetEnumValueTests : EnumBinderTests
+    public class GetEnumValueTests : EnumMemberBinderTests
     {
-        private readonly IBinder enumMemberBinder = Substitute.For<IBinder>();
+        private readonly Enum parent;
+
+        public GetEnumValueTests()
+        {
+            this.parent = new EnumBuilder().Build();
+        }
 
         [Fact]
         public void NodeIsOnlyMember_ReturnsZero()
@@ -25,10 +27,10 @@ namespace Thrift.Net.Tests.Compilation.Binding.EnumBinder
                 .ParseInput(parser => parser.enumDefinition());
 
             // Act
-            var value = this.Binder.GetEnumValue(enumNode.enumMember()[0]);
+            var member = this.Binder.Bind<EnumMember>(enumNode.enumMember()[0], this.parent);
 
             // Assert
-            Assert.Equal(0, value);
+            Assert.Equal(0, member.Value);
         }
 
         [Fact]
@@ -44,13 +46,11 @@ namespace Thrift.Net.Tests.Compilation.Binding.EnumBinder
                 .FromString(input)
                 .ParseInput(parser => parser.enumDefinition());
 
-            this.SetupMember(enumNode.enumMember()[0], 0);
-
             // Act
-            var value = this.Binder.GetEnumValue(enumNode.enumMember()[1]);
+            var member = this.Binder.Bind<EnumMember>(enumNode.enumMember()[1], this.parent);
 
             // Assert
-            Assert.Equal(1, value);
+            Assert.Equal(1, member.Value);
         }
 
         [Fact]
@@ -66,17 +66,15 @@ namespace Thrift.Net.Tests.Compilation.Binding.EnumBinder
                 .FromString(input)
                 .ParseInput(parser => parser.enumDefinition());
 
-            this.SetupMember(enumNode.enumMember()[0], 5);
-
             // Act
-            var value = this.Binder.GetEnumValue(enumNode.enumMember()[1]);
+            var member = this.Binder.Bind<EnumMember>(enumNode.enumMember()[1], this.parent);
 
             // Assert
-            Assert.Equal(6, value);
+            Assert.Equal(6, member.Value);
         }
 
         [Fact]
-        public void PreviousSiblingValueIsNull_IgnoresPreviousSibling()
+        public void PreviousSiblingValueIsInvalid_IgnoresPreviousSibling()
         {
             // Arrange
             var input =
@@ -89,24 +87,11 @@ namespace Thrift.Net.Tests.Compilation.Binding.EnumBinder
                 .FromString(input)
                 .ParseInput(parser => parser.enumDefinition());
 
-            this.SetupMember(enumNode.enumMember()[0], 2);
-            this.SetupMember(enumNode.enumMember()[1], null);
-
             // Act
-            var value = this.Binder.GetEnumValue(enumNode.enumMember()[2]);
+            var member = this.Binder.Bind<EnumMember>(enumNode.enumMember()[2], this.parent);
 
             // Assert
-            Assert.Equal(3, value);
-        }
-
-        private void SetupMember(EnumMemberContext memberNode, int? value)
-        {
-            var member = new EnumMemberBuilder()
-                .SetValue(value)
-                .Build();
-
-            this.BinderProvider.GetBinder(memberNode).Returns(this.enumMemberBinder);
-            this.enumMemberBinder.Bind<EnumMember>(memberNode).Returns(member);
+            Assert.Equal(3, member.Value);
         }
     }
 }

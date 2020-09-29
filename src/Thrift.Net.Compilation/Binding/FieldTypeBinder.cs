@@ -6,10 +6,8 @@ namespace Thrift.Net.Compilation.Binding
     /// <summary>
     /// Used to bind the type of fields.
     /// </summary>
-    public class FieldTypeBinder : Binder<FieldTypeContext, FieldType>, IBinder
+    public class FieldTypeBinder : Binder<FieldTypeContext, FieldType>
     {
-        private readonly IBinder parent;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="FieldTypeBinder" /> class.
         /// </summary>
@@ -17,21 +15,10 @@ namespace Thrift.Net.Compilation.Binding
         public FieldTypeBinder(IBinder parent)
             : base(parent)
         {
-            this.parent = parent;
         }
 
         /// <inheritdoc />
-        public override FieldType ResolveType(string typeName)
-        {
-            return this.parent.ResolveType(typeName);
-        }
-
-        /// <summary>
-        /// Uses the parsed field type to create a <see cref="FieldType" /> object.
-        /// </summary>
-        /// <param name="node">The parsed type name.</param>
-        /// <returns>The field type, or null if the type could not be resolved.</returns>
-        protected override FieldType Bind(FieldTypeContext node)
+        protected override FieldType Bind(FieldTypeContext node, ISymbol parent)
         {
             var typeName = node.IDENTIFIER().Symbol.Text;
             var baseType = FieldType.ResolveBaseType(typeName);
@@ -42,7 +29,7 @@ namespace Thrift.Net.Compilation.Binding
 
             if (typeName.Split('.').Length <= 2)
             {
-                var userType = this.parent.ResolveType(typeName);
+                var userType = parent.ResolveType(typeName);
                 if (userType != null)
                 {
                     return userType;

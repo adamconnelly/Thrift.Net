@@ -54,13 +54,7 @@ namespace Thrift.Net.Compilation.Binding
         protected TParentBinder Parent => this.parent;
 
         /// <inheritdoc />
-        public virtual FieldType ResolveType(string typeName)
-        {
-            return this.parent?.ResolveType(typeName);
-        }
-
-        /// <inheritdoc />
-        public TSymbol Bind<TSymbol>(IParseTree node)
+        public TSymbol Bind<TSymbol>(IParseTree node, ISymbol parent)
             where TSymbol : class, ISymbol
         {
             if (!(node is TNode))
@@ -68,7 +62,7 @@ namespace Thrift.Net.Compilation.Binding
                 throw new InvalidOperationException($"This binder can only bind {typeof(TNode).Name} nodes");
             }
 
-            var boundSymbol = this.Bind(node as TNode);
+            var boundSymbol = this.Bind(node as TNode, parent);
             if (!(boundSymbol is TSymbol result))
             {
                 throw new InvalidOperationException($"This binder can only be used to bind {typeof(TResult).Name} objects");
@@ -81,7 +75,8 @@ namespace Thrift.Net.Compilation.Binding
         /// Binds the specified node, returning its symbol.
         /// </summary>
         /// <param name="node">The node to bind.</param>
+        /// <param name="parent">The parent symbol.</param>
         /// <returns>The bound symbol.</returns>
-        protected abstract TResult Bind(TNode node);
+        protected abstract TResult Bind(TNode node, ISymbol parent);
     }
 }

@@ -1,5 +1,6 @@
 namespace Thrift.Net.Compilation.Symbols
 {
+    using System.Collections.Generic;
     using Antlr4.Runtime.Tree;
 
     /// <summary>
@@ -30,5 +31,36 @@ namespace Thrift.Net.Compilation.Symbols
 
         /// <inheritdoc />
         public ISymbol Parent { get; }
+
+        /// <summary>
+        /// Gets the child symbols. This should be overridden in any container symbols.
+        /// </summary>
+        protected virtual IReadOnlyCollection<ISymbol> Children => new List<ISymbol>();
+
+        /// <inheritdoc />
+        public ISymbol FindSymbolForNode(IParseTree node)
+        {
+            if (object.ReferenceEquals(this.Node, node))
+            {
+                return this;
+            }
+
+            foreach (var child in this.Children)
+            {
+                var childSymbol = child.FindSymbolForNode(node);
+                if (childSymbol != null)
+                {
+                    return childSymbol;
+                }
+            }
+
+            return null;
+        }
+
+        /// <inheritdoc />
+        public FieldType ResolveType(string typeName)
+        {
+            return this.Parent?.ResolveType(typeName);
+        }
     }
 }

@@ -7,8 +7,10 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
     public abstract class ThriftDocumentGeneratorTests
     {
         private readonly ThriftDocumentGenerator generator = new ThriftDocumentGenerator();
+        private readonly Thrift.Net.Compilation.ThriftCompiler compiler = new Thrift.Net.Compilation.ThriftCompiler();
 
         protected ThriftDocumentGenerator Generator => this.generator;
+        protected Thrift.Net.Compilation.ThriftCompiler Compiler => this.compiler;
 
         /// <summary>
         /// Parses the specified C# code and returns the root node in the syntax

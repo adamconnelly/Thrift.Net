@@ -1,5 +1,6 @@
 namespace Thrift.Net.Compilation.Binding
 {
+    using System.Linq;
     using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Compilation.Symbols.Builders;
     using static Thrift.Net.Antlr.ThriftParser;
@@ -7,7 +8,7 @@ namespace Thrift.Net.Compilation.Binding
     /// <summary>
     /// Used to bind fields based on a parse tree.
     /// </summary>
-    public class FieldBinder : Binder<FieldContext, Field>, IBinder
+    public class FieldBinder : Binder<FieldContext, Field>
     {
         private readonly IFieldContainerBinder containerBinder;
         private readonly IBinderProvider binderProvider;
@@ -25,23 +26,17 @@ namespace Thrift.Net.Compilation.Binding
             this.binderProvider = binderProvider;
         }
 
-        /// <summary>
-        /// Binds the specified field.
-        /// </summary>
-        /// <param name="node">The parsed field.</param>
-        /// <returns>The field definition.</returns>
-        protected override Field Bind(FieldContext node)
+        /// <inheritdoc />
+        protected override Field Bind(FieldContext node, ISymbol parent)
         {
-            var typeBinder = this.binderProvider.GetBinder(node.fieldType());
-
             var builder = new FieldBuilder()
                 .SetNode(node)
+                .SetParent(parent as Struct)
                 .SetBinderProvider(this.binderProvider)
                 .SetFieldId(this.GetFieldId(node))
                 .SetIsFieldIdImplicit(node.fieldId == null)
                 .SetRawFieldId(node.fieldId?.Text)
                 .SetRequiredness(this.GetFieldRequiredness(node))
-                .SetType(typeBinder.Bind<FieldType>(node.fieldType()))
                 .SetName(node.name.Text);
 
             return builder.Build();
@@ -75,7 +70,15 @@ namespace Thrift.Net.Compilation.Binding
                 return null;
             }
 
-            return this.containerBinder.GetAutomaticFieldId(node);
+            if (!(node.Parent is StructDefinitionContext parentNode))
+            {
+                return -1;
+            }
+
+            return (parentNode.field()
+                .Where(field => field.fieldId == null)
+                .ToList()
+                .IndexOf(node) + 1) * -1;
         }
     }
 }

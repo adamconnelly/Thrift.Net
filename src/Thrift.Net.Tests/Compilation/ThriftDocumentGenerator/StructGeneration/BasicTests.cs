@@ -6,7 +6,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Thrift.Net.Compilation.Symbols;
-    using Thrift.Net.Compilation.Symbols.Builders;
+    using Thrift.Net.Tests.Extensions;
     using Xunit;
 
     public class BasicTests : ThriftDocumentGeneratorTests
@@ -20,16 +20,14 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void Generate_StructsProvided_GeneratesStructs()
         {
             // Arrange
-            var document = new DocumentBuilder()
-                .AddNamespace(builder => builder
-                    .SetScope("csharp")
-                    .SetNamespaceName("Thrift.Net.Examples"))
-                .AddStruct(builder => builder.SetName("User"))
-                .AddStruct(builder => builder.SetName("Permission"))
-                .Build();
+            var input =
+@"namespace csharp Thrift.Net.Examples
+struct User {}
+struct Permission {}";
+            var result = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(document);
+            var output = this.Generator.Generate(result.Document);
 
             // Assert
             var (root, _, _) = ParseCSharp(output);
@@ -46,22 +44,16 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void Generate_StructHasFields_GeneratesFields()
         {
             // Arrange
-            var document = new DocumentBuilder()
-                .AddNamespace(builder => builder
-                    .SetScope("csharp")
-                    .SetNamespaceName("Thrift.Net.Examples"))
-                .AddStruct(builder => builder
-                    .SetName("User")
-                    .AddField(builder => builder
-                            .SetType(FieldType.Bool)
-                            .SetName("Field1"))
-                        .AddField(builder => builder
-                            .SetType(FieldType.Bool)
-                            .SetName("Field2")))
-                .Build();
+            var input =
+@"namespace csharp Thrift.Net.Examples
+struct User {
+    bool Field1
+    bool Field2
+}";
+            var result = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(document);
+            var output = this.Generator.Generate(result.Document);
 
             // Assert
             var (root, _, _) = ParseCSharp(output);
@@ -85,19 +77,15 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
             FieldType type)
         {
             // Arrange
-            var document = new DocumentBuilder()
-                .AddNamespace(builder => builder
-                    .SetScope("csharp")
-                    .SetNamespaceName("Thrift.Net.Examples"))
-                .AddStruct(builder => builder
-                    .SetName("User")
-                    .AddField(builder => builder
-                            .SetName("Field")
-                            .SetType(type)))
-                .Build();
+            var input =
+@$"namespace csharp Thrift.Net.Examples
+struct User {{
+    {type.Name} Field
+}}";
+            var result = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(document);
+            var output = this.Generator.Generate(result.Document);
 
             // Assert
             var (root, _, _) = ParseCSharp(output);
@@ -135,32 +123,18 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void Generate_FieldsSupplied_GeneratesFieldIdConstants()
         {
             // Arrange
-            var document = new DocumentBuilder()
-                .AddNamespace(builder => builder
-                    .SetScope("csharp")
-                    .SetNamespaceName("Thrift.Net.Examples"))
-                .AddStruct(builder => builder
-                    .SetName("User")
-                    .AddField(builder => builder
-                        .SetName("Field1")
-                        .SetFieldId(-1)
-                        .SetType(FieldType.Bool))
-                    .AddField(builder => builder
-                        .SetName("Field2")
-                        .SetFieldId(-2)
-                        .SetType(FieldType.Bool))
-                    .AddField(builder => builder
-                        .SetName("Field3")
-                        .SetFieldId(1)
-                        .SetType(FieldType.Bool))
-                    .AddField(builder => builder
-                        .SetName("Field4")
-                        .SetFieldId(5)
-                        .SetType(FieldType.Bool)))
-                .Build();
+            var input =
+@"namespace csharp Thrift.Net.Examples
+struct User {
+    bool Field1
+    bool Field2
+    1: bool Field3
+    5: bool field4
+}";
+            var result = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(document);
+            var output = this.Generator.Generate(result.Document);
 
             // Assert
             var (tree, compilation, semanticModel) = ParseCSharp(output);

@@ -39,10 +39,12 @@ namespace Thrift.Net.Compilation
         /// <inheritdoc />
         public override int? VisitDocument([NotNull] DocumentContext context)
         {
-            var result = base.VisitDocument(context);
-
             var documentBinder = this.binderProvider.GetBinder(context);
-            this.Document = documentBinder.Bind<Document>(context);
+
+            // TODO: Pass in container symbol
+            this.Document = documentBinder.Bind<Document>(context, null);
+
+            var result = base.VisitDocument(context);
 
             return result;
         }
@@ -53,8 +55,7 @@ namespace Thrift.Net.Compilation
         {
             var result = base.VisitNamespaceStatement(context);
 
-            var namespaceBinder = this.binderProvider.GetBinder(context);
-            var @namespace = namespaceBinder.Bind<Namespace>(context);
+            var @namespace = this.Document.FindSymbolForNode(context) as Namespace;
 
             if (@namespace.Scope != null && !@namespace.HasKnownScope)
             {
@@ -93,11 +94,7 @@ namespace Thrift.Net.Compilation
 
             if (@namespace.Scope != null)
             {
-                var headerNode = @namespace.Node.Parent as HeaderContext;
-                var documentNode = headerNode.Parent as DocumentContext;
-                var documentBinder = this.binderProvider.GetBinder(documentNode) as IDocumentBinder;
-
-                if (documentBinder.IsNamespaceForScopeAlreadyDeclared(@namespace))
+                if (this.Document.IsNamespaceForScopeAlreadyDeclared(@namespace))
                 {
                     // The namespace scope has already been specified. For example:
                     // ```
@@ -133,14 +130,9 @@ namespace Thrift.Net.Compilation
         {
             var result = base.VisitEnumDefinition(context);
 
-            var binder = this.binderProvider.GetBinder(context);
-            var enumDefinition = binder.Bind<Enum>(context);
+            var enumDefinition = this.Document.FindSymbolForNode(context) as Enum;
 
-            var definitionsNode = context.Parent as DefinitionsContext;
-            var documentNode = definitionsNode.Parent as DocumentContext;
-            var documentBinder = this.binderProvider.GetBinder(documentNode) as IDocumentBinder;
-
-            this.AddEnumMessages(enumDefinition, documentBinder);
+            this.AddEnumMessages(enumDefinition);
 
             return result;
         }
@@ -150,8 +142,7 @@ namespace Thrift.Net.Compilation
         {
             var result = base.VisitEnumMember(context);
 
-            var memberBinder = this.binderProvider.GetBinder(context);
-            var enumMember = memberBinder.Bind<EnumMember>(context);
+            var enumMember = this.Document.FindSymbolForNode(context) as EnumMember;
 
             this.AddEnumMemberMessages(enumMember);
 
@@ -163,8 +154,7 @@ namespace Thrift.Net.Compilation
         {
             var result = base.VisitStructDefinition(context);
 
-            var binder = this.binderProvider.GetBinder(context);
-            var structDefinition = binder.Bind<Struct>(context);
+            var structDefinition = this.Document.FindSymbolForNode(context) as Struct;
 
             if (structDefinition.Name == null)
             {
@@ -175,10 +165,7 @@ namespace Thrift.Net.Compilation
             }
             else
             {
-                var parent = context.Parent as DefinitionsContext;
-                var documentBinder = this.binderProvider.GetBinder(parent.Parent) as IDocumentBinder;
-
-                if (documentBinder.IsMemberNameAlreadyDeclared(structDefinition.Name, structDefinition.Node))
+                if (this.Document.IsMemberNameAlreadyDeclared(structDefinition.Name, structDefinition.Node))
                 {
                     // Another type has already been declared with the same name.
                     // For example:
@@ -199,10 +186,9 @@ namespace Thrift.Net.Compilation
         /// <inheritdoc />
         public override int? VisitField([NotNull] FieldContext context)
         {
-            var fieldBinder = this.binderProvider.GetBinder(context);
-            var field = fieldBinder.Bind<Field>(context);
-            var parentBinder = this.binderProvider.GetBinder(context.Parent) as IFieldContainerBinder;
-            if (parentBinder.IsFieldNameAlreadyDefined(field.Name, context))
+            var field = this.Document.FindSymbolForNode(context) as Field;
+
+            if (((Struct)field.Parent).IsFieldNameAlreadyDefined(field.Name, context))
             {
                 // The field name has already been declared. For example:
                 // ```
@@ -234,7 +220,7 @@ namespace Thrift.Net.Compilation
             {
                 if (field.FieldId != null)
                 {
-                    if (parentBinder.IsFieldIdAlreadyDefined(field.FieldId.Value, context))
+                    if (((Struct)field.Parent).IsFieldIdAlreadyDefined(field.FieldId.Value, context))
                     {
                         // The field Id has already been declared. For example:
                         // ```
@@ -295,7 +281,7 @@ namespace Thrift.Net.Compilation
             return base.VisitField(context);
         }
 
-        private void AddEnumMessages(Enum enumDefinition, IDocumentBinder documentBinder)
+        private void AddEnumMessages(Enum enumDefinition)
         {
             if (enumDefinition.Name == null)
             {
@@ -306,7 +292,7 @@ namespace Thrift.Net.Compilation
             }
 
             if (enumDefinition.Name != null &&
-                documentBinder.IsMemberNameAlreadyDeclared(
+                ((Document)enumDefinition.Parent).IsMemberNameAlreadyDeclared(
                     enumDefinition.Name, enumDefinition.Node))
             {
                 // Another type has already been declared with the same name:
@@ -377,9 +363,7 @@ namespace Thrift.Net.Compilation
                     enumMember.Node.enumValue);
             }
 
-            var enumBinder = this.binderProvider
-                .GetBinder(enumMember.Node.Parent) as IEnumBinder;
-            if (enumBinder.IsEnumMemberAlreadyDeclared(enumMember.Name, enumMember.Node))
+            if (((Enum)enumMember.Parent).IsEnumMemberAlreadyDeclared(enumMember.Name, enumMember.Node))
             {
                 // The same enum member has been declared twice:
                 // ```

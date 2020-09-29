@@ -3,6 +3,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.DocumentBinder
     using NSubstitute;
     using Thrift.Net.Compilation.Binding;
 
+    // TODO: Need some tests for the document binder
     public abstract class DocumentBinderTests
     {
         private readonly IBinder parentBinder = Substitute.For<IBinder>();

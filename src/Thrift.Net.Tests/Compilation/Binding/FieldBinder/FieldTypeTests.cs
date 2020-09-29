@@ -3,6 +3,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
     using NSubstitute;
     using Thrift.Net.Compilation.Binding;
     using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Symbols.Builders;
     using Thrift.Net.Tests.Utility;
     using Xunit;
 
@@ -22,17 +23,23 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
         public void Bind_FieldTypeSupplied_UsesBinderToResolveType()
         {
             // Arrange
-            var fieldContext = ParserInput
-                .FromString("i32 Id")
-                .ParseInput(parser => parser.field());
+            var @struct = new StructBuilder().Build();
+            var input =
+@"struct User {
+    i32 Id
+}";
+            var structNode = ParserInput
+                .FromString(input)
+                .ParseInput(parser => parser.structDefinition());
 
-            this.binderProvider.GetBinder(fieldContext.fieldType())
+            this.binderProvider.GetBinder(structNode.field()[0].fieldType())
                 .Returns(this.typeBinder);
-            this.typeBinder.Bind<FieldType>(fieldContext.fieldType())
+            this.typeBinder.Bind<FieldType>(
+                structNode.field()[0].fieldType(), Arg.Any<ISymbol>())
                 .Returns(FieldType.Bool);
 
             // Act
-            var field = this.binder.Bind<Field>(fieldContext);
+            var field = this.binder.Bind<Field>(structNode.field()[0], @struct);
 
             // Assert
             Assert.Same(FieldType.Bool, field.Type);

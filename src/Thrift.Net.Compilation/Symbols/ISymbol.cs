@@ -17,6 +17,20 @@ namespace Thrift.Net.Compilation.Symbols
         /// type resolution.
         /// </summary>
         ISymbol Parent { get; }
+
+        /// <summary>
+        /// Finds the symbol that represents the specified node.
+        /// </summary>
+        /// <param name="node">The node in the tree to search for.</param>
+        /// <returns>The symbol matching the node, or null if no symbol was found.</returns>
+        ISymbol FindSymbolForNode(IParseTree node);
+
+        /// <summary>
+        /// Resolves the specified type.
+        /// </summary>
+        /// <param name="typeName">The name of the type to resolve.</param>
+        /// <returns>The type, or null if the type could not be resolved.</returns>
+        FieldType ResolveType(string typeName);
     }
 
     /// <summary>

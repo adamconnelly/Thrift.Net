@@ -1,13 +1,11 @@
 namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
 {
-    using System.Collections.Generic;
     using System.Linq;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Thrift.Net.Compilation.Symbols;
-    using Thrift.Net.Compilation.Symbols.Builders;
+    using Thrift.Net.Tests.Extensions;
     using Xunit;
-    using ThriftDocumentGenerator = Thrift.Net.Compilation.ThriftDocumentGenerator;
 
     public class EnumGenerationTests : ThriftDocumentGeneratorTests
     {
@@ -15,7 +13,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
         public void Generate_EnumProvided_SetsCorrectName()
         {
             // Arrange
-            var model = CreateDocument();
+            var model = this.CompileEnum();
 
             // Act
             var output = this.Generator.Generate(model);
@@ -30,7 +28,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
         public void Generate_EnumProvided_AddsMembers()
         {
             // Arrange
-            var model = CreateDocument();
+            var model = this.CompileEnum();
 
             // Act
             var output = this.Generator.Generate(model);
@@ -48,7 +46,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
         public void Generate_EnumProvided_SetsMemberValues()
         {
             // Arrange
-            var model = CreateDocument();
+            var model = this.CompileEnum();
 
             // Act
             var output = this.Generator.Generate(model);
@@ -70,17 +68,17 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
             return namespaceDeclaration.Members.First() as EnumDeclarationSyntax;
         }
 
-        private static Document CreateDocument()
+        private Document CompileEnum()
         {
-            return new DocumentBuilder()
-                .AddNamespace(builder => builder
-                    .SetScope("csharp")
-                    .SetNamespaceName("Thrift.Net.Tests"))
-                .AddEnum(builder => builder
-                    .SetName("UserType")
-                    .AddMember(builder => builder.SetName("User").SetValue(2))
-                    .AddMember(builder => builder.SetName("Administrator").SetValue(5)))
-                .Build();
+            var input =
+@"namespace csharp Thrift.Net.Tests
+enum UserType {
+    User = 2
+    Administrator = 5
+}";
+            var compilationResult = this.Compiler.Compile(input.ToStream());
+
+            return compilationResult.Document;
         }
     }
 }

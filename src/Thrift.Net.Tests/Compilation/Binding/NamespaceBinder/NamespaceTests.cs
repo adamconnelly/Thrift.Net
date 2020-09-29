@@ -3,6 +3,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.NamespaceBinder
     using NSubstitute;
     using Thrift.Net.Compilation.Binding;
     using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Symbols.Builders;
     using Thrift.Net.Tests.Utility;
     using Xunit;
 
@@ -12,6 +13,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.NamespaceBinder
         public void NamespaceProvided_SetsNamespace()
         {
             // Arrange
+            var document = new DocumentBuilder().Build();
             var parentBinder = Substitute.For<IBinder>();
             var binderProvider = Substitute.For<IBinderProvider>();
             var binder = new NamespaceBinder(parentBinder, binderProvider);
@@ -20,7 +22,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.NamespaceBinder
                 .ParseInput(parser => parser.namespaceStatement());
 
             // Act
-            var @namespace = binder.Bind<Namespace>(namespaceStatement);
+            var @namespace = binder.Bind<Namespace>(namespaceStatement, document);
 
             // Assert
             Assert.Equal("Thrift.Net.Examples", @namespace.NamespaceName);
@@ -30,6 +32,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.NamespaceBinder
         public void NamespaceNotProvided_Null()
         {
             // Arrange
+            var document = new DocumentBuilder().Build();
             var parentBinder = Substitute.For<IBinder>();
             var binderProvider = Substitute.For<IBinderProvider>();
             var binder = new NamespaceBinder(parentBinder, binderProvider);
@@ -38,7 +41,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.NamespaceBinder
                 .ParseInput(parser => parser.namespaceStatement());
 
             // Act
-            var @namespace = binder.Bind<Namespace>(namespaceStatement);
+            var @namespace = binder.Bind<Namespace>(namespaceStatement, document);
 
             // Assert
             Assert.Null(@namespace.NamespaceName);

@@ -1,5 +1,7 @@
 namespace Thrift.Net.Compilation.Binding
 {
+    using System.Linq;
+    using Thrift.Net.Compilation.Extensions;
     using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Compilation.Symbols.Builders;
     using static Thrift.Net.Antlr.ThriftParser;
@@ -8,7 +10,7 @@ namespace Thrift.Net.Compilation.Binding
     /// Used to Bind <see cref="EnumMember" /> Symbols from
     /// <see cref="EnumMemberContext" /> nodes.
     /// </summary>
-    public class EnumMemberBinder : Binder<EnumMemberContext, EnumMember, IEnumBinder>
+    public class EnumMemberBinder : Binder<EnumMemberContext, EnumMember>
     {
         private readonly IBinderProvider binderProvider;
 
@@ -17,17 +19,18 @@ namespace Thrift.Net.Compilation.Binding
         /// </summary>
         /// <param name="parent">The parent binder.</param>
         /// <param name="binderProvider">Used to get binders for fields.</param>
-        public EnumMemberBinder(IEnumBinder parent, IBinderProvider binderProvider)
+        public EnumMemberBinder(IBinder parent, IBinderProvider binderProvider)
             : base(parent)
         {
             this.binderProvider = binderProvider;
         }
 
         /// <inheritdoc />
-        protected override EnumMember Bind(EnumMemberContext node)
+        protected override EnumMember Bind(EnumMemberContext node, ISymbol parent)
         {
             var builder = new EnumMemberBuilder()
                 .SetNode(node)
+                .SetParent(parent as Enum)
                 .SetBinderProvider(this.binderProvider)
                 .SetName(node.IDENTIFIER()?.Symbol.Text)
                 .SetRawValue(node.enumValue?.Text);
@@ -46,26 +49,71 @@ namespace Thrift.Net.Compilation.Binding
         {
             if (node.enumValue != null)
             {
-                if (int.TryParse(node.enumValue.Text, out var value))
-                {
-                    if (value >= 0)
-                    {
-                        builder.SetValue(value);
-                    }
-                    else
-                    {
-                        builder.SetInvalidValueReason(InvalidEnumValueReason.Negative);
-                    }
-                }
-                else
-                {
-                    builder.SetInvalidValueReason(InvalidEnumValueReason.NotAnInteger);
-                }
+                var (value, reason) = this.GetEnumValue(node);
+                builder.SetValue(value);
+                builder.SetInvalidValueReason(reason);
             }
             else if (node.EQUALS_OPERATOR() == null)
             {
-                builder.SetValue(this.Parent.GetEnumValue(node));
+                builder.SetValue(this.CalculateAutomaticValue(node));
             }
+        }
+
+        private (int?, InvalidEnumValueReason) GetEnumValue(EnumMemberContext node)
+        {
+            if (int.TryParse(node.enumValue.Text, out var value))
+            {
+                if (value >= 0)
+                {
+                    return (value, InvalidEnumValueReason.None);
+                }
+                else
+                {
+                    return (null, InvalidEnumValueReason.Negative);
+                }
+            }
+
+            return (null, InvalidEnumValueReason.NotAnInteger);
+        }
+
+        /// <summary>
+        /// Calculates the automatic enum value for members that don't have an
+        /// explicit value specified.
+        /// </summary>
+        /// <param name="node">The member node.</param>
+        /// <remarks>
+        /// The first member in an enum is given a value of 0, and the other members
+        /// are assigned N + 1, where N is the value of the previous enum member.
+        /// </remarks>
+        private int CalculateAutomaticValue(EnumMemberContext node)
+        {
+            var parent = node.Parent as EnumDefinitionContext;
+
+            // If there's only a single member, don't bother doing any more work
+            if (parent == null || parent.enumMember().Length == 1)
+            {
+                return 0;
+            }
+
+            var value = parent.enumMember()
+                .TakeUntil(member => member == node)
+                .Aggregate(-1, (currentValue, currentNode) =>
+                {
+                    if (currentNode.enumValue != null)
+                    {
+                        var (value, _) = this.GetEnumValue(currentNode);
+                        if (value != null)
+                        {
+                            return value.Value;
+                        }
+
+                        return currentValue;
+                    }
+
+                    return currentValue + 1;
+                });
+
+            return value;
         }
     }
 }

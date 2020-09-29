@@ -22,66 +22,79 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
         public void Bind_FieldIdProvided_SetsFieldId()
         {
             // Arrange
+            var @struct = new StructBuilder().Build();
             var fieldContext = ParserInput
                 .FromString("1: i32 Id")
                 .ParseInput(parser => parser.field());
 
             // Act
-            var field = this.binder.Bind<Field>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext, @struct);
 
             // Assert
             Assert.Equal(1, field.FieldId);
         }
 
         [Fact]
-        public void Bind_FieldIdNotProvided_DefaultsIdToZero()
+        public void Bind_FieldIdNotProvided_GeneratesNegativeIds()
         {
             // Arrange
-            var fieldContext = ParserInput
-                .FromString("i32 Id")
-                .ParseInput(parser => parser.field());
+            var input =
+@"struct User {
+    i32 Id
+    string Username
+}";
+            var @struct = new StructBuilder().Build();
+            var structDefinition = ParserInput
+                .FromString(input)
+                .ParseInput(parser => parser.structDefinition());
 
             // Act
-            var field = this.binder.Bind<Field>(fieldContext);
+            var idField = this.binder.Bind<Field>(structDefinition.field()[0], @struct);
+            var usernameField = this.binder.Bind<Field>(structDefinition.field()[1], @struct);
 
             // Assert
-            Assert.Equal(0, field.FieldId);
+            Assert.Equal(-1, idField.FieldId);
+            Assert.Equal(-2, usernameField.FieldId);
         }
 
         [Fact]
-        public void Bind_FieldIdNotProvided_GetsFieldIdFromContainer()
+        public void Bind_FieldIdNotProvided_SkipsExplicitFieldsWhenGeneratingIds()
         {
+            // TODO: Figure out what to do here
             // Arrange
-            var previousField = new FieldBuilder()
-                .SetFieldId(5)
-                .Build();
-
-            var fieldContext = ParserInput
-                .FromString("i32 Id")
-                .ParseInput(parser => parser.field());
-            this.containerBinder.GetAutomaticFieldId(fieldContext).Returns(-3);
+            var input =
+@"struct User {
+    i32 Id
+    1: string Username
+    string Email
+}";
+            var @struct = new StructBuilder().Build();
+            var structDefinition = ParserInput
+                .FromString(input)
+                .ParseInput(parser => parser.structDefinition());
 
             // Act
-            var field = this.binder.Bind<Field>(fieldContext);
+            var field = this.binder.Bind<Field>(structDefinition.field()[2], @struct);
 
             // Assert
-            Assert.Equal(-3, field.FieldId);
+            Assert.Equal(-2, field.FieldId);
         }
 
         [Fact]
         public void Bind_FieldIdNotProvided_IndicatesFieldIdIsImplicit()
         {
             // Arrange
-            var previousField = new FieldBuilder()
-                .SetFieldId(5)
-                .Build();
-
-            var fieldContext = ParserInput
-                .FromString("i32 Id")
-                .ParseInput(parser => parser.field());
+            var input =
+@"struct User {
+    i32 Id
+}";
+            var @struct = new StructBuilder().Build();
+            var structDefinition = ParserInput
+                .FromString(input)
+                .ParseInput(parser => parser.structDefinition());
 
             // Act
-            var field = this.binder.Bind<Field>(fieldContext);
+            var field = this.binder.Bind<Field>(structDefinition.field()[0], @struct);
 
             // Assert
             Assert.True(field.IsFieldIdImplicit);
@@ -91,12 +104,13 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
         public void Bind_FieldIdNegative_SetsFieldIdNull()
         {
             // Arrange
+            var @struct = new StructBuilder().Build();
             var fieldContext = ParserInput
                 .FromString("-1: i32 Id")
                 .ParseInput(parser => parser.field());
 
             // Act
-            var field = this.binder.Bind<Field>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext, @struct);
 
             // Assert
             Assert.Null(field.FieldId);
@@ -106,12 +120,13 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
         public void Bind_FieldIdSupplied_SetsRawFieldId()
         {
             // Arrange
+            var @struct = new StructBuilder().Build();
             var fieldContext = ParserInput
                 .FromString("4: i32 Id")
                 .ParseInput(parser => parser.field());
 
             // Act
-            var field = this.binder.Bind<Field>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext, @struct);
 
             // Assert
             Assert.Equal("4", field.RawFieldId);
@@ -121,12 +136,13 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
         public void Bind_FieldIdNotAnInteger_SetsFieldIdNull()
         {
             // Arrange
+            var @struct = new StructBuilder().Build();
             var fieldContext = ParserInput
                 .FromString("abc: i32 Id")
                 .ParseInput(parser => parser.field());
 
             // Act
-            var field = this.binder.Bind<Field>(fieldContext);
+            var field = this.binder.Bind<Field>(fieldContext, @struct);
 
             // Assert
             Assert.Null(field.FieldId);

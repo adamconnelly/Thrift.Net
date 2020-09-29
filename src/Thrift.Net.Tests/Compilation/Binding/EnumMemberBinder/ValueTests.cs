@@ -1,7 +1,7 @@
 namespace Thrift.Net.Tests.Compilation.Binding.EnumMemberBinder
 {
-    using NSubstitute;
     using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Symbols.Builders;
     using Thrift.Net.Tests.Utility;
     using Xunit;
 
@@ -17,12 +17,13 @@ namespace Thrift.Net.Tests.Compilation.Binding.EnumMemberBinder
         public void SetsValueCorrectly(string input, int? expected)
         {
             // Arrange
+            var @enum = new EnumBuilder().Build();
             var memberNode = ParserInput
                 .FromString(input)
                 .ParseInput(parser => parser.enumMember());
 
             // Act
-            var member = this.Binder.Bind<EnumMember>(memberNode);
+            var member = this.Binder.Bind<EnumMember>(memberNode, @enum);
 
             // Assert
             Assert.Equal(expected, member.Value);
@@ -36,12 +37,13 @@ namespace Thrift.Net.Tests.Compilation.Binding.EnumMemberBinder
         public void SetsRawValueCorrectly(string input, string expected)
         {
             // Arrange
+            var @enum = new EnumBuilder().Build();
             var memberNode = ParserInput
                 .FromString(input)
                 .ParseInput(parser => parser.enumMember());
 
             // Act
-            var member = this.Binder.Bind<EnumMember>(memberNode);
+            var member = this.Binder.Bind<EnumMember>(memberNode, @enum);
 
             // Assert
             Assert.Equal(expected, member.RawValue);
@@ -56,32 +58,16 @@ namespace Thrift.Net.Tests.Compilation.Binding.EnumMemberBinder
         public void SetsInvalidValueReasonCorrectly(string input, InvalidEnumValueReason expected)
         {
             // Arrange
+            var @enum = new EnumBuilder().Build();
             var memberNode = ParserInput
                 .FromString(input)
                 .ParseInput(parser => parser.enumMember());
 
             // Act
-            var member = this.Binder.Bind<EnumMember>(memberNode);
+            var member = this.Binder.Bind<EnumMember>(memberNode, @enum);
 
             // Assert
             Assert.Equal(expected, member.InvalidValueReason);
-        }
-
-        [Fact]
-        public void EnumValueNotSpecified_UsesParentBinderToSetValue()
-        {
-            // Arrange
-            var memberNode = ParserInput
-                .FromString("User")
-                .ParseInput(parser => parser.enumMember());
-
-            this.ParentBinder.GetEnumValue(memberNode).Returns(5);
-
-            // Act
-            var member = this.Binder.Bind<EnumMember>(memberNode);
-
-            // Assert
-            Assert.Equal(5, member.Value);
         }
     }
 }

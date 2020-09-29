@@ -1,5 +1,6 @@
 namespace Thrift.Net.Compilation.Symbols
 {
+    using Thrift.Net.Compilation.Binding;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
@@ -7,6 +8,8 @@ namespace Thrift.Net.Compilation.Symbols
     /// </summary>
     public class Field : Symbol<FieldContext>
     {
+        private readonly IBinderProvider binderProvider;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Field" /> class.
         /// </summary>
@@ -15,29 +18,29 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="fieldId">The field's Id.</param>
         /// <param name="rawFieldId">The raw text representing the field Id.</param>
         /// <param name="requiredness">The level of requiredness of the field.</param>
-        /// <param name="type">The type of the field.</param>
         /// <param name="name">The name of the field.</param>
         /// <param name="isFieldIdImplicit">
         /// Indicates whether the field Id was generated automatically by the
         /// compiler rather than being explicitly defined in the IDL.
         /// </param>
+        /// <param name="binderProvider">Used to get binders.</param>
         public Field(
             FieldContext node,
             Struct parent,
             int? fieldId,
             string rawFieldId,
             FieldRequiredness requiredness,
-            FieldType type,
             string name,
-            bool isFieldIdImplicit)
+            bool isFieldIdImplicit,
+            IBinderProvider binderProvider)
             : base(node, parent)
         {
             this.FieldId = fieldId;
             this.RawFieldId = rawFieldId;
             this.Requiredness = requiredness;
-            this.Type = type;
             this.Name = name;
             this.IsFieldIdImplicit = isFieldIdImplicit;
+            this.binderProvider = binderProvider;
         }
 
         /// <summary>
@@ -67,7 +70,14 @@ namespace Thrift.Net.Compilation.Symbols
         /// <summary>
         /// Gets the data type of the field.
         /// </summary>
-        public FieldType Type { get; }
+        public FieldType Type
+        {
+            get
+            {
+                var typeBinder = this.binderProvider.GetBinder(this.Node.fieldType());
+                return typeBinder.Bind<FieldType>(this.Node.fieldType(), this);
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether the field Id was generated implicitly,

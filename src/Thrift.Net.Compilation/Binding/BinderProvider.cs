@@ -123,7 +123,7 @@ namespace Thrift.Net.Compilation.Binding
 
             public override IBinder VisitEnumMember([NotNull] EnumMemberContext context)
             {
-                var parentBinder = this.binderMap.Get(context.Parent) as IEnumBinder;
+                var parentBinder = this.binderMap.Get(context.Parent);
                 var memberBinder = new EnumMemberBinder(parentBinder, this.binderProvider);
                 this.binderMap.Put(context, memberBinder);
 

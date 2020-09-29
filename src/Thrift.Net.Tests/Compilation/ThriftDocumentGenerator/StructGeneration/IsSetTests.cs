@@ -10,6 +10,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
     using Microsoft.CodeAnalysis.Scripting;
     using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Compilation.Symbols.Builders;
+    using Thrift.Net.Tests.Extensions;
     using Thrift.Protocol;
     using Xunit;
 
@@ -19,22 +20,16 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void HasFieldsWithDefaultRequiredness_GeneratesIsSetStruct()
         {
             // Arrange
-            var document = new DocumentBuilder()
-                .AddNamespace(builder => builder
-                    .SetScope("csharp")
-                    .SetNamespaceName("Thrift.Net.Examples"))
-                .AddStruct(builder => builder
-                    .SetName("User")
-                    .AddField(builder => builder
-                        .SetType(FieldType.Bool)
-                        .SetName("Field1"))
-                    .AddField(builder => builder
-                        .SetType(FieldType.Bool)
-                        .SetName("Field2")))
-                .Build();
+            var input =
+@"namespace csharp Thrift.Net.Examples
+struct User {
+    bool Field1
+    bool Field2
+}";
+            var result = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(document);
+            var output = this.Generator.Generate(result.Document);
 
             // Assert
             var (isSetStruct, isSetProperty, isSetSymbol) = GetIsSetInformation(output);
@@ -48,15 +43,13 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void HasNoFields_DoesNotGenerateIsSetStruct()
         {
             // Arrange
-            var document = new DocumentBuilder()
-                .AddNamespace(builder => builder
-                    .SetScope("csharp")
-                    .SetNamespaceName("Thrift.Net.Examples"))
-                .AddStruct(builder => builder.SetName("User"))
-                .Build();
+            var input =
+@"namespace csharp Thrift.Net.Examples
+struct User {}";
+            var result = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(document);
+            var output = this.Generator.Generate(result.Document);
 
             // Assert
             var (isSetStruct, isSetProperty, _) = GetIsSetInformation(output);
@@ -69,24 +62,16 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void OnlyHasRequiredFields_DoesNotGenerateIsSetStruct()
         {
             // Arrange
-            var document = new DocumentBuilder()
-                .AddNamespace(builder => builder
-                    .SetScope("csharp")
-                    .SetNamespaceName("Thrift.Net.Examples"))
-                .AddStruct(builder => builder
-                    .SetName("User")
-                    .AddField(builder => builder
-                        .SetType(FieldType.Bool)
-                        .SetName("Field1")
-                        .SetRequiredness(FieldRequiredness.Required))
-                    .AddField(builder => builder
-                        .SetType(FieldType.Bool)
-                        .SetName("Field2")
-                        .SetRequiredness(FieldRequiredness.Required)))
-                .Build();
+            var input =
+@"namespace csharp Thrift.Net.Examples
+struct User {
+    required bool Field1
+    required bool Field2
+}";
+            var result = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(document);
+            var output = this.Generator.Generate(result.Document);
 
             // Assert
             var (isSetStruct, isSetProperty, _) = GetIsSetInformation(output);
@@ -99,24 +84,16 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public void OnlyHasOptionalFields_GeneratesIsSetStruct()
         {
             // Arrange
-            var document = new DocumentBuilder()
-                .AddNamespace(builder => builder
-                    .SetScope("csharp")
-                    .SetNamespaceName("Thrift.Net.Examples"))
-                .AddStruct(builder => builder
-                    .SetName("User")
-                    .AddField(builder => builder
-                        .SetName("Field1")
-                        .SetType(FieldType.Bool)
-                        .SetRequiredness(FieldRequiredness.Optional))
-                    .AddField(builder => builder
-                        .SetName("Field2")
-                        .SetType(FieldType.Bool)
-                        .SetRequiredness(FieldRequiredness.Optional)))
-                .Build();
+            var input =
+@"namespace csharp Thrift.Net.Examples
+struct User {
+    optional bool Field1
+    optional bool Field2
+}";
+            var result = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(document);
+            var output = this.Generator.Generate(result.Document);
 
             // Assert
             var (isSetStruct, isSetProperty, _) = GetIsSetInformation(output);
@@ -129,21 +106,15 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
         public async Task HasFields_DefaultsIsSetToFalseForEachField()
         {
             // Arrange
-            var document = new DocumentBuilder()
-                .AddStruct(builder => builder
-                    .SetName("User")
-                    .AddField(builder => builder
-                        .SetName("Field1")
-                        .SetFieldId(0)
-                        .SetType(FieldType.Bool))
-                    .AddField(builder => builder
-                        .SetName("Field2")
-                        .SetFieldId(1)
-                        .SetType(FieldType.Bool)))
-                .Build();
+            var input =
+@"struct User {
+    0: bool Field1
+    1: bool Field2
+}";
+            var compilationResult = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(document);
+            var output = this.Generator.Generate(compilationResult.Document);
 
             // Assert
             var scriptContents =
@@ -166,17 +137,14 @@ return user.IsSet.Field1 == false &&
         public async Task FieldSet_MarksIsSetTrueForField()
         {
             // Arrange
-            var document = new DocumentBuilder()
-                .AddStruct(builder => builder
-                    .SetName("User")
-                    .AddField(builder => builder
-                        .SetName("Field1")
-                        .SetFieldId(0)
-                        .SetType(FieldType.Bool)))
-                .Build();
+            var input =
+@"struct User {
+    0: bool Field1
+}";
+            var compilationResult = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(document);
+            var output = this.Generator.Generate(compilationResult.Document);
 
             // Assert
             var scriptContents =

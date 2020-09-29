@@ -24,10 +24,11 @@ namespace Thrift.Net.Compilation.Binding
         }
 
         /// <inheritdoc />
-        protected override Namespace Bind(NamespaceStatementContext node)
+        protected override Namespace Bind(NamespaceStatementContext node, ISymbol parent)
         {
             var builder = new NamespaceBuilder()
                 .SetNode(node)
+                .SetParent(parent as Document)
                 .SetBinderProvider(this.binderProvider)
                 .SetScope(node.namespaceScope?.Text)
                 .SetNamespaceName(node.ns?.Text);
