@@ -128,5 +128,30 @@ struct Team {}";
             Assert.False(result.HasErrors);
             Assert.Equal(2, result.Document.Structs.Single().Fields.Count());
         }
+
+        [Fact]
+        public void Compile_MultipleStructs_AssignsFieldsToCorrectStruct()
+        {
+            // Arrange
+            var input =
+@"struct User {
+    1: i32 Id
+    2: string Username
+}
+
+struct Address {
+    1: string Line1
+    2: string Line2
+    3: string Town
+}";
+
+            // Act
+            var result = this.compiler.Compile(input.ToStream());
+
+            // Assert
+            Assert.Equal(2, result.Document.Structs.Count);
+            Assert.Equal(2, result.Document.Structs.ElementAt(0).Fields.Count);
+            Assert.Equal(3, result.Document.Structs.ElementAt(1).Fields.Count);
+        }
     }
 }
