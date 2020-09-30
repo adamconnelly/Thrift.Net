@@ -1,6 +1,7 @@
 namespace Thrift.Net.Compilation.Symbols
 {
     using Antlr4.Runtime.Tree;
+    using Thrift.Net.Antlr;
 
     /// <summary>
     /// Represents a symbol in the semantic model.
@@ -24,6 +25,48 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="node">The node in the tree to search for.</param>
         /// <returns>The symbol matching the node, or null if no symbol was found.</returns>
         ISymbol FindSymbolForNode(IParseTree node);
+
+        /// <summary>
+        /// Finds the symbol that represents the specified node.
+        /// </summary>
+        /// <param name="node">The node in the tree to search for.</param>
+        /// <returns>The symbol matching the node, or null if no symbol was found.</returns>
+        Document FindSymbolForNode(ThriftParser.DocumentContext node);
+
+        /// <summary>
+        /// Finds the symbol that represents the specified node.
+        /// </summary>
+        /// <param name="node">The node in the tree to search for.</param>
+        /// <returns>The symbol matching the node, or null if no symbol was found.</returns>
+        Enum FindSymbolForNode(ThriftParser.EnumDefinitionContext node);
+
+        /// <summary>
+        /// Finds the symbol that represents the specified node.
+        /// </summary>
+        /// <param name="node">The node in the tree to search for.</param>
+        /// <returns>The symbol matching the node, or null if no symbol was found.</returns>
+        EnumMember FindSymbolForNode(ThriftParser.EnumMemberContext node);
+
+        /// <summary>
+        /// Finds the symbol that represents the specified node.
+        /// </summary>
+        /// <param name="node">The node in the tree to search for.</param>
+        /// <returns>The symbol matching the node, or null if no symbol was found.</returns>
+        Field FindSymbolForNode(ThriftParser.FieldContext node);
+
+        /// <summary>
+        /// Finds the symbol that represents the specified node.
+        /// </summary>
+        /// <param name="node">The node in the tree to search for.</param>
+        /// <returns>The symbol matching the node, or null if no symbol was found.</returns>
+        Namespace FindSymbolForNode(ThriftParser.NamespaceStatementContext node);
+
+        /// <summary>
+        /// Finds the symbol that represents the specified node.
+        /// </summary>
+        /// <param name="node">The node in the tree to search for.</param>
+        /// <returns>The symbol matching the node, or null if no symbol was found.</returns>
+        Struct FindSymbolForNode(ThriftParser.StructDefinitionContext node);
 
         /// <summary>
         /// Resolves the specified type.

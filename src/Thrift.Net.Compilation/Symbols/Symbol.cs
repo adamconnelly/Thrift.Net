@@ -2,6 +2,7 @@ namespace Thrift.Net.Compilation.Symbols
 {
     using System.Collections.Generic;
     using Antlr4.Runtime.Tree;
+    using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
     /// The base class for symbols.
@@ -52,6 +53,72 @@ namespace Thrift.Net.Compilation.Symbols
                 {
                     return childSymbol;
                 }
+            }
+
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public Document FindSymbolForNode(DocumentContext node)
+        {
+            if (this.FindSymbolForNode((IParseTree)node) is Document document)
+            {
+                return document;
+            }
+
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public Enum FindSymbolForNode(EnumDefinitionContext node)
+        {
+            if (this.FindSymbolForNode((IParseTree)node) is Enum @enum)
+            {
+                return @enum;
+            }
+
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public EnumMember FindSymbolForNode(EnumMemberContext node)
+        {
+            if (this.FindSymbolForNode((IParseTree)node) is EnumMember enumMember)
+            {
+                return enumMember;
+            }
+
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public Field FindSymbolForNode(FieldContext node)
+        {
+            if (this.FindSymbolForNode((IParseTree)node) is Field field)
+            {
+                return field;
+            }
+
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public Namespace FindSymbolForNode(NamespaceStatementContext node)
+        {
+            if (this.FindSymbolForNode((IParseTree)node) is Namespace @namespace)
+            {
+                return @namespace;
+            }
+
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public Struct FindSymbolForNode(StructDefinitionContext node)
+        {
+            if (this.FindSymbolForNode((IParseTree)node) is Struct @struct)
+            {
+                return @struct;
             }
 
             return null;

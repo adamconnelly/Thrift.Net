@@ -55,7 +55,7 @@ namespace Thrift.Net.Compilation
         {
             var result = base.VisitNamespaceStatement(context);
 
-            var @namespace = this.Document.FindSymbolForNode(context) as Namespace;
+            var @namespace = this.Document.FindSymbolForNode(context);
 
             if (@namespace.Scope != null && !@namespace.HasKnownScope)
             {
@@ -130,7 +130,7 @@ namespace Thrift.Net.Compilation
         {
             var result = base.VisitEnumDefinition(context);
 
-            var enumDefinition = this.Document.FindSymbolForNode(context) as Enum;
+            var enumDefinition = this.Document.FindSymbolForNode(context);
 
             this.AddEnumMessages(enumDefinition);
 
@@ -142,7 +142,7 @@ namespace Thrift.Net.Compilation
         {
             var result = base.VisitEnumMember(context);
 
-            var enumMember = this.Document.FindSymbolForNode(context) as EnumMember;
+            var enumMember = this.Document.FindSymbolForNode(context);
 
             this.AddEnumMemberMessages(enumMember);
 
@@ -154,7 +154,7 @@ namespace Thrift.Net.Compilation
         {
             var result = base.VisitStructDefinition(context);
 
-            var structDefinition = this.Document.FindSymbolForNode(context) as Struct;
+            var structDefinition = this.Document.FindSymbolForNode(context);
 
             if (structDefinition.Name == null)
             {
@@ -186,7 +186,7 @@ namespace Thrift.Net.Compilation
         /// <inheritdoc />
         public override int? VisitField([NotNull] FieldContext context)
         {
-            var field = this.Document.FindSymbolForNode(context) as Field;
+            var field = this.Document.FindSymbolForNode(context);
 
             if (((Struct)field.Parent).IsFieldNameAlreadyDefined(field.Name, context))
             {
