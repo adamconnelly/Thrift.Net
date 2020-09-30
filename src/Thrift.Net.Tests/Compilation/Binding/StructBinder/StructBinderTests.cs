@@ -7,10 +7,8 @@ namespace Thrift.Net.Tests.Compilation.Binding.StructBinder
     {
         public StructBinderTests()
         {
-            this.Binder = new StructBinder(this.Parent, this.BinderProvider);
+            this.Binder = new StructBinder(this.BinderProvider);
         }
-
-        protected IBinder Parent { get; } = Substitute.For<IBinder>();
 
         protected IBinderProvider BinderProvider { get; } = Substitute.For<IBinderProvider>();
 

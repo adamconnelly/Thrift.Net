@@ -8,15 +8,6 @@ namespace Thrift.Net.Compilation.Binding
     /// </summary>
     public class FieldTypeBinder : Binder<FieldTypeContext, FieldType>
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FieldTypeBinder" /> class.
-        /// </summary>
-        /// <param name="parent">The parent binder.</param>
-        public FieldTypeBinder(IBinder parent)
-            : base(parent)
-        {
-        }
-
         /// <inheritdoc />
         protected override FieldType Bind(FieldTypeContext node, ISymbol parent)
         {

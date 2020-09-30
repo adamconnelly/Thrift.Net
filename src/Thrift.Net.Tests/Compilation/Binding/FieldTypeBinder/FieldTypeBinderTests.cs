@@ -12,13 +12,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldTypeBinder
 
     public class FieldTypeBinderTests
     {
-        private readonly IBinder parentBinder = Substitute.For<IBinder>();
-        private readonly FieldTypeBinder binder;
-
-        public FieldTypeBinderTests()
-        {
-            this.binder = new FieldTypeBinder(this.parentBinder);
-        }
+        private readonly FieldTypeBinder binder = new FieldTypeBinder();
 
         public static IEnumerable<object[]> GetBaseTypes()
         {

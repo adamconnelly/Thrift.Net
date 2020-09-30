@@ -14,9 +14,8 @@ namespace Thrift.Net.Tests.Compilation.Binding.NamespaceBinder
         {
             // Arrange
             var document = new DocumentBuilder().Build();
-            var parentBinder = Substitute.For<IBinder>();
             var binderProvider = Substitute.For<IBinderProvider>();
-            var binder = new NamespaceBinder(parentBinder, binderProvider);
+            var binder = new NamespaceBinder(binderProvider);
             var namespaceStatement = ParserInput
                 .FromString("namespace * Thrift.Net.Examples")
                 .ParseInput(parser => parser.namespaceStatement());
@@ -33,9 +32,8 @@ namespace Thrift.Net.Tests.Compilation.Binding.NamespaceBinder
         {
             // Arrange
             var document = new DocumentBuilder().Build();
-            var parentBinder = Substitute.For<IBinder>();
             var binderProvider = Substitute.For<IBinderProvider>();
-            var binder = new NamespaceBinder(parentBinder, binderProvider);
+            var binder = new NamespaceBinder(binderProvider);
             var namespaceStatement = ParserInput
                 .FromString("namespace csharp")
                 .ParseInput(parser => parser.namespaceStatement());

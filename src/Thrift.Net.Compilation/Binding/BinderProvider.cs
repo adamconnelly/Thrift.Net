@@ -59,8 +59,7 @@ namespace Thrift.Net.Compilation.Binding
 
             public override IBinder VisitNamespaceStatement([NotNull] NamespaceStatementContext context)
             {
-                var documentBinder = this.binderMap.Get(context.Parent);
-                var namespaceBinder = new NamespaceBinder(documentBinder, this.binderProvider);
+                var namespaceBinder = new NamespaceBinder(this.binderProvider);
                 this.binderMap.Put(context, namespaceBinder);
 
                 base.VisitNamespaceStatement(context);
@@ -70,7 +69,7 @@ namespace Thrift.Net.Compilation.Binding
 
             public override IBinder VisitDocument([NotNull] DocumentContext context)
             {
-                var documentBinder = new DocumentBinder(null, this.binderProvider);
+                var documentBinder = new DocumentBinder(this.binderProvider);
                 this.binderMap.Put(context, documentBinder);
 
                 base.VisitDocument(context);
@@ -93,7 +92,7 @@ namespace Thrift.Net.Compilation.Binding
             {
                 base.VisitFieldType(context);
 
-                var binder = new FieldTypeBinder(this.binderMap.Get(context.Parent));
+                var binder = new FieldTypeBinder();
                 this.binderMap.Put(context, binder);
 
                 return binder;
@@ -101,8 +100,7 @@ namespace Thrift.Net.Compilation.Binding
 
             public override IBinder VisitStructDefinition([NotNull] StructDefinitionContext context)
             {
-                // TODO: Pass in document binder
-                var structBinder = new StructBinder(null, this.binderProvider);
+                var structBinder = new StructBinder(this.binderProvider);
                 this.binderMap.Put(context, structBinder);
 
                 base.VisitStructDefinition(context);
@@ -112,8 +110,7 @@ namespace Thrift.Net.Compilation.Binding
 
             public override IBinder VisitEnumDefinition([NotNull] EnumDefinitionContext context)
             {
-                // TODO: Pass in document binder
-                var enumBinder = new EnumBinder(null, this.binderProvider);
+                var enumBinder = new EnumBinder(this.binderProvider);
                 this.binderMap.Put(context, enumBinder);
 
                 base.VisitEnumDefinition(context);
@@ -123,8 +120,7 @@ namespace Thrift.Net.Compilation.Binding
 
             public override IBinder VisitEnumMember([NotNull] EnumMemberContext context)
             {
-                var parentBinder = this.binderMap.Get(context.Parent);
-                var memberBinder = new EnumMemberBinder(parentBinder, this.binderProvider);
+                var memberBinder = new EnumMemberBinder(this.binderProvider);
                 this.binderMap.Put(context, memberBinder);
 
                 base.VisitEnumMember(context);

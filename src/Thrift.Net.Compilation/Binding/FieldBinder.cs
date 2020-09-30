@@ -20,7 +20,6 @@ namespace Thrift.Net.Compilation.Binding
         /// <param name="binderProvider">Used to find binders for child nodes.</param>
         public FieldBinder(
             IFieldContainerBinder containerBinder, IBinderProvider binderProvider)
-            : base(containerBinder)
         {
             this.containerBinder = containerBinder;
             this.binderProvider = binderProvider;

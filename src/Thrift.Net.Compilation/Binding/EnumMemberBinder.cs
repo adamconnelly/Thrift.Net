@@ -17,10 +17,8 @@ namespace Thrift.Net.Compilation.Binding
         /// <summary>
         /// Initializes a new instance of the <see cref="EnumMemberBinder" /> class.
         /// </summary>
-        /// <param name="parent">The parent binder.</param>
         /// <param name="binderProvider">Used to get binders for fields.</param>
-        public EnumMemberBinder(IBinder parent, IBinderProvider binderProvider)
-            : base(parent)
+        public EnumMemberBinder(IBinderProvider binderProvider)
         {
             this.binderProvider = binderProvider;
         }

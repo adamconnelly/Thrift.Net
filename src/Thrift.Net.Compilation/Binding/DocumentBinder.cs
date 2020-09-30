@@ -1,7 +1,5 @@
 namespace Thrift.Net.Compilation.Binding
 {
-    using System.Linq;
-    using Antlr4.Runtime.Tree;
     using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Compilation.Symbols.Builders;
     using static Thrift.Net.Antlr.ThriftParser;
@@ -17,10 +15,8 @@ namespace Thrift.Net.Compilation.Binding
         /// <summary>
         /// Initializes a new instance of the <see cref="DocumentBinder" /> class.
         /// </summary>
-        /// <param name="parent">The parent binder.</param>
         /// <param name="binderProvider">Used to get other binders.</param>
-        public DocumentBinder(IBinder parent, IBinderProvider binderProvider)
-            : base(parent)
+        public DocumentBinder(IBinderProvider binderProvider)
         {
             this.binderProvider = binderProvider;
         }

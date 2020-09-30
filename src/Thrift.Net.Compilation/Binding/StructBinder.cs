@@ -14,12 +14,10 @@ namespace Thrift.Net.Compilation.Binding
         /// <summary>
         /// Initializes a new instance of the <see cref="StructBinder" /> class.
         /// </summary>
-        /// <param name="parent">The parent binder.</param>
         /// <param name="binderProvider">
         /// Used to get the correct binder for a particular node.
         /// </param>
-        public StructBinder(IBinder parent, IBinderProvider binderProvider)
-            : base(parent)
+        public StructBinder(IBinderProvider binderProvider)
         {
             this.binderProvider = binderProvider;
         }

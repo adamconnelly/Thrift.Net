@@ -5,16 +5,13 @@ namespace Thrift.Net.Tests.Compilation.Binding.EnumMemberBinder
 
     public abstract class EnumMemberBinderTests
     {
-        private readonly IBinder parentBinder = Substitute.For<IBinder>();
         private readonly IBinderProvider binderProvider = Substitute.For<IBinderProvider>();
         private readonly EnumMemberBinder binder;
 
         public EnumMemberBinderTests()
         {
-            this.binder = new EnumMemberBinder(this.parentBinder, this.binderProvider);
+            this.binder = new EnumMemberBinder(this.binderProvider);
         }
-
-        public IBinder ParentBinder => this.parentBinder;
 
         public EnumMemberBinder Binder => this.binder;
     }

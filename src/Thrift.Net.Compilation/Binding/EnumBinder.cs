@@ -1,6 +1,5 @@
 namespace Thrift.Net.Compilation.Binding
 {
-    using System.Linq;
     using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Compilation.Symbols.Builders;
     using static Thrift.Net.Antlr.ThriftParser;
@@ -16,10 +15,8 @@ namespace Thrift.Net.Compilation.Binding
         /// <summary>
         /// Initializes a new instance of the <see cref="EnumBinder" /> class.
         /// </summary>
-        /// <param name="parent">The parent binder.</param>
         /// <param name="binderProvider">The binder provider.</param>
-        public EnumBinder(IBinder parent, IBinderProvider binderProvider)
-            : base(parent)
+        public EnumBinder(IBinderProvider binderProvider)
         {
             this.binderProvider = binderProvider;
         }
