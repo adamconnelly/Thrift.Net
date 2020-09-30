@@ -91,7 +91,12 @@ feat(compiler): add ability to parse an enum
 
 - Did x because of y.
 - Did z because of a.
+
+Fixes #123
 ```
+
+All commit messages must have a valid subject line and reference an issue. The
+body of the commit message is optional.
 
 ### Running Apache Thrift Compiler via Docker
 
