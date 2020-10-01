@@ -87,18 +87,27 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="csharpTypeName">
         /// The name of the C# type that this type represents.
         /// </param>
+        /// <param name="isBaseType">Indicates this is a base type.</param>
+        /// <param name="isEnum">Indicates the type is an enum.</param>
+        /// <param name="isStruct">Indicates the type is a struct.</param>
         public FieldType(
             IParseTree node,
             string name,
             int identifierPartsCount,
             bool isResolved,
-            string csharpTypeName)
+            string csharpTypeName,
+            bool isBaseType,
+            bool isEnum,
+            bool isStruct)
             : base(node, null)
         {
             this.Name = name;
             this.IdentifierPartsCount = identifierPartsCount;
             this.IsResolved = isResolved;
             this.CSharpTypeName = csharpTypeName;
+            this.IsBaseType = isBaseType;
+            this.IsEnum = isEnum;
+            this.IsStruct = isStruct;
         }
 
         /// <summary>
@@ -130,37 +139,67 @@ namespace Thrift.Net.Compilation.Symbols
         public string CSharpTypeName { get; }
 
         /// <summary>
+        /// Gets a value indicating whether the type is a base (i.e. built-in) type.
+        /// </summary>
+        public bool IsBaseType { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the type is a struct.
+        /// </summary>
+        public bool IsStruct { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the type is an enum.
+        /// </summary>
+        public bool IsEnum { get; }
+
+        /// <summary>
         /// Creates a new type marked as resolved.
         /// </summary>
-        /// <param name="node">The node associated with the symbol.</param>
+        /// <param name="symbol">The symbol representing the type declaration.</param>
         /// <param name="typeName">The name of the type.</param>
         /// <param name="csharpTypeName">The C# type name.</param>
         /// <returns>
         /// The type.
         /// </returns>
         public static FieldType CreateResolvedType(
-            IParseTree node,
+            INamedSymbol symbol,
             string typeName,
             string csharpTypeName)
         {
             var nameParts = typeName.Split('.');
 
-            return new FieldType(node, typeName, nameParts.Length, true, csharpTypeName);
+            return new FieldType(
+                symbol?.Node,
+                typeName,
+                nameParts.Length,
+                true,
+                csharpTypeName,
+                symbol == null,
+                symbol is IEnum,
+                symbol is IStruct);
         }
 
         /// <summary>
         /// Creates a new type marked as unresolved.
         /// </summary>
-        /// <param name="node">The node associated with the symbol.</param>
         /// <param name="typeName">The name of the type.</param>
         /// <returns>
         /// The type.
         /// </returns>
-        public static FieldType CreateUnresolvedType(IParseTree node, string typeName)
+        public static FieldType CreateUnresolvedType(string typeName)
         {
             var nameParts = typeName.Split('.');
 
-            return new FieldType(node, typeName, nameParts.Length, false, null);
+            return new FieldType(
+                null,
+                typeName,
+                nameParts.Length,
+                false,
+                null,
+                false,
+                false,
+                false);
         }
 
         /// <summary>

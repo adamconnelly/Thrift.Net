@@ -27,7 +27,7 @@ namespace Thrift.Net.Compilation.Binding
                 }
             }
 
-            return FieldType.CreateUnresolvedType(node, typeName);
+            return FieldType.CreateUnresolvedType(typeName);
         }
     }
 }

@@ -153,5 +153,31 @@ struct Address {
             Assert.Equal(2, result.Document.Structs.ElementAt(0).Fields.Count);
             Assert.Equal(3, result.Document.Structs.ElementAt(1).Fields.Count);
         }
+
+        [Fact]
+        public void Compile_StructReferencesEnum_ResolvesEnum()
+        {
+            // Arrange
+            var input =
+@"enum UserType {
+    User
+    Administrator
+}
+
+struct User {
+    1: i32 Id
+    2: string Username
+    3: UserType Type
+}";
+
+            // Act
+            var result = this.compiler.Compile(input.ToStream());
+
+            // Assert
+            var field = result.Document.Structs.Single().Fields.FirstOrDefault(
+                f => f.Name == "Type");
+
+            Assert.Equal("UserType", field.Type.CSharpTypeName);
+        }
     }
 }

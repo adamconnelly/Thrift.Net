@@ -2,7 +2,6 @@ namespace Thrift.Net.Compilation.Symbols
 {
     using System.Collections.Generic;
     using System.Linq;
-    using Antlr4.Runtime.Tree;
     using Thrift.Net.Compilation.Binding;
     using static Thrift.Net.Antlr.ThriftParser;
 
@@ -128,6 +127,24 @@ namespace Thrift.Net.Compilation.Symbols
                 .Where(n => n.Scope == @namespace.Scope)
                 .TakeWhile(n => n.Node != @namespace.Node)
                 .Any();
+        }
+
+        /// <inheritdoc/>
+        public override FieldType ResolveType(string typeName)
+        {
+            var type = this.AllTypes.FirstOrDefault(e => e.Name == typeName);
+            if (type != null)
+            {
+                var csharpTypeName = typeName;
+                if (this.CSharpNamespace != null)
+                {
+                    csharpTypeName = $"{this.CSharpNamespace}.{typeName}";
+                }
+
+                return FieldType.CreateResolvedType(type, typeName, csharpTypeName);
+            }
+
+            return null;
         }
     }
 }

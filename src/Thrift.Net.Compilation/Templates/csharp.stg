@@ -178,10 +178,23 @@ public bool $field.Name$;
 
 generateReadFieldCaseStatement(field, typeMap) ::= <<
 case FieldIds.$field.Name$:
+$if(field.Type.IsBaseType)$
     if (field.Type == $typeMap.(field.Type.Name).TypeName$)
     {
         this.$field.Name$ = await protocol.$typeMap.(field.Type.Name).ReadMethodName$(cancellationToken);
     }
+$elseif(field.Type.IsEnum)$
+    if (field.Type == TType.I32)
+    {
+        this.$field.Name$ = ($field.Type.CSharpTypeName$)await protocol.ReadI32Async(cancellationToken);
+    }
+$else$
+    if (field.Type == TType.Struct)
+    {
+        this.$field.Name$ = new $field.Type.CSharpTypeName$();
+        await this.$field.Name$.ReadAsync(protocol, cancellationToken);
+    }
+$endif$
     else
     {
         await TProtocolUtil.SkipAsync(protocol, field.Type, cancellationToken);
@@ -194,11 +207,23 @@ generateWriteField(field, typeMap) ::= <<
 if (this.$field.Name$ != null && this.IsSet.$field.Name$)
 {
     field.Name = "$field.Name$";
-    field.Type = $typeMap.(field.Type.Name).TypeName$;
     field.ID = FieldIds.$field.Name$;
+$if(field.Type.IsBaseType)$
+    field.Type = $typeMap.(field.Type.Name).TypeName$;
+$elseif(field.Type.IsEnum)$
+    field.Type = TType.I32;
+$else$
+    field.Type = TType.Struct;
+$endif$
 
     await protocol.WriteFieldBeginAsync(field, cancellationToken);
+$if(field.Type.IsBaseType)$
     await protocol.$typeMap.(field.Type.Name).WriteMethodName$(this.$field.Name$ ?? default, cancellationToken);
+$elseif(field.Type.IsEnum)$
+    await protocol.WriteI32Async((int)this.$field.Name$, cancellationToken);
+$else$
+    await this.$field.Name$.WriteAsync(protocol, cancellationToken);
+$endif$
     await protocol.WriteFieldEndAsync(cancellationToken);
 }
 >>

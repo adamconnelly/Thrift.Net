@@ -46,9 +46,9 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldTypeBinder
                 .FromString(input)
                 .ParseInput(parser => parser.fieldType());
 
-            var targetTypeNode = Substitute.For<IParseTree>();
+            var targetType = Substitute.For<INamedSymbol>();
             var resolvedType = FieldType.CreateResolvedType(
-                targetTypeNode, input, "UserType");
+                targetType, input, "UserType");
 
             field.ResolveType(input).Returns(resolvedType);
 
