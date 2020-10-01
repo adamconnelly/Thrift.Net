@@ -60,7 +60,6 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
         [Fact]
         public void Bind_FieldIdNotProvided_SkipsExplicitFieldsWhenGeneratingIds()
         {
-            // TODO: Figure out what to do here
             // Arrange
             var input =
 @"struct User {

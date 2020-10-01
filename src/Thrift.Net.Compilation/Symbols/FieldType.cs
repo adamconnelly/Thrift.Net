@@ -6,7 +6,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents the type of a field.
     /// </summary>
-    public class FieldType : Symbol<IParseTree> // TODO: Should FieldType be a symbol?
+    public class FieldType : Symbol<IParseTree>
     {
         /// <summary>
         /// The 'bool' base type.
