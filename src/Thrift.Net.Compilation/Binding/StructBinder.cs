@@ -7,7 +7,7 @@ namespace Thrift.Net.Compilation.Binding
     /// <summary>
     /// Used to bind a <see cref="Struct" /> from the parse tree.
     /// </summary>
-    public class StructBinder : Binder<StructDefinitionContext, Struct>, IFieldContainerBinder
+    public class StructBinder : Binder<StructDefinitionContext, Struct, IDocument>, IFieldContainerBinder
     {
         private readonly IBinderProvider binderProvider;
 
@@ -26,11 +26,11 @@ namespace Thrift.Net.Compilation.Binding
         public FieldRequiredness DefaultFieldRequiredness => FieldRequiredness.Default;
 
         /// <inheritdoc />
-        protected override Struct Bind(StructDefinitionContext node, ISymbol parent)
+        protected override Struct Bind(StructDefinitionContext node, IDocument parent)
         {
             var builder = new StructBuilder()
                 .SetNode(node)
-                .SetParent(parent as Document)
+                .SetParent(parent)
                 .SetBinderProvider(this.binderProvider)
                 .SetName(node.name?.Text);
 

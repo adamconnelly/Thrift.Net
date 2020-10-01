@@ -6,9 +6,9 @@ namespace Thrift.Net.Compilation.Symbols
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
-    /// Describes an enum.
+    /// Represents an enum.
     /// </summary>
-    public class Enum : NamedSymbol<EnumDefinitionContext>
+    public class Enum : NamedSymbol<EnumDefinitionContext>, IEnum
     {
         private readonly IBinderProvider binderProvider;
 
@@ -21,7 +21,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="binderProvider">Used to get binders for nodes.</param>
         public Enum(
             EnumDefinitionContext node,
-            Document parent,
+            IDocument parent,
             string name,
             IBinderProvider binderProvider)
             : base(node, parent, name)
@@ -29,9 +29,7 @@ namespace Thrift.Net.Compilation.Symbols
             this.binderProvider = binderProvider;
         }
 
-        /// <summary>
-        /// Gets the enum members.
-        /// </summary>
+        /// <inheritdoc/>
         public IReadOnlyCollection<EnumMember> Members
         {
             get
@@ -53,15 +51,7 @@ namespace Thrift.Net.Compilation.Symbols
             }
         }
 
-        /// <summary>
-        /// Checks whether the specified name has already been used by another
-        /// enum member.
-        /// </summary>
-        /// <param name="memberName">The name to check for.</param>
-        /// <param name="node">The node being defined.</param>
-        /// <returns>
-        /// true if a member with the same name has already been declared, false otherwise.
-        /// </returns>
+        /// <inheritdoc/>
         public bool IsEnumMemberAlreadyDeclared(string memberName, EnumMemberContext node)
         {
             var parent = node.Parent as EnumDefinitionContext;

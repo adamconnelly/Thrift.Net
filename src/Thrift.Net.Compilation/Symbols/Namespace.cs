@@ -6,7 +6,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a namespace statement.
     /// </summary>
-    public class Namespace : Symbol<NamespaceStatementContext>
+    public class Namespace : Symbol<NamespaceStatementContext>, INamespace
     {
         /// <summary>
         /// The scope that applies to all language targets.
@@ -56,7 +56,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="namespaceName">The namespace.</param>
         public Namespace(
             NamespaceStatementContext node,
-            Document parent,
+            IDocument parent,
             string scope,
             string namespaceName)
             : base(node, parent)
@@ -65,15 +65,10 @@ namespace Thrift.Net.Compilation.Symbols
             this.NamespaceName = namespaceName;
         }
 
-        /// <summary>
-        /// Gets the scope of the namespace.
-        /// </summary>
+        /// <inheritdoc/>
         public string Scope { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the namespace declaration's scope is
-        /// one that can be used for C# code generation.
-        /// </summary>
+        /// <inheritdoc/>
         public bool HasCSharpScope
         {
             get
@@ -82,9 +77,7 @@ namespace Thrift.Net.Compilation.Symbols
             }
         }
 
-        /// <summary>
-        /// Gets a value indicating whether the scope is known by the compiler.
-        /// </summary>
+        /// <inheritdoc/>
         public bool HasKnownScope
         {
             get
@@ -93,10 +86,7 @@ namespace Thrift.Net.Compilation.Symbols
             }
         }
 
-        /// <summary>
-        /// Gets a value indicating whether this namespace applies to all code
-        /// generation targets (i.e. has the `*` scope).
-        /// </summary>
+        /// <inheritdoc/>
         public bool AppliesToAllTargets
         {
             get
@@ -105,9 +95,7 @@ namespace Thrift.Net.Compilation.Symbols
             }
         }
 
-        /// <summary>
-        /// Gets the namespace name.
-        /// </summary>
+        /// <inheritdoc/>
         public string NamespaceName { get; }
     }
 }

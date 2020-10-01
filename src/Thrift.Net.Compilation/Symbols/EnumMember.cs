@@ -5,7 +5,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents an individual member of an enum.
     /// </summary>
-    public class EnumMember : Symbol<EnumMemberContext>
+    public class EnumMember : Symbol<EnumMemberContext>, IEnumMember
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EnumMember" /> class.
@@ -18,7 +18,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="invalidValueReason">The reason the enum value failed to parse.</param>
         public EnumMember(
             EnumMemberContext node,
-            Enum parent,
+            IEnum parent,
             string name,
             int? value,
             string rawValue,
@@ -31,24 +31,16 @@ namespace Thrift.Net.Compilation.Symbols
             this.InvalidValueReason = invalidValueReason;
         }
 
-        /// <summary>
-        /// Gets the name of the enum member.
-        /// </summary>
+        /// <inheritdoc/>
         public string Name { get; }
 
-        /// <summary>
-        /// Gets the enum value.
-        /// </summary>
+        /// <inheritdoc/>
         public int? Value { get; }
 
-        /// <summary>
-        /// Gets the raw text that represents the value of the enum.
-        /// </summary>
+        /// <inheritdoc/>
         public string RawValue { get; }
 
-        /// <summary>
-        /// Gets the reason (if any) that the enum value has failed to be parsed.
-        /// </summary>
+        /// <inheritdoc/>
         public InvalidEnumValueReason InvalidValueReason { get; }
 
         /// <inheritdoc />

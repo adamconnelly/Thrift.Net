@@ -6,7 +6,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
     /// <summary>
     /// Used to build <see cref="EnumMember" /> objects.
     /// </summary>
-    public class EnumMemberBuilder : SymbolBuilder<EnumMemberContext, EnumMember, Enum, EnumMemberBuilder>
+    public class EnumMemberBuilder : SymbolBuilder<EnumMemberContext, EnumMember, IEnum, EnumMemberBuilder>
     {
         /// <summary>
         /// Gets the name of the enum member.

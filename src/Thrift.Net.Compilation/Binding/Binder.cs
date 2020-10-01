@@ -8,24 +8,26 @@ namespace Thrift.Net.Compilation.Binding
     /// A base class for binders.
     /// </summary>
     /// <typeparam name="TNode">The type of node this binder can bind.</typeparam>
-    /// <typeparam name="TResult">The type of symbol produced by the binder.</typeparam>
-    public abstract class Binder<TNode, TResult> : IBinder
+    /// <typeparam name="TSymbol">The type of symbol produced by the binder.</typeparam>
+    /// <typeparam name="TParentSymbol">The type of the symbol's parent.</typeparam>
+    public abstract class Binder<TNode, TSymbol, TParentSymbol> : IBinder
         where TNode : class, IParseTree
-        where TResult : ISymbol
+        where TSymbol : ISymbol
+        where TParentSymbol : ISymbol
     {
         /// <inheritdoc />
-        public TSymbol Bind<TSymbol>(IParseTree node, ISymbol parent)
-            where TSymbol : class, ISymbol
+        public TResult Bind<TResult>(IParseTree node, ISymbol parent)
+            where TResult : class, ISymbol
         {
             if (!(node is TNode))
             {
                 throw new InvalidOperationException($"This binder can only bind {typeof(TNode).Name} nodes");
             }
 
-            var boundSymbol = this.Bind(node as TNode, parent);
-            if (!(boundSymbol is TSymbol result))
+            var boundSymbol = this.Bind(node as TNode, (TParentSymbol)parent);
+            if (!(boundSymbol is TResult result))
             {
-                throw new InvalidOperationException($"This binder can only be used to bind {typeof(TResult).Name} objects");
+                throw new InvalidOperationException($"This binder can only be used to bind {typeof(TSymbol).Name} objects");
             }
 
             return result;
@@ -37,6 +39,6 @@ namespace Thrift.Net.Compilation.Binding
         /// <param name="node">The node to bind.</param>
         /// <param name="parent">The parent symbol.</param>
         /// <returns>The bound symbol.</returns>
-        protected abstract TResult Bind(TNode node, ISymbol parent);
+        protected abstract TSymbol Bind(TNode node, TParentSymbol parent);
     }
 }

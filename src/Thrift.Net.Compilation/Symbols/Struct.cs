@@ -8,7 +8,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a Thrift struct.
     /// </summary>
-    public class Struct : NamedSymbol<StructDefinitionContext>
+    public class Struct : NamedSymbol<StructDefinitionContext>, IStruct
     {
         private readonly IBinderProvider binderProvider;
 
@@ -21,7 +21,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="binderProvider">Used to get binders for nodes.</param>
         public Struct(
             StructDefinitionContext node,
-            Document parent,
+            IDocument parent,
             string name,
             IBinderProvider binderProvider)
             : base(node, parent, name)
@@ -29,9 +29,7 @@ namespace Thrift.Net.Compilation.Symbols
             this.binderProvider = binderProvider;
         }
 
-        /// <summary>
-        /// Gets the fields of the struct.
-        /// </summary>
+        /// <inheritdoc/>
         public IReadOnlyCollection<Field> Fields
         {
             get
@@ -44,9 +42,7 @@ namespace Thrift.Net.Compilation.Symbols
             }
         }
 
-        /// <summary>
-        /// Gets the fields that are optional (either explicitly or implicitly).
-        /// </summary>
+        /// <inheritdoc/>
         public IReadOnlyCollection<Field> OptionalFields => this.Fields
             .Where(field => field.Requiredness != FieldRequiredness.Required)
             .ToList();
@@ -60,14 +56,7 @@ namespace Thrift.Net.Compilation.Symbols
             }
         }
 
-        /// <summary>
-        /// Checks whether the field has already been defined.
-        /// </summary>
-        /// <param name="name">The name of the field.</param>
-        /// <param name="node">The field being defined.</param>
-        /// <returns>
-        /// true if the field name has already been defined, false otherwise.
-        /// </returns>
+        /// <inheritdoc/>
         public bool IsFieldNameAlreadyDefined(string name, FieldContext node)
         {
             return this.Fields
@@ -75,14 +64,7 @@ namespace Thrift.Net.Compilation.Symbols
                 .FirstOrDefault().Node != node;
         }
 
-        /// <summary>
-        /// Checks whether a field with the specified Id has already been defined.
-        /// </summary>
-        /// <param name="fieldId">The field Id to check for.</param>
-        /// <param name="node">The field being defined.</param>
-        /// <returns>
-        /// true if the field Id has already been defined, false otherwise.
-        /// </returns>
+        /// <inheritdoc/>
         public bool IsFieldIdAlreadyDefined(int fieldId, FieldContext node)
         {
             return this.Fields

@@ -8,7 +8,7 @@ namespace Thrift.Net.Compilation.Binding
     /// <summary>
     /// Used to bind fields based on a parse tree.
     /// </summary>
-    public class FieldBinder : Binder<FieldContext, Field>
+    public class FieldBinder : Binder<FieldContext, Field, IStruct>
     {
         private readonly IFieldContainerBinder containerBinder;
         private readonly IBinderProvider binderProvider;
@@ -26,11 +26,11 @@ namespace Thrift.Net.Compilation.Binding
         }
 
         /// <inheritdoc />
-        protected override Field Bind(FieldContext node, ISymbol parent)
+        protected override Field Bind(FieldContext node, IStruct parent)
         {
             var builder = new FieldBuilder()
                 .SetNode(node)
-                .SetParent(parent as Struct)
+                .SetParent(parent)
                 .SetBinderProvider(this.binderProvider)
                 .SetFieldId(this.GetFieldId(node))
                 .SetIsFieldIdImplicit(node.fieldId == null)

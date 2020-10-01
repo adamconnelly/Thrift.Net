@@ -10,7 +10,7 @@ namespace Thrift.Net.Compilation.Binding
     /// Used to Bind <see cref="EnumMember" /> Symbols from
     /// <see cref="EnumMemberContext" /> nodes.
     /// </summary>
-    public class EnumMemberBinder : Binder<EnumMemberContext, EnumMember>
+    public class EnumMemberBinder : Binder<EnumMemberContext, EnumMember, IEnum>
     {
         private readonly IBinderProvider binderProvider;
 
@@ -24,11 +24,11 @@ namespace Thrift.Net.Compilation.Binding
         }
 
         /// <inheritdoc />
-        protected override EnumMember Bind(EnumMemberContext node, ISymbol parent)
+        protected override EnumMember Bind(EnumMemberContext node, IEnum parent)
         {
             var builder = new EnumMemberBuilder()
                 .SetNode(node)
-                .SetParent(parent as Enum)
+                .SetParent(parent)
                 .SetBinderProvider(this.binderProvider)
                 .SetName(node.IDENTIFIER()?.Symbol.Text)
                 .SetRawValue(node.enumValue?.Text);

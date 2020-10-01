@@ -6,7 +6,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a field in a struct, union or exception.
     /// </summary>
-    public class Field : Symbol<FieldContext>
+    public class Field : Symbol<FieldContext>, IField
     {
         private readonly IBinderProvider binderProvider;
 
@@ -26,7 +26,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="binderProvider">Used to get binders.</param>
         public Field(
             FieldContext node,
-            Struct parent,
+            IStruct parent,
             int? fieldId,
             string rawFieldId,
             FieldRequiredness requiredness,
@@ -43,33 +43,19 @@ namespace Thrift.Net.Compilation.Symbols
             this.binderProvider = binderProvider;
         }
 
-        /// <summary>
-        /// Gets the field's name.
-        /// </summary>
+        /// <inheritdoc/>
         public string Name { get; }
 
-        /// <summary>
-        /// Gets the Id of the field. This will be null if the field Id could
-        /// not be parsed from the IDL, for example if it is negative or not
-        /// an integer. The <see cref="RawFieldId" /> field can be used to get
-        /// the raw string value.
-        /// </summary>
+        /// <inheritdoc/>
         public int? FieldId { get; }
 
-        /// <summary>
-        /// Gets the raw text of the field Id rather than the integer value
-        /// stored in <see cref="FieldId" />.
-        /// </summary>
+        /// <inheritdoc/>
         public string RawFieldId { get; }
 
-        /// <summary>
-        /// Gets the level of requiredness of this field.
-        /// </summary>
+        /// <inheritdoc/>
         public FieldRequiredness Requiredness { get; }
 
-        /// <summary>
-        /// Gets the data type of the field.
-        /// </summary>
+        /// <inheritdoc/>
         public FieldType Type
         {
             get
@@ -79,10 +65,7 @@ namespace Thrift.Net.Compilation.Symbols
             }
         }
 
-        /// <summary>
-        /// Gets a value indicating whether the field Id was generated implicitly,
-        /// rather than being explicitly defined in the Thrift IDL.
-        /// </summary>
+        /// <inheritdoc/>
         public bool IsFieldIdImplicit { get; }
 
         /// <inheritdoc />

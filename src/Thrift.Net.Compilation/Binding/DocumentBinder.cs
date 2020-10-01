@@ -8,7 +8,7 @@ namespace Thrift.Net.Compilation.Binding
     /// Used to bind <see cref="Document" /> objects from <see cref="DocumentContext" />
     /// nodes.
     /// </summary>
-    public class DocumentBinder : Binder<DocumentContext, Document>
+    public class DocumentBinder : Binder<DocumentContext, Document, ISymbol>
     {
         private readonly IBinderProvider binderProvider;
 

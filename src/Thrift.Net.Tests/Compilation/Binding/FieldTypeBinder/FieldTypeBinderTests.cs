@@ -40,7 +40,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldTypeBinder
         public void Bind_NotBaseType_ResolvesTypeUsingParent()
         {
             // Arrange
-            var field = Substitute.For<ISymbol>();
+            var field = Substitute.For<IField>();
             var input = "UserType";
             var fieldTypeContext = ParserInput
                 .FromString(input)
@@ -104,7 +104,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldTypeBinder
             // parts.
             //
             // Arrange
-            var field = Substitute.For<ISymbol>();
+            var field = Substitute.For<IField>();
             var fieldTypeContext = ParserInput
                 .FromString("One.Two.Three")
                 .ParseInput(parser => parser.fieldType());

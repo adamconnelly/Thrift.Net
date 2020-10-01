@@ -5,7 +5,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
     /// <summary>
     /// Used to build <see cref="Struct" /> objects.
     /// </summary>
-    public class StructBuilder : SymbolBuilder<StructDefinitionContext, Struct, Document, StructBuilder>
+    public class StructBuilder : SymbolBuilder<StructDefinitionContext, Struct, IDocument, StructBuilder>
     {
         /// <summary>
         /// Gets the name of the struct.

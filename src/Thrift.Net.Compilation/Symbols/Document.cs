@@ -9,7 +9,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Describes a Thrift IDL file.
     /// </summary>
-    public class Document : Symbol<DocumentContext>
+    public class Document : Symbol<DocumentContext>, IDocument
     {
         private readonly IBinderProvider binderProvider;
 
@@ -25,9 +25,7 @@ namespace Thrift.Net.Compilation.Symbols
             this.binderProvider = binderProvider;
         }
 
-        /// <summary>
-        /// Gets the C# namespace of the document.
-        /// </summary>
+        /// <inheritdoc/>
         public IReadOnlyCollection<Namespace> Namespaces
         {
             get
@@ -40,9 +38,7 @@ namespace Thrift.Net.Compilation.Symbols
             }
         }
 
-        /// <summary>
-        /// Gets any enums that have been defined.
-        /// </summary>
+        /// <inheritdoc/>
         public IReadOnlyCollection<Enum> Enums
         {
             get
@@ -55,9 +51,7 @@ namespace Thrift.Net.Compilation.Symbols
             }
         }
 
-        /// <summary>
-        /// Gets any structs that have been defined.
-        /// </summary>
+        /// <inheritdoc/>
         public IReadOnlyCollection<Struct> Structs
         {
             get
@@ -70,10 +64,7 @@ namespace Thrift.Net.Compilation.Symbols
             }
         }
 
-        /// <summary>
-        /// Gets all the types contained by this document, in the order they
-        /// appeared in the source.
-        /// </summary>
+        /// <inheritdoc/>
         public IReadOnlyCollection<INamedSymbol> AllTypes
         {
             get
@@ -86,16 +77,7 @@ namespace Thrift.Net.Compilation.Symbols
             }
         }
 
-        /// <summary>
-        /// Gets the C# namespace that should be used for generating this document.
-        /// </summary>
-        /// <remarks>
-        /// If multiple valid namespace scopes are provided, the compiler will
-        /// use the most specific namespace and fallback to the namespace with the
-        /// `*` scope if no valid C# scopes are specified. If multiple C# scopes
-        /// are specified (e.g. `csharp` and `netstd`), the last one defined in
-        /// the document will be used.
-        /// </remarks>
+        /// <inheritdoc/>
         public string CSharpNamespace
         {
             get
@@ -124,16 +106,7 @@ namespace Thrift.Net.Compilation.Symbols
             }
         }
 
-        /// <summary>
-        /// Checks whether another member with the specified name has already
-        /// been declared in the document.
-        /// </summary>
-        /// <param name="memberName">The member's name.</param>
-        /// <param name="memberNode">The node being declared.</param>
-        /// <returns>
-        /// true if another member with the same name has been declared before
-        /// <paramref name="memberNode" />. false otherwise.
-        /// </returns>
+        /// <inheritdoc/>
         public bool IsMemberNameAlreadyDeclared(string memberName, IParseTree memberNode)
         {
             // TODO: Change parameter to `INamedSymbol`.
@@ -150,15 +123,7 @@ namespace Thrift.Net.Compilation.Symbols
                 .Any();
         }
 
-        /// <summary>
-        /// Checks whether another namespace statement has already been declared
-        /// for the same scope.
-        /// </summary>
-        /// <param name="namespace">The namespace being declared.</param>
-        /// <returns>
-        /// true if another namespace statement has already been declared with
-        /// the same scope. false otherwise.
-        /// </returns>
+        /// <inheritdoc/>
         public bool IsNamespaceForScopeAlreadyDeclared(Namespace @namespace)
         {
             return this.Namespaces

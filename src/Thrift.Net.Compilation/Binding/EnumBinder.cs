@@ -8,7 +8,7 @@ namespace Thrift.Net.Compilation.Binding
     /// Used to bind <see cref="EnumDefinitionContext" /> objects to
     /// <see cref="Enum" /> objects.
     /// </summary>
-    public class EnumBinder : Binder<EnumDefinitionContext, Enum>
+    public class EnumBinder : Binder<EnumDefinitionContext, Enum, IDocument>
     {
         private readonly IBinderProvider binderProvider;
 
@@ -22,12 +22,11 @@ namespace Thrift.Net.Compilation.Binding
         }
 
         /// <inheritdoc />
-        protected override Enum Bind(EnumDefinitionContext node, ISymbol parent)
+        protected override Enum Bind(EnumDefinitionContext node, IDocument parent)
         {
-            // TODO: Can we make the parent typed?
             var builder = new EnumBuilder()
                 .SetNode(node)
-                .SetParent(parent as Document)
+                .SetParent(parent)
                 .SetBinderProvider(this.binderProvider)
                 .SetName(node.name?.Text);
 

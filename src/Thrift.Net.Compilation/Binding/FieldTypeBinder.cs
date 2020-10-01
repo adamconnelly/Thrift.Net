@@ -6,10 +6,10 @@ namespace Thrift.Net.Compilation.Binding
     /// <summary>
     /// Used to bind the type of fields.
     /// </summary>
-    public class FieldTypeBinder : Binder<FieldTypeContext, FieldType>
+    public class FieldTypeBinder : Binder<FieldTypeContext, FieldType, IField>
     {
         /// <inheritdoc />
-        protected override FieldType Bind(FieldTypeContext node, ISymbol parent)
+        protected override FieldType Bind(FieldTypeContext node, IField parent)
         {
             var typeName = node.IDENTIFIER().Symbol.Text;
             var baseType = FieldType.ResolveBaseType(typeName);

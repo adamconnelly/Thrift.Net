@@ -5,7 +5,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
     /// <summary>
     /// A builder that can be used to create <see cref="Enum" /> objects.
     /// </summary>
-    public class EnumBuilder : SymbolBuilder<EnumDefinitionContext, Enum, Document, EnumBuilder>
+    public class EnumBuilder : SymbolBuilder<EnumDefinitionContext, Enum, IDocument, EnumBuilder>
     {
         /// <summary>
         /// Gets the name of the enum.

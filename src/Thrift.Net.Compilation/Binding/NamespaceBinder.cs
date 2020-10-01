@@ -8,7 +8,7 @@ namespace Thrift.Net.Compilation.Binding
     /// Used to bind <see cref="NamespaceStatementContext" /> objects into
     /// <see cref="Namespace" /> objects.
     /// </summary>
-    public class NamespaceBinder : Binder<NamespaceStatementContext, Namespace>
+    public class NamespaceBinder : Binder<NamespaceStatementContext, Namespace, IDocument>
     {
         private readonly IBinderProvider binderProvider;
 
@@ -22,11 +22,11 @@ namespace Thrift.Net.Compilation.Binding
         }
 
         /// <inheritdoc />
-        protected override Namespace Bind(NamespaceStatementContext node, ISymbol parent)
+        protected override Namespace Bind(NamespaceStatementContext node, IDocument parent)
         {
             var builder = new NamespaceBuilder()
                 .SetNode(node)
-                .SetParent(parent as Document)
+                .SetParent(parent)
                 .SetBinderProvider(this.binderProvider)
                 .SetScope(node.namespaceScope?.Text)
                 .SetNamespaceName(node.ns?.Text);
