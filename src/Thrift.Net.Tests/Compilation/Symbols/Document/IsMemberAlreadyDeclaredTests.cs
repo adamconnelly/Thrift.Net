@@ -1,12 +1,6 @@
 namespace Thrift.Net.Tests.Compilation.Symbols.Document
 {
-    using NSubstitute;
-    using Thrift.Net.Compilation.Binding;
-    using Thrift.Net.Compilation.Symbols;
-    using Thrift.Net.Compilation.Symbols.Builders;
-    using Thrift.Net.Tests.Utility;
     using Xunit;
-    using static Thrift.Net.Antlr.ThriftParser;
 
     public class IsMemberAlreadyDeclaredTests : DocumentTests
     {
@@ -17,11 +11,10 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Document
             var input = "enum UserType {}";
             var document = this.CreateDocumentFromInput(input);
 
-            this.SetupMember(document.Node.definitions().enumDefinition()[0], "UserType", document);
+            var @enum = this.SetupMember(document.Node.definitions().enumDefinition()[0], "UserType", document);
 
             // Act
-            var isAlreadyDefined = document.IsMemberNameAlreadyDeclared(
-                "UserType", document.Node.definitions().enumDefinition()[0]);
+            var isAlreadyDefined = document.IsMemberNameAlreadyDeclared(@enum);
 
             // Assert
             Assert.False(isAlreadyDefined);
@@ -36,11 +29,10 @@ enum UserType {}";
             var document = this.CreateDocumentFromInput(input);
 
             this.SetupMember(document.Node.definitions().enumDefinition()[0], "UserType", document);
-            this.SetupMember(document.Node.definitions().enumDefinition()[1], "UserType", document);
+            var duplicate = this.SetupMember(document.Node.definitions().enumDefinition()[1], "UserType", document);
 
             // Act
-            var isAlreadyDefined = document.IsMemberNameAlreadyDeclared(
-                "UserType", document.Node.definitions().enumDefinition()[1]);
+            var isAlreadyDefined = document.IsMemberNameAlreadyDeclared(duplicate);
 
             // Assert
             Assert.True(isAlreadyDefined);
@@ -54,12 +46,11 @@ enum UserType {}";
 enum UserType {}";
             var document = this.CreateDocumentFromInput(input);
 
-            this.SetupMember(document.Node.definitions().enumDefinition()[0], "UserType", document);
+            var original = this.SetupMember(document.Node.definitions().enumDefinition()[0], "UserType", document);
             this.SetupMember(document.Node.definitions().enumDefinition()[1], "UserType", document);
 
             // Act
-            var isAlreadyDefined = document.IsMemberNameAlreadyDeclared(
-                "UserType", document.Node.definitions().enumDefinition()[0]);
+            var isAlreadyDefined = document.IsMemberNameAlreadyDeclared(original);
 
             // Assert
             Assert.False(isAlreadyDefined);
@@ -74,11 +65,10 @@ enum PermissionType {}";
             var document = this.CreateDocumentFromInput(input);
 
             this.SetupMember(document.Node.definitions().enumDefinition()[0], "UserType", document);
-            this.SetupMember(document.Node.definitions().enumDefinition()[1], "PermissionType", document);
+            var permissionType = this.SetupMember(document.Node.definitions().enumDefinition()[1], "PermissionType", document);
 
             // Act
-            var isAlreadyDefined = document.IsMemberNameAlreadyDeclared(
-                "PermissionType", document.Node.definitions().enumDefinition()[1]);
+            var isAlreadyDefined = document.IsMemberNameAlreadyDeclared(permissionType);
 
             // Assert
             Assert.False(isAlreadyDefined);
@@ -93,11 +83,10 @@ struct UserType {}";
             var document = this.CreateDocumentFromInput(input);
 
             this.SetupMember(document.Node.definitions().enumDefinition()[0], "UserType", document);
-            this.SetupMember(document.Node.definitions().structDefinition()[0], "UserType", document);
+            var @struct = this.SetupMember(document.Node.definitions().structDefinition()[0], "UserType", document);
 
             // Act
-            var isAlreadyDefined = document.IsMemberNameAlreadyDeclared(
-                "UserType", document.Node.definitions().structDefinition()[0]);
+            var isAlreadyDefined = document.IsMemberNameAlreadyDeclared(@struct);
 
             // Assert
             Assert.True(isAlreadyDefined);

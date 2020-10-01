@@ -106,10 +106,9 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public bool IsMemberNameAlreadyDeclared(string memberName, IParseTree memberNode)
+        public bool IsMemberNameAlreadyDeclared(INamedSymbol member)
         {
-            // TODO: Change parameter to `INamedSymbol`.
-            var parent = memberNode.Parent as DefinitionsContext;
+            var parent = member.Node.Parent as DefinitionsContext;
 
             if (parent.children.Count <= 1)
             {
@@ -117,8 +116,8 @@ namespace Thrift.Net.Compilation.Symbols
             }
 
             return this.AllTypes
-                .Where(sibling => sibling.Name == memberName)
-                .TakeWhile(sibling => sibling.Node != memberNode)
+                .Where(sibling => sibling.Name == member.Name)
+                .TakeWhile(sibling => sibling.Node != member.Node)
                 .Any();
         }
 

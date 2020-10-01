@@ -46,13 +46,12 @@ namespace Thrift.Net.Compilation.Symbols
         /// Checks whether another member with the specified name has already
         /// been declared in the document.
         /// </summary>
-        /// <param name="memberName">The member's name.</param>
-        /// <param name="memberNode">The node being declared.</param>
+        /// <param name="member">The member that is potentially a duplicate.</param>
         /// <returns>
         /// true if another member with the same name has been declared before
-        /// <paramref name="memberNode" />. false otherwise.
+        /// <paramref name="member" />. false otherwise.
         /// </returns>
-        bool IsMemberNameAlreadyDeclared(string memberName, IParseTree memberNode);
+        bool IsMemberNameAlreadyDeclared(INamedSymbol member);
 
         /// <summary>
         /// Checks whether another namespace statement has already been declared

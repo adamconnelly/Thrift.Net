@@ -165,7 +165,7 @@ namespace Thrift.Net.Compilation
             }
             else
             {
-                if (this.Document.IsMemberNameAlreadyDeclared(structDefinition.Name, structDefinition.Node))
+                if (this.Document.IsMemberNameAlreadyDeclared(structDefinition))
                 {
                     // Another type has already been declared with the same name.
                     // For example:
@@ -293,7 +293,7 @@ namespace Thrift.Net.Compilation
 
             if (enumDefinition.Name != null &&
                 ((Document)enumDefinition.Parent).IsMemberNameAlreadyDeclared(
-                    enumDefinition.Name, enumDefinition.Node))
+                    enumDefinition))
             {
                 // Another type has already been declared with the same name:
                 // ```
