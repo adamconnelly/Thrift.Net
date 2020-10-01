@@ -69,7 +69,6 @@ namespace Thrift.Net.Compilation.Symbols
         {
             get
             {
-                // TODO: Test this to make sure it returns all the symbols in order
                 return this.Enums.Cast<INamedSymbol>()
                     .Union(this.Structs)
                     .OrderBy(symbol => symbol.Node.SourceInterval.a)
