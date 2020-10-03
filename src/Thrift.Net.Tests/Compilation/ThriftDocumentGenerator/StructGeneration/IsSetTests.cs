@@ -163,6 +163,36 @@ return user.IsSet.Field1;";
             Assert.True(result);
         }
 
+        [Fact]
+        public async Task FieldSetToNull_MarksIsSetFalseForField()
+        {
+            // Arrange
+            var input =
+@"struct User {
+    0: bool Field1
+}";
+            var compilationResult = this.Compiler.Compile(input.ToStream());
+
+            // Act
+            var output = this.Generator.Generate(compilationResult.Document);
+
+            // Assert
+            var scriptContents =
+@$"{output}
+
+var user = new User();
+user.Field1 = null;
+return user.IsSet.Field1;";
+
+            var script = CSharpScript.Create(
+                scriptContents, ScriptOptions.Default.WithReferences(typeof(TBase).Assembly));
+            script.Compile();
+
+            var result = (bool)(await script.RunAsync()).ReturnValue;
+
+            Assert.False(result);
+        }
+
         private static (StructDeclarationSyntax, PropertyDeclarationSyntax, IPropertySymbol)
             GetIsSetInformation(string output)
         {

@@ -163,7 +163,7 @@ public $field.Type.CSharpTypeName$ $field.Name$
     set
     {
         this.$backingFieldName(field)$ = value;
-        this.isSet.$field.Name$ = true;
+        this.isSet.$field.Name$ = value != null;
     }
 }
 >>
