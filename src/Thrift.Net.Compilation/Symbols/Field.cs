@@ -6,7 +6,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a field in a struct, union or exception.
     /// </summary>
-    public class Field : Symbol<FieldContext>, IField
+    public class Field : Symbol<FieldContext, IStruct>, IField
     {
         private readonly IBinderProvider binderProvider;
 

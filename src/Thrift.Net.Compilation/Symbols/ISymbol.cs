@@ -88,12 +88,19 @@ namespace Thrift.Net.Compilation.Symbols
     /// <typeparam name="TNode">
     /// The type of the node associated with the symbol.
     /// </typeparam>
-    public interface ISymbol<TNode> : ISymbol
+    /// <typeparam name="TParent">The type of the symbol's parent.</typeparam>
+    public interface ISymbol<TNode, TParent> : ISymbol
         where TNode : IParseTree
+        where TParent : ISymbol
     {
         /// <summary>
         /// Gets the node this symbol was bound from.
         /// </summary>
         new TNode Node { get; }
+
+        /// <summary>
+        /// Gets the parent symbol.
+        /// </summary>
+        new TParent Parent { get; }
     }
 }

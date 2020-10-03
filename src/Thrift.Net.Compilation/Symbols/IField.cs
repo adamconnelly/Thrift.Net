@@ -5,7 +5,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a field in a struct, union or exception.
     /// </summary>
-    public interface IField : ISymbol<FieldContext>
+    public interface IField : ISymbol<FieldContext, IStruct>
     {
         /// <summary>
         /// Gets the field's name.

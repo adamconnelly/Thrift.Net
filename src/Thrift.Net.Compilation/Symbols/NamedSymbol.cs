@@ -8,16 +8,20 @@ namespace Thrift.Net.Compilation.Symbols
     /// <typeparam name="TNode">
     /// The type of the node associated with the symbol.
     /// </typeparam>
-    public abstract class NamedSymbol<TNode> : Symbol<TNode>, INamedSymbol
+    /// <typeparam name="TParent">
+    /// The type of the symbol's parent.
+    /// </typeparam>
+    public abstract class NamedSymbol<TNode, TParent> : Symbol<TNode, TParent>, INamedSymbol
         where TNode : IParseTree
+        where TParent : ISymbol
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="NamedSymbol{TNode}" /> class.
+        /// Initializes a new instance of the <see cref="NamedSymbol{TNode, TParent}" /> class.
         /// </summary>
         /// <param name="node">The node that this symbol was bound from.</param>
         /// <param name="parent">The parent symbol.</param>
         /// <param name="name">The name of the symbol.</param>
-        protected NamedSymbol(TNode node, ISymbol parent, string name)
+        protected NamedSymbol(TNode node, TParent parent, string name)
             : base(node, parent)
         {
             this.Name = name;

@@ -6,7 +6,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a namespace statement.
     /// </summary>
-    public class Namespace : Symbol<NamespaceStatementContext>, INamespace
+    public class Namespace : Symbol<NamespaceStatementContext, IDocument>, INamespace
     {
         /// <summary>
         /// The scope that applies to all language targets.

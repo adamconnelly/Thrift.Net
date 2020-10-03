@@ -116,7 +116,7 @@ namespace Thrift.Net.Compilation
             }
             else
             {
-                if (((IDocument)@struct.Parent).IsMemberNameAlreadyDeclared(@struct))
+                if (@struct.Parent.IsMemberNameAlreadyDeclared(@struct))
                 {
                     // Another type has already been declared with the same name.
                     // For example:
@@ -137,7 +137,7 @@ namespace Thrift.Net.Compilation
         /// <inheritdoc />
         public override void VisitField(IField field)
         {
-            if (((Struct)field.Parent).IsFieldNameAlreadyDefined(field.Name, field.Node))
+            if (field.Parent.IsFieldNameAlreadyDefined(field.Name, field.Node))
             {
                 // The field name has already been declared. For example:
                 // ```
@@ -169,7 +169,7 @@ namespace Thrift.Net.Compilation
             {
                 if (field.FieldId != null)
                 {
-                    if (((Struct)field.Parent).IsFieldIdAlreadyDefined(field.FieldId.Value, field.Node))
+                    if (field.Parent.IsFieldIdAlreadyDefined(field.FieldId.Value, field.Node))
                     {
                         // The field Id has already been declared. For example:
                         // ```
@@ -241,7 +241,7 @@ namespace Thrift.Net.Compilation
             }
 
             if (enumDefinition.Name != null &&
-                ((Document)enumDefinition.Parent).IsMemberNameAlreadyDeclared(
+                enumDefinition.Parent.IsMemberNameAlreadyDeclared(
                     enumDefinition))
             {
                 // Another type has already been declared with the same name:
@@ -312,7 +312,7 @@ namespace Thrift.Net.Compilation
                     enumMember.Node.enumValue);
             }
 
-            if (((Enum)enumMember.Parent).IsEnumMemberAlreadyDeclared(enumMember.Name, enumMember.Node))
+            if (enumMember.Parent.IsEnumMemberAlreadyDeclared(enumMember.Name, enumMember.Node))
             {
                 // The same enum member has been declared twice:
                 // ```

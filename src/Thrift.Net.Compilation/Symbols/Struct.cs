@@ -8,7 +8,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a Thrift struct.
     /// </summary>
-    public class Struct : NamedSymbol<StructDefinitionContext>, IStruct
+    public class Struct : NamedSymbol<StructDefinitionContext, IDocument>, IStruct
     {
         private readonly IBinderProvider binderProvider;
 

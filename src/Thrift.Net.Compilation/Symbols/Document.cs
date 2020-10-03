@@ -8,7 +8,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Describes a Thrift IDL file.
     /// </summary>
-    public class Document : Symbol<DocumentContext>, IDocument
+    public class Document : Symbol<DocumentContext, ISymbol>, IDocument
     {
         private readonly IBinderProvider binderProvider;
 
@@ -25,7 +25,7 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public IReadOnlyCollection<Namespace> Namespaces
+        public IReadOnlyCollection<INamespace> Namespaces
         {
             get
             {
@@ -38,7 +38,7 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public IReadOnlyCollection<Enum> Enums
+        public IReadOnlyCollection<IEnum> Enums
         {
             get
             {
@@ -51,7 +51,7 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public IReadOnlyCollection<Struct> Structs
+        public IReadOnlyCollection<IStruct> Structs
         {
             get
             {

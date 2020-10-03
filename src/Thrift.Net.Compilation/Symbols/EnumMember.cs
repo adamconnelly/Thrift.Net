@@ -5,7 +5,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents an individual member of an enum.
     /// </summary>
-    public class EnumMember : Symbol<EnumMemberContext>, IEnumMember
+    public class EnumMember : Symbol<EnumMemberContext, IEnum>, IEnumMember
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="EnumMember" /> class.

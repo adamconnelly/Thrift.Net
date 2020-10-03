@@ -8,7 +8,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents an enum.
     /// </summary>
-    public class Enum : NamedSymbol<EnumDefinitionContext>, IEnum
+    public class Enum : NamedSymbol<EnumDefinitionContext, IDocument>, IEnum
     {
         private readonly IBinderProvider binderProvider;
 
@@ -30,7 +30,7 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public IReadOnlyCollection<EnumMember> Members
+        public IReadOnlyCollection<IEnumMember> Members
         {
             get
             {

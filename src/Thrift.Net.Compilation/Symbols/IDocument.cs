@@ -1,28 +1,27 @@
 namespace Thrift.Net.Compilation.Symbols
 {
     using System.Collections.Generic;
-    using Antlr4.Runtime.Tree;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
     /// Describes a Thrift IDL file.
     /// </summary>
-    public interface IDocument : ISymbol<DocumentContext>
+    public interface IDocument : ISymbol<DocumentContext, ISymbol>
     {
         /// <summary>
         /// Gets the C# namespace of the document.
         /// </summary>
-        IReadOnlyCollection<Namespace> Namespaces { get; }
+        IReadOnlyCollection<INamespace> Namespaces { get; }
 
         /// <summary>
         /// Gets any enums that have been defined.
         /// </summary>
-        IReadOnlyCollection<Enum> Enums { get; }
+        IReadOnlyCollection<IEnum> Enums { get; }
 
         /// <summary>
         /// Gets any structs that have been defined.
         /// </summary>
-        IReadOnlyCollection<Struct> Structs { get; }
+        IReadOnlyCollection<IStruct> Structs { get; }
 
         /// <summary>
         /// Gets all the types contained by this document, in the order they

@@ -6,12 +6,12 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents an enum.
     /// </summary>
-    public interface IEnum : ISymbol<EnumDefinitionContext>, INamedSymbol
+    public interface IEnum : ISymbol<EnumDefinitionContext, IDocument>, INamedSymbol
     {
         /// <summary>
         /// Gets the enum members.
         /// </summary>
-        IReadOnlyCollection<EnumMember> Members { get; }
+        IReadOnlyCollection<IEnumMember> Members { get; }
 
         /// <summary>
         /// Checks whether the specified name has already been used by another

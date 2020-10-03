@@ -10,15 +10,19 @@ namespace Thrift.Net.Compilation.Symbols
     /// <typeparam name="TNode">
     /// The type of the node associated with the symbol.
     /// </typeparam>
-    public abstract class Symbol<TNode> : ISymbol<TNode>
+    /// <typeparam name="TParent">
+    /// The type of the symbol's parent.
+    /// </typeparam>
+    public abstract class Symbol<TNode, TParent> : ISymbol<TNode, TParent>
         where TNode : IParseTree
+        where TParent : ISymbol
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Symbol{T}" /> class.
+        /// Initializes a new instance of the <see cref="Symbol{TNode, TParent}" /> class.
         /// </summary>
         /// <param name="node">The node associated with this symbol.</param>
         /// <param name="parent">The parent symbol.</param>
-        protected Symbol(TNode node, ISymbol parent)
+        protected Symbol(TNode node, TParent parent)
         {
             this.Node = node;
             this.Parent = parent;
@@ -28,10 +32,13 @@ namespace Thrift.Net.Compilation.Symbols
         IParseTree ISymbol.Node => this.Node;
 
         /// <inheritdoc />
-        public TNode Node { get; private set; }
+        ISymbol ISymbol.Parent => this.Parent;
 
         /// <inheritdoc />
-        public ISymbol Parent { get; }
+        public TNode Node { get; private set; }
+
+        /// <inheritdoc/>
+        public TParent Parent { get; private set; }
 
         /// <summary>
         /// Gets the child symbols. This should be overridden in any container symbols.
