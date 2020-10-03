@@ -129,5 +129,14 @@ namespace Thrift.Net.Compilation.Symbols
         {
             return this.Parent?.ResolveType(typeName);
         }
+
+        /// <inheritdoc />
+        public virtual void Accept(ISymbolVisitor visitor)
+        {
+            foreach (var symbol in this.Children)
+            {
+                symbol.Accept(visitor);
+            }
+        }
     }
 }

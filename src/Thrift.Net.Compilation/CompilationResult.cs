@@ -15,7 +15,7 @@ namespace Thrift.Net.Compilation
         /// <param name="document">The thrift document.</param>
         /// <param name="messages">Any messages reported during compilation.</param>
         public CompilationResult(
-            Document document,
+            IDocument document,
             IReadOnlyCollection<CompilationMessage> messages)
         {
             this.Document = document;
@@ -25,7 +25,7 @@ namespace Thrift.Net.Compilation
         /// <summary>
         /// Gets a representation of the Thrift document.
         /// </summary>
-        public Document Document { get; }
+        public IDocument Document { get; }
 
         /// <summary>
         /// Gets any messages reported during compilation.

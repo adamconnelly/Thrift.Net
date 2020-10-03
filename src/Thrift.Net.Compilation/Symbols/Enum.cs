@@ -69,6 +69,13 @@ namespace Thrift.Net.Compilation.Symbols
             return matchingMembers.Any();
         }
 
+        /// <inheritdoc/>
+        public override void Accept(ISymbolVisitor visitor)
+        {
+            visitor.VisitEnum(this);
+            base.Accept(visitor);
+        }
+
         /// <inheritdoc />
         public override string ToString()
         {

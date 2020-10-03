@@ -72,6 +72,13 @@ namespace Thrift.Net.Compilation.Symbols
                 .FirstOrDefault().Node != node;
         }
 
+        /// <inheritdoc/>
+        public override void Accept(ISymbolVisitor visitor)
+        {
+            visitor.VisitStruct(this);
+            base.Accept(visitor);
+        }
+
         /// <inheritdoc />
         public override string ToString()
         {

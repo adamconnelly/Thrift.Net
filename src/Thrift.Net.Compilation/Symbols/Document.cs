@@ -121,7 +121,7 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public bool IsNamespaceForScopeAlreadyDeclared(Namespace @namespace)
+        public bool IsNamespaceForScopeAlreadyDeclared(INamespace @namespace)
         {
             return this.Namespaces
                 .Where(n => n.Scope == @namespace.Scope)
@@ -151,6 +151,13 @@ namespace Thrift.Net.Compilation.Symbols
             }
 
             return null;
+        }
+
+        /// <inheritdoc/>
+        public override void Accept(ISymbolVisitor visitor)
+        {
+            visitor.VisitDocument(this);
+            base.Accept(visitor);
         }
     }
 }

@@ -77,6 +77,13 @@ namespace Thrift.Net.Compilation.Symbols
         /// <inheritdoc/>
         public bool IsFieldIdImplicit { get; }
 
+        /// <inheritdoc/>
+        public override void Accept(ISymbolVisitor visitor)
+        {
+            visitor.VisitField(this);
+            base.Accept(visitor);
+        }
+
         /// <inheritdoc />
         public override string ToString()
         {

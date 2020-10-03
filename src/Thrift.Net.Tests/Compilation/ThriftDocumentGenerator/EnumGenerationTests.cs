@@ -68,7 +68,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
             return namespaceDeclaration.Members.First() as EnumDeclarationSyntax;
         }
 
-        private Document CompileEnum()
+        private IDocument CompileEnum()
         {
             var input =
 @"namespace csharp Thrift.Net.Tests

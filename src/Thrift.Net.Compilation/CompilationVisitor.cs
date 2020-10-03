@@ -3,33 +3,14 @@ namespace Thrift.Net.Compilation
     using System.Collections.Generic;
     using System.Linq;
     using Antlr4.Runtime;
-    using Antlr4.Runtime.Misc;
-    using Thrift.Net.Antlr;
-    using Thrift.Net.Compilation.Binding;
     using Thrift.Net.Compilation.Symbols;
-    using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
     /// A visitor used to perform the main compilation.
     /// </summary>
-    public class CompilationVisitor : ThriftBaseVisitor<int?>
+    public class CompilationVisitor : SymbolVisitor
     {
         private readonly List<CompilationMessage> messages = new List<CompilationMessage>();
-        private readonly IBinderProvider binderProvider;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CompilationVisitor" /> class.
-        /// </summary>
-        /// <param name="binderProvider">Used to get binders for tree nodes.</param>
-        public CompilationVisitor(IBinderProvider binderProvider)
-        {
-            this.binderProvider = binderProvider;
-        }
-
-        /// <summary>
-        /// Gets the document.
-        /// </summary>
-        public Document Document { get; private set; }
 
         /// <summary>
         /// Gets any messages reported during analysis.
@@ -37,34 +18,16 @@ namespace Thrift.Net.Compilation
         public IReadOnlyCollection<CompilationMessage> Messages => this.messages;
 
         /// <inheritdoc />
-        public override int? VisitDocument([NotNull] DocumentContext context)
+        public override void VisitNamespace(INamespace @namespace)
         {
-            var documentBinder = this.binderProvider.GetBinder(context);
-
-            // TODO: Pass in container symbol
-            this.Document = documentBinder.Bind<Document>(context, null);
-
-            var result = base.VisitDocument(context);
-
-            return result;
-        }
-
-        /// <inheritdoc />
-        public override int? VisitNamespaceStatement(
-            NamespaceStatementContext context)
-        {
-            var result = base.VisitNamespaceStatement(context);
-
-            var @namespace = this.Document.FindSymbolForNode(context);
-
             if (@namespace.Scope != null && !@namespace.HasKnownScope)
             {
                 // The namespace scope is not in the list of known scopes.
                 // For example `namespace notalang mynamespace`
                 this.AddError(
                     CompilerMessageId.NamespaceScopeUnknown,
-                    context.namespaceScope,
-                    context.namespaceScope.Text);
+                    @namespace.Node.namespaceScope,
+                    @namespace.Node.namespaceScope.Text);
             }
 
             if (@namespace.Scope == null && @namespace.NamespaceName == null)
@@ -72,15 +35,15 @@ namespace Thrift.Net.Compilation
                 // Both the namespace and scope are missing. For example `namespace`.
                 this.AddError(
                     CompilerMessageId.NamespaceAndScopeMissing,
-                    context.NAMESPACE().Symbol);
+                    @namespace.Node.NAMESPACE().Symbol);
             }
             else if (@namespace.NamespaceName == null)
             {
                 // The namespace is missing. For example `namespace csharp`
                 this.AddError(
                     CompilerMessageId.NamespaceMissing,
-                    context.NAMESPACE().Symbol,
-                    context.ns ?? context.namespaceScope ?? context.NAMESPACE().Symbol);
+                    @namespace.Node.NAMESPACE().Symbol,
+                    @namespace.Node.ns ?? @namespace.Node.namespaceScope ?? @namespace.Node.NAMESPACE().Symbol);
             }
             else if (@namespace.Scope == null)
             {
@@ -88,13 +51,13 @@ namespace Thrift.Net.Compilation
                 // `namespace mynamespace`
                 this.AddError(
                     CompilerMessageId.NamespaceScopeMissing,
-                    context.NAMESPACE().Symbol,
-                    context.ns);
+                    @namespace.Node.NAMESPACE().Symbol,
+                    @namespace.Node.ns);
             }
 
             if (@namespace.Scope != null)
             {
-                if (this.Document.IsNamespaceForScopeAlreadyDeclared(@namespace))
+                if (((IDocument)@namespace.Parent).IsNamespaceForScopeAlreadyDeclared(@namespace))
                 {
                     // The namespace scope has already been specified. For example:
                     // ```
@@ -122,50 +85,38 @@ namespace Thrift.Net.Compilation
                     @namespace.Node.separator.Text);
             }
 
-            return result;
+            base.VisitNamespace(@namespace);
         }
 
         /// <inheritdoc />
-        public override int? VisitEnumDefinition(EnumDefinitionContext context)
+        public override void VisitEnum(IEnum @enum)
         {
-            var result = base.VisitEnumDefinition(context);
+            this.AddEnumMessages(@enum);
 
-            var enumDefinition = this.Document.FindSymbolForNode(context);
-
-            this.AddEnumMessages(enumDefinition);
-
-            return result;
+            base.VisitEnum(@enum);
         }
 
         /// <inheritdoc />
-        public override int? VisitEnumMember(ThriftParser.EnumMemberContext context)
+        public override void VisitEnumMember(IEnumMember enumMember)
         {
-            var result = base.VisitEnumMember(context);
-
-            var enumMember = this.Document.FindSymbolForNode(context);
-
             this.AddEnumMemberMessages(enumMember);
 
-            return result;
+            base.VisitEnumMember(enumMember);
         }
 
         /// <inheritdoc />
-        public override int? VisitStructDefinition([NotNull] ThriftParser.StructDefinitionContext context)
+        public override void VisitStruct(IStruct @struct)
         {
-            var result = base.VisitStructDefinition(context);
-
-            var structDefinition = this.Document.FindSymbolForNode(context);
-
-            if (structDefinition.Name == null)
+            if (@struct.Name == null)
             {
                 // A struct has been declared with no name. For example `struct {}`.
                 this.AddError(
                     CompilerMessageId.StructMustHaveAName,
-                    context.STRUCT().Symbol);
+                    @struct.Node.STRUCT().Symbol);
             }
             else
             {
-                if (this.Document.IsMemberNameAlreadyDeclared(structDefinition))
+                if (((IDocument)@struct.Parent).IsMemberNameAlreadyDeclared(@struct))
                 {
                     // Another type has already been declared with the same name.
                     // For example:
@@ -175,20 +126,18 @@ namespace Thrift.Net.Compilation
                     // ```
                     this.AddError(
                         CompilerMessageId.NameAlreadyDeclared,
-                        context.name,
-                        structDefinition.Name);
+                        @struct.Node.name,
+                        @struct.Name);
                 }
             }
 
-            return result;
+            base.VisitStruct(@struct);
         }
 
         /// <inheritdoc />
-        public override int? VisitField([NotNull] FieldContext context)
+        public override void VisitField(IField field)
         {
-            var field = this.Document.FindSymbolForNode(context);
-
-            if (((Struct)field.Parent).IsFieldNameAlreadyDefined(field.Name, context))
+            if (((Struct)field.Parent).IsFieldNameAlreadyDefined(field.Name, field.Node))
             {
                 // The field name has already been declared. For example:
                 // ```
@@ -199,7 +148,7 @@ namespace Thrift.Net.Compilation
                 // ```
                 this.AddError(
                     CompilerMessageId.StructFieldNameAlreadyDefined,
-                    context.name,
+                    field.Node.name,
                     field.Name);
             }
 
@@ -213,14 +162,14 @@ namespace Thrift.Net.Compilation
                 // ```
                 this.AddWarning(
                     CompilerMessageId.FieldIdNotSpecified,
-                    context.name,
+                    field.Node.name,
                     field.Name);
             }
             else
             {
                 if (field.FieldId != null)
                 {
-                    if (((Struct)field.Parent).IsFieldIdAlreadyDefined(field.FieldId.Value, context))
+                    if (((Struct)field.Parent).IsFieldIdAlreadyDefined(field.FieldId.Value, field.Node))
                     {
                         // The field Id has already been declared. For example:
                         // ```
@@ -231,7 +180,7 @@ namespace Thrift.Net.Compilation
                         // ```
                         this.AddError(
                             CompilerMessageId.StructFieldIdAlreadyDefined,
-                            context.fieldId,
+                            field.Node.fieldId,
                             field.FieldId.ToString());
                     }
                 }
@@ -245,7 +194,7 @@ namespace Thrift.Net.Compilation
                     // ```
                     this.AddError(
                         CompilerMessageId.StructFieldIdMustBeAPositiveInteger,
-                        context.fieldId,
+                        field.Node.fieldId,
                         field.RawFieldId);
                 }
             }
@@ -260,7 +209,7 @@ namespace Thrift.Net.Compilation
                 // ```
                 this.AddWarning(
                     CompilerMessageId.SlistDeprecated,
-                    context.fieldType().IDENTIFIER().Symbol,
+                    field.Node.fieldType().IDENTIFIER().Symbol,
                     field.Name);
             }
 
@@ -278,10 +227,10 @@ namespace Thrift.Net.Compilation
                     field.Type.Name);
             }
 
-            return base.VisitField(context);
+            base.VisitField(field);
         }
 
-        private void AddEnumMessages(Enum enumDefinition)
+        private void AddEnumMessages(IEnum enumDefinition)
         {
             if (enumDefinition.Name == null)
             {
@@ -316,7 +265,7 @@ namespace Thrift.Net.Compilation
             }
         }
 
-        private void AddEnumMemberMessages(EnumMember enumMember)
+        private void AddEnumMemberMessages(IEnumMember enumMember)
         {
             if (enumMember.Name == null)
             {

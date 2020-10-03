@@ -5,13 +5,8 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents an individual member of an enum.
     /// </summary>
-    public interface IEnumMember : ISymbol<EnumMemberContext>
+    public interface IEnumMember : ISymbol<EnumMemberContext>, INamedSymbol
     {
-        /// <summary>
-        /// Gets the name of the enum member.
-        /// </summary>
-        string Name { get; }
-
         /// <summary>
         /// Gets the enum value.
         /// </summary>

@@ -97,5 +97,12 @@ namespace Thrift.Net.Compilation.Symbols
 
         /// <inheritdoc/>
         public string NamespaceName { get; }
+
+        /// <inheritdoc/>
+        public override void Accept(ISymbolVisitor visitor)
+        {
+            visitor.VisitNamespace(this);
+            base.Accept(visitor);
+        }
     }
 }

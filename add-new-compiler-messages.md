@@ -118,29 +118,33 @@ For more information see the [binding](binding.md) documentation.
 
 ## Update the CompilationVisitor
 
-Update the visitor to detect the problem and add a compiler message. In our
-example we might end up adding something like the following:
+The CompilationVisitor is an implementation of `ISymbolVisitor`, used to walk
+the Symbol tree and add any compilation messages. A Symbol visitor implements
+`VisitXyz()` methods to get notified about the different type of Symbols that
+have been bound, allowing it to perform semantic analysis on them.
+
+In our case we need uUpdate the visitor to detect the problem and add a compiler
+message. We can do this by adding something like the following:
 
 ```csharp
-public override int? VisitNamespaceStatement(
-            ThriftParser.NamespaceStatementContext context)
+public override void VisitNamespace(INamespace @namespace)
 {
-    var result = base.VisitNamespaceStatement(context);
-    var @namespace = this.Document.FindSymbolForNode(context);
-
     if (@namespace.Scope == null)
     {
         // The namespace scope is missing. For example
         // `namespace mynamespace`
         this.AddError(
             CompilerMessageId.NamespaceScopeMissing,
-            context.NAMESPACE().Symbol,
-            context.ns);
+            @namespace.Node.NAMESPACE().Symbol,
+            @namespace.Node.ns);
     }
 
-    return result;
+    base.VisitNamespace(@namespace);
 }
 ```
+
+Make sure you call the base implementation (`base.VisitNamespace()`) in your
+overridden method. Otherwise child nodes won't be visited.
 
 ## Add Text for the Message
 

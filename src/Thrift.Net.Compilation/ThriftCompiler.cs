@@ -3,6 +3,7 @@ namespace Thrift.Net.Compilation
     using System.IO;
     using System.Linq;
     using Thrift.Net.Compilation.Binding;
+    using Thrift.Net.Compilation.Symbols;
 
     /// <summary>
     /// An object used to compile thrift IDL into a model that can be used for
@@ -20,16 +21,19 @@ namespace Thrift.Net.Compilation
             var parserErrorListener = new CollectingErrorListener();
             var parser = ThriftParserFactory.Create(inputStream, parserErrorListener);
 
-            var document = parser.document();
+            var documentNode = parser.document();
+            var document = BinderProvider.Instance
+                .GetBinder(documentNode)
+                .Bind<IDocument>(documentNode, null);
 
-            var visitor = new CompilationVisitor(BinderProvider.Instance);
-            visitor.Visit(document);
+            var visitor = new CompilationVisitor();
+            document.Accept(visitor);
 
             var combinedMessages = visitor.Messages
                 .Union(parserErrorListener.Messages)
                 .ToList();
 
-            return new CompilationResult(visitor.Document, combinedMessages);
+            return new CompilationResult(document, combinedMessages);
         }
     }
 }

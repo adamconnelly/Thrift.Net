@@ -43,6 +43,13 @@ namespace Thrift.Net.Compilation.Symbols
         /// <inheritdoc/>
         public InvalidEnumValueReason InvalidValueReason { get; }
 
+        /// <inheritdoc/>
+        public override void Accept(ISymbolVisitor visitor)
+        {
+            visitor.VisitEnumMember(this);
+            base.Accept(visitor);
+        }
+
         /// <inheritdoc />
         public override string ToString()
         {

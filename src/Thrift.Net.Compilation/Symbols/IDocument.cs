@@ -62,6 +62,6 @@ namespace Thrift.Net.Compilation.Symbols
         /// true if another namespace statement has already been declared with
         /// the same scope. false otherwise.
         /// </returns>
-        bool IsNamespaceForScopeAlreadyDeclared(Namespace @namespace);
+        bool IsNamespaceForScopeAlreadyDeclared(INamespace @namespace);
     }
 }

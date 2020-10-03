@@ -1,9 +1,11 @@
 namespace Thrift.Net.Compilation.Symbols
 {
+    using static Thrift.Net.Antlr.ThriftParser;
+
     /// <summary>
     /// Represents a namespace statement.
     /// </summary>
-    public interface INamespace
+    public interface INamespace : ISymbol<NamespaceStatementContext>
     {
         /// <summary>
         /// Gets the scope of the namespace.
