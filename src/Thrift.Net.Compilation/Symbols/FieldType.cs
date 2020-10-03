@@ -11,52 +11,52 @@ namespace Thrift.Net.Compilation.Symbols
         /// <summary>
         /// The 'bool' base type.
         /// </summary>
-        public static readonly FieldType Bool = CreateBaseType("bool", "bool?");
+        public static readonly FieldType Bool = CreateBaseType("bool", "bool?", "bool");
 
         /// <summary>
         /// The 'byte' base type.
         /// </summary>
-        public static readonly FieldType Byte = CreateBaseType("byte", "byte?");
+        public static readonly FieldType Byte = CreateBaseType("byte", "byte?", "byte");
 
         /// <summary>
         /// The 'i8' base type.
         /// </summary>
-        public static readonly FieldType I8 = CreateBaseType("i8", "sbyte?");
+        public static readonly FieldType I8 = CreateBaseType("i8", "sbyte?", "sbyte");
 
         /// <summary>
         /// The 'i16' base type.
         /// </summary>
-        public static readonly FieldType I16 = CreateBaseType("i16", "short?");
+        public static readonly FieldType I16 = CreateBaseType("i16", "short?", "short");
 
         /// <summary>
         /// The 'i32' base type.
         /// </summary>
-        public static readonly FieldType I32 = CreateBaseType("i32", "int?");
+        public static readonly FieldType I32 = CreateBaseType("i32", "int?", "int");
 
         /// <summary>
         /// The 'i64' base type.
         /// </summary>
-        public static readonly FieldType I64 = CreateBaseType("i64", "long?");
+        public static readonly FieldType I64 = CreateBaseType("i64", "long?", "long");
 
         /// <summary>
         /// The 'double' base type.
         /// </summary>
-        public static readonly FieldType Double = CreateBaseType("double", "double?");
+        public static readonly FieldType Double = CreateBaseType("double", "double?", "double");
 
         /// <summary>
         /// The 'string' base type.
         /// </summary>
-        public static readonly FieldType String = CreateBaseType("string", "string");
+        public static readonly FieldType String = CreateBaseType("string", "string", "string");
 
         /// <summary>
         /// The 'binary' base type.
         /// </summary>
-        public static readonly FieldType Binary = CreateBaseType("binary", "byte[]");
+        public static readonly FieldType Binary = CreateBaseType("binary", "byte[]", "byte[]");
 
         /// <summary>
         /// The 'slist' base type.
         /// </summary>
-        public static readonly FieldType SList = CreateBaseType("slist", "string");
+        public static readonly FieldType SList = CreateBaseType("slist", "string", "string");
 
         private static readonly Dictionary<string, FieldType> BaseTypeMap =
             new Dictionary<string, FieldType>
@@ -84,8 +84,11 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="isResolved">
         /// Indicates whether the type has been resolved successfully or not.
         /// </param>
-        /// <param name="csharpTypeName">
-        /// The name of the C# type that this type represents.
+        /// <param name="csharpOptionalTypeName">
+        /// The name of the C# type to use for optional fields.
+        /// </param>
+        /// <param name="csharpRequiredTypeName">
+        /// The name of the C# type to use for required fields.
         /// </param>
         /// <param name="isBaseType">Indicates this is a base type.</param>
         /// <param name="isEnum">Indicates the type is an enum.</param>
@@ -95,7 +98,8 @@ namespace Thrift.Net.Compilation.Symbols
             string name,
             int identifierPartsCount,
             bool isResolved,
-            string csharpTypeName,
+            string csharpOptionalTypeName,
+            string csharpRequiredTypeName,
             bool isBaseType,
             bool isEnum,
             bool isStruct)
@@ -104,7 +108,8 @@ namespace Thrift.Net.Compilation.Symbols
             this.Name = name;
             this.IdentifierPartsCount = identifierPartsCount;
             this.IsResolved = isResolved;
-            this.CSharpTypeName = csharpTypeName;
+            this.CSharpOptionalTypeName = csharpOptionalTypeName;
+            this.CSharpRequiredTypeName = csharpRequiredTypeName;
             this.IsBaseType = isBaseType;
             this.IsEnum = isEnum;
             this.IsStruct = isStruct;
@@ -134,9 +139,14 @@ namespace Thrift.Net.Compilation.Symbols
         public int IdentifierPartsCount { get; }
 
         /// <summary>
-        /// Gets the name of the C# type to use when generating this field.
+        /// Gets the name of the C# type to use when generating an optional field.
         /// </summary>
-        public string CSharpTypeName { get; }
+        public string CSharpOptionalTypeName { get; }
+
+        /// <summary>
+        /// Gets the name of the C# type to use when generating a required field.
+        /// </summary>
+        public string CSharpRequiredTypeName { get; }
 
         /// <summary>
         /// Gets a value indicating whether the type is a base (i.e. built-in) type.
@@ -158,14 +168,16 @@ namespace Thrift.Net.Compilation.Symbols
         /// </summary>
         /// <param name="symbol">The symbol representing the type declaration.</param>
         /// <param name="typeName">The name of the type.</param>
-        /// <param name="csharpTypeName">The C# type name.</param>
+        /// <param name="csharpOptionalTypeName">The C# type name to use for optional fields.</param>
+        /// <param name="csharpRequiredTypeName">The C# type name to use for required fields.</param>
         /// <returns>
         /// The type.
         /// </returns>
         public static FieldType CreateResolvedType(
             INamedSymbol symbol,
             string typeName,
-            string csharpTypeName)
+            string csharpOptionalTypeName,
+            string csharpRequiredTypeName)
         {
             var nameParts = typeName.Split('.');
 
@@ -174,7 +186,8 @@ namespace Thrift.Net.Compilation.Symbols
                 typeName,
                 nameParts.Length,
                 true,
-                csharpTypeName,
+                csharpOptionalTypeName,
+                csharpRequiredTypeName,
                 symbol == null,
                 symbol is IEnum,
                 symbol is IStruct);
@@ -196,6 +209,7 @@ namespace Thrift.Net.Compilation.Symbols
                 typeName,
                 nameParts.Length,
                 false,
+                null,
                 null,
                 false,
                 false,
@@ -225,9 +239,16 @@ namespace Thrift.Net.Compilation.Symbols
             return this.Name;
         }
 
-        private static FieldType CreateBaseType(string typeName, string csharpTypeName)
+        private static FieldType CreateBaseType(
+            string typeName,
+            string csharpOptionalTypeName,
+            string csharpRequiredTypeName)
         {
-            return CreateResolvedType(null, typeName, csharpTypeName);
+            return CreateResolvedType(
+                null,
+                typeName,
+                csharpOptionalTypeName,
+                csharpRequiredTypeName);
         }
     }
 }

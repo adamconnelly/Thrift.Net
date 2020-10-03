@@ -80,7 +80,8 @@ struct User {
             var input =
 @$"namespace csharp Thrift.Net.Examples
 struct User {{
-    {type.Name} Field
+    {type.Name} OptionalField
+    required {type.Name} RequiredField
 }}";
             var result = this.Compiler.Compile(input.ToStream());
 
@@ -94,29 +95,57 @@ struct User {{
                 .OfType<ClassDeclarationSyntax>()
                 .First();
 
-            var property = userClass.Members
+            var optionalProperty = userClass.Members
                 .OfType<PropertyDeclarationSyntax>()
-                .Single(property => property.Identifier.Text == "Field");
+                .Single(property => property.Identifier.Text == "OptionalField");
+            var requiredProperty = userClass.Members
+                .OfType<PropertyDeclarationSyntax>()
+                .Single(property => property.Identifier.Text == "RequiredField");
 
-            string typeName;
+            string optionalTypeName = GetPropertyTypeName(optionalProperty.Type);
+            string requiredTypeName = GetPropertyTypeName(requiredProperty.Type);
 
-            if (property.Type is NullableTypeSyntax nullableType)
-            {
-                var typeNode = nullableType.ElementType as PredefinedTypeSyntax;
-                typeName = typeNode.Keyword.Text + "?";
-            }
-            else if (property.Type is ArrayTypeSyntax arrayType)
-            {
-                var typeNode = arrayType.ElementType as PredefinedTypeSyntax;
-                typeName = typeNode.Keyword.Text + "[]";
-            }
-            else
-            {
-                var typeNode = property.Type as PredefinedTypeSyntax;
-                typeName = typeNode.Keyword.Text;
-            }
+            Assert.Equal(type.CSharpOptionalTypeName, optionalTypeName);
+            Assert.Equal(type.CSharpRequiredTypeName, requiredTypeName);
+        }
 
-            Assert.Equal(type.CSharpTypeName, typeName);
+        [Fact]
+        public void Generate_StructHasEnumField_GeneratesPropertyWithCorrectType()
+        {
+            // Arrange
+            var input =
+@"namespace csharp Thrift.Net.Examples
+
+enum UserType {}
+
+struct User {
+    UserType OptionalField
+    required UserType RequiredField
+}";
+            var result = this.Compiler.Compile(input.ToStream());
+
+            // Act
+            var output = this.Generator.Generate(result.Document);
+
+            // Assert
+            var (root, _, _) = ParseCSharp(output);
+            var namespaceDeclaration = root.GetCompilationUnitRoot().Members.First() as NamespaceDeclarationSyntax;
+            var userClass = namespaceDeclaration.Members
+                .OfType<ClassDeclarationSyntax>()
+                .First();
+
+            var optionalProperty = userClass.Members
+                .OfType<PropertyDeclarationSyntax>()
+                .Single(property => property.Identifier.Text == "OptionalField");
+            var requiredProperty = userClass.Members
+                .OfType<PropertyDeclarationSyntax>()
+                .Single(property => property.Identifier.Text == "RequiredField");
+
+            string optionalTypeName = GetPropertyTypeName(optionalProperty.Type);
+            string requiredTypeName = GetPropertyTypeName(requiredProperty.Type);
+
+            Assert.Equal("Thrift.Net.Examples.UserType?", optionalTypeName);
+            Assert.Equal("Thrift.Net.Examples.UserType", requiredTypeName);
         }
 
         [Fact]
@@ -179,6 +208,32 @@ struct User {
             Assert.True(fieldSymbol.IsConst);
             Assert.Equal(Accessibility.Public, fieldSymbol.DeclaredAccessibility);
             Assert.Equal(expectedValue, value);
+        }
+
+        private static string GetPropertyTypeName(TypeSyntax propertyType)
+        {
+            string typeName;
+
+            if (propertyType is NullableTypeSyntax nullableType)
+            {
+                return GetPropertyTypeName(nullableType.ElementType) + "?";
+            }
+            else if (propertyType is ArrayTypeSyntax arrayType)
+            {
+                var typeNode = arrayType.ElementType as PredefinedTypeSyntax;
+                typeName = typeNode.Keyword.Text + "[]";
+            }
+            else if (propertyType is QualifiedNameSyntax qualifiedName)
+            {
+                typeName = qualifiedName.ToString();
+            }
+            else
+            {
+                var typeNode = propertyType as PredefinedTypeSyntax;
+                typeName = typeNode.Keyword.Text;
+            }
+
+            return typeName;
         }
     }
 }

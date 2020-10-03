@@ -148,12 +148,20 @@ backingFieldName(field) ::= <<
 _$field.Name$
 >>
 
+getFieldType(field) ::= <%
+$if(field.IsRequired)$
+$field.Type.CSharpRequiredTypeName$
+$else$
+$field.Type.CSharpOptionalTypeName$
+$endif$
+%>
+
 generateBackingField(field) ::= <<
-private $field.Type.CSharpTypeName$ $backingFieldName(field)$;
+private $getFieldType(field)$ $backingFieldName(field)$;
 >>
 
 generateField(field) ::= <<
-public $field.Type.CSharpTypeName$ $field.Name$
+public $getFieldType(field)$ $field.Name$
 {
     get
     {
@@ -186,12 +194,12 @@ $if(field.Type.IsBaseType)$
 $elseif(field.Type.IsEnum)$
     if (field.Type == TType.I32)
     {
-        this.$field.Name$ = ($field.Type.CSharpTypeName$)await protocol.ReadI32Async(cancellationToken);
+        this.$field.Name$ = ($field.Type.CSharpRequiredTypeName$)await protocol.ReadI32Async(cancellationToken);
     }
 $else$
     if (field.Type == TType.Struct)
     {
-        this.$field.Name$ = new $field.Type.CSharpTypeName$();
+        this.$field.Name$ = new $field.Type.CSharpRequiredTypeName$();
         await this.$field.Name$.ReadAsync(protocol, cancellationToken);
     }
 $endif$

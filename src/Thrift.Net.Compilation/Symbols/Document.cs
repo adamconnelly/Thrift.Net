@@ -135,13 +135,19 @@ namespace Thrift.Net.Compilation.Symbols
             var type = this.AllTypes.FirstOrDefault(e => e.Name == typeName);
             if (type != null)
             {
-                var csharpTypeName = typeName;
+                var requiredTypeName = typeName;
                 if (this.CSharpNamespace != null)
                 {
-                    csharpTypeName = $"{this.CSharpNamespace}.{typeName}";
+                    requiredTypeName = $"{this.CSharpNamespace}.{typeName}";
                 }
 
-                return FieldType.CreateResolvedType(type, typeName, csharpTypeName);
+                var optionalTypeName = requiredTypeName;
+                if (type is IEnum)
+                {
+                    optionalTypeName += "?";
+                }
+
+                return FieldType.CreateResolvedType(type, typeName, optionalTypeName, requiredTypeName);
             }
 
             return null;

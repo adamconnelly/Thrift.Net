@@ -48,7 +48,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldTypeBinder
 
             var targetType = Substitute.For<INamedSymbol>();
             var resolvedType = FieldType.CreateResolvedType(
-                targetType, input, "UserType");
+                targetType, input, "UserType?", "UserType");
 
             field.ResolveType(input).Returns(resolvedType);
 

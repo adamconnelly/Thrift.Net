@@ -19,7 +19,8 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Document
 
             // Assert
             Assert.True(resolvedType.IsResolved);
-            Assert.Equal("UserType", resolvedType.CSharpTypeName);
+            Assert.Equal("UserType?", resolvedType.CSharpOptionalTypeName);
+            Assert.Equal("UserType", resolvedType.CSharpRequiredTypeName);
         }
 
         [Fact]
@@ -37,7 +38,8 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Document
 
             // Assert
             Assert.True(resolvedType.IsResolved);
-            Assert.Equal("User", resolvedType.CSharpTypeName);
+            Assert.Equal("User", resolvedType.CSharpOptionalTypeName);
+            Assert.Equal("User", resolvedType.CSharpRequiredTypeName);
         }
 
         [Fact]
@@ -75,7 +77,8 @@ enum UserType {}";
             var resolvedType = document.ResolveType("UserType");
 
             // Assert
-            Assert.Equal("Thrift.Net.Tests.UserType", resolvedType.CSharpTypeName);
+            Assert.Equal("Thrift.Net.Tests.UserType?", resolvedType.CSharpOptionalTypeName);
+            Assert.Equal("Thrift.Net.Tests.UserType", resolvedType.CSharpRequiredTypeName);
         }
     }
 }

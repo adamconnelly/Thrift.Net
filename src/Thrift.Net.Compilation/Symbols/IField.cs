@@ -41,5 +41,10 @@ namespace Thrift.Net.Compilation.Symbols
         /// rather than being explicitly defined in the Thrift IDL.
         /// </summary>
         bool IsFieldIdImplicit { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the field is optional.
+        /// </summary>
+        bool IsRequired { get; }
     }
 }

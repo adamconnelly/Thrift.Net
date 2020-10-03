@@ -177,7 +177,7 @@ struct User {
             var field = result.Document.Structs.Single().Fields.FirstOrDefault(
                 f => f.Name == "Type");
 
-            Assert.Equal("UserType", field.Type.CSharpTypeName);
+            Assert.Equal("UserType", field.Type.Name);
         }
     }
 }

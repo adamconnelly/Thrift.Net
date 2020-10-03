@@ -56,6 +56,15 @@ namespace Thrift.Net.Compilation.Symbols
         public FieldRequiredness Requiredness { get; }
 
         /// <inheritdoc/>
+        public bool IsRequired
+        {
+            get
+            {
+                return this.Requiredness == FieldRequiredness.Required;
+            }
+        }
+
+        /// <inheritdoc/>
         public FieldType Type
         {
             get
