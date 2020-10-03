@@ -66,79 +66,194 @@ public void Compile_SetsNamespace()
     var result = compiler.Compile(input.ToStream());
 
     // Assert
-    Assert.Equal("Thrift.Net.Examples", result.Document.Namespace);
+    Assert.Collection(
+        result.Document.Namespaces,
+        ns => Assert.Equal("Thrift.Net.Examples", ns.Name));
 }
 ```
 
 Run the test and check it fails. At this point we can move onto implementing the
 functionality.
 
-## Update Compilation Visitor
+## Create Symbol, Builder and Binder
 
-At the moment, most of the parsing work is performed in
-[src/Thrift.Net.Compilation/CompilationVisitor.cs](src/Thrift.Net.Compilation/CompilationVisitor.cs).
+### Symbol
 
-The `CompilationVisitor` is an Antlr Parse Tree Visitor. This uses the
-[visitor pattern](https://en.wikipedia.org/wiki/Visitor_pattern) to allow us to
-perform actions as Antlr walks down the parse tree. Antlr automatically
-generates a `Visit<grammar-rule-name>()` method for each rule defined in our
-grammar. We can override these methods to provide a hook that we can use to
-extract information from our source grammar.
+Symbols allow us to build a semantic model from the parse tree provided by Antlr
+by augmenting it with additional logic that the compiler needs to perform things
+like type resolution. Each Thrift object (structs, fields, enums, etc) have an
+associated Symbol.
 
-For example, if we want to hook into our `namespaceDeclaration` rule, we would
-add the following override:
+A Symbol is a C# class inheriting from `Symbol<TNode>`, where `TNode` is the
+type of the Antlr tree node:
 
 ```csharp
-public override int? VisitNamespaceStatement(
-    ThriftParser.NamespaceStatementContext context)
+public class Namespace : Symbol<NamespaceStatementContext>, INamespace
 {
-    return base.VisitNamespaceStatement(context);
 }
 ```
 
-You'll notice that the method returns an `int?`. This is simply because Antlr
-forces you to set a return type for your visitor methods. Currently this is
-completely unused.
+We also provide an interface for each symbol to facilitate unit testing.
 
-The `context` parameter contains information about the node in the tree that
-we're visiting. In our example it will contain an `IDENTIFIER()` method that
-contains a collection of identifiers (because our grammar rule specifies two
-identifiers after the `namespace` keyword). We can adjust our grammar using
-_labels_ to make it easier to grab pieces of information. For example:
+The symbol class typically has a property for each piece of information we need
+for analysis and code generation. In the case of the `Namespace`, this might be:
+
+- `Scope` - the namespace scope, for example `csharp`, `netstd`, etc.
+- `NamespaceName` - the namespace, for example `Thrift.Net.Examples`.
+- `HasCSharpScope` - is the scope one that can be used for C# code generation?
+- `HasKnownScope` - is the scope a valid Thrift scope.
+
+**NOTE:** Symbols should be immutable - that is, any properties should be set
+via the constructor, and should not have setters. Because of this, any child
+symbols are created lazily since they need a reference to their parent.
+
+### Binder
+
+The Binder is the object responsible for creating the symbol from the Antlr
+parse tree. A Binder inherits from `Binder<TNode, TSymbol, TParentSymbol>`,
+where `TNode` is the Antlr node that the Binder binds, `TSymbol` is the type of
+Symbol it produces, and `TParentSymbol` is the type of the Symbol's parent
+(`Document` in the case of `Struct` and `Enum`, `Struct` in the case of `Field`,
+etc):
+
+```csharp
+public class NamespaceBinder : Binder<NamespaceStatementContext, Namespace, IDocument>
+{
+}
+```
+
+A Binder implementation needs to override the `Bind()` method to perform its
+work:
+
+```csharp
+/// <inheritdoc />
+protected override Namespace Bind(NamespaceStatementContext node, IDocument parent)
+{
+    var builder = new NamespaceBuilder()
+        .SetNode(node)
+        .SetParent(parent)
+        .SetBinderProvider(this.binderProvider)
+        .SetScope(node.namespaceScope?.Text)
+        .SetNamespaceName(node.ns?.Text);
+
+    return builder.Build();
+}
+```
+
+The `node` parameter contains information about the node in the tree that we're
+Binding. In our example it will contain an `IDENTIFIER()` method that contains a
+collection of identifiers (because our grammar rule specifies two identifiers
+after the `namespace` keyword). We can adjust our grammar using _labels_ to make
+it easier to grab pieces of information. For example:
 
 ```antlr
-namespaceDeclaration: 'namespace' scope=IDENTIFIER ns=IDENTIFIER;
+namespaceDeclaration: 'namespace' namespaceScope=IDENTIFIER ns=IDENTIFIER;
 ```
 
-This allows us to access the two identifiers by name:
+This allows us to access the two identifiers by name, as shown in the example
+above.
+
+### Builder
+
+Builders are provided for all Symbols. A Builder is responsible for creating
+(building) Symbol objects. The reason we have builders is because Symbols are
+immutable. Having builders means that we don't need to update every place that
+creates a Symbol when new parameters are added to that Symbol's constructor.
+This is particularly important to avoid our tests being brittle and requiring
+large numbers of tests to be updated every time an unrelated change is made to a
+Symbol.
+
+Builders inherit from `SymbolBuilder<TNode, TSymbol, TParentSymbol, TBuilder>`
+where `TNode` is the type of Antlr node associated with the symbol, `TSymbol` is
+the type of Symbol the builder creates, `TParentSymbol` is the type of the
+parent symbol, and `TBuilder` is the type of the builder itself, used to
+facilitate method chaining:
 
 ```csharp
-public override int? VisitNamespaceDeclaration(
-    ThriftParser.NamespaceDeclarationContext context)
+public class NamespaceBuilder : SymbolBuilder<NamespaceStatementContext, Namespace, IDocument, NamespaceBuilder>
+```
+
+Builders have `SetXyz()` methods for each property on the Symbol:
+
+```csharp
+/// <summary>
+/// Sets the scope.
+/// </summary>
+/// <param name="scope">The scope.</param>
+/// <returns>The builder.</returns>
+public NamespaceBuilder SetScope(string scope)
 {
-    var scope = context.scope;
-    var namespaceName = context.ns;
+    this.Scope = scope;
 
-    // Do something with this information
-
-    return base.VisitNamespaceDeclaration(context);
+    return this;
 }
 ```
 
-At the moment what we do is store information like this as a property on the
-visitor, which then allows the
-[ThriftCompiler](src/Thrift.Net.Compilation/ThriftCompiler.cs) to extract the
-information and create a `ThriftDocument` that can be used for code generation:
+They also override a `Build()` method responsible for building the Symbol:
 
 ```csharp
-visitor.Visit(document);
-
-var namespaceName = visitor.Namespace;
-
-// Do something with the namespace
+/// <inheritdoc/>
+public override Namespace Build()
+{
+    return new Namespace(
+        this.Node,
+        this.Parent,
+        this.Scope,
+        this.NamespaceName);
+}
 ```
 
-### Theories
+## Connect Symbol to Tree
+
+At this point, you would update the `Document` Symbol to add the namespaces to
+the Symbol tree. Because Symbols are immutable, the Document lazily creates its
+child Symbols:
+
+```csharp
+/// <inheritdoc/>
+public IReadOnlyCollection<Namespace> Namespaces
+{
+    get
+    {
+        return this.Node.header()?.namespaceStatement()
+            .Select(namespaceNode => this.binderProvider
+                .GetBinder(namespaceNode)
+                .Bind<Namespace>(namespaceNode, this))
+            .ToList();
+    }
+}
+```
+
+It may not be completely obvious because of the way that Antlr names its
+generated methods, but `namespaceStatement()` in the example above actually
+returns an array of `NamespaceStatementContext` objects. We can then get an
+appropriate Binder via the `binderProvider`, and Bind it to a `Namespace`
+symbol.
+
+We can then add additional properties to the Document Symbol to make analysis
+and code generation simpler. For example, here's a property that finds the valid
+C# namespace to use from the set of namespace definitions in the document:
+
+```csharp
+/// <inheritdoc/>
+public string CSharpNamespace
+{
+    get
+    {
+        var @namespace = this.Namespaces
+            .LastOrDefault(n => n.HasCSharpScope);
+        if (@namespace != null)
+        {
+            return @namespace.NamespaceName;
+        }
+
+        return this.Namespaces
+            .FirstOrDefault(n => n.AppliesToAllTargets)?.NamespaceName;
+    }
+}
+```
+
+## Theories
 
 The [xunit](https://xunit.net/) library we're using for unit testing provides
 the ability to pass multiple test cases to a test. This can be useful in
@@ -160,11 +275,11 @@ public void Compile_SetsNamespace(string input, string expected)
     var result = compiler.Compile(input.ToStream());
 
     // Assert
-    Assert.Equal(expected, result.Document.Namespace);
+    Assert.Equal(expected, result.Document.CSharpNamespace);
 }
 ```
 
-### Updating the Code Generator
+## Updating the Code Generator
 
 Once you can successfully compile your code, you need to update the code
 generator to create some output. The code generator can be found at
@@ -182,31 +297,28 @@ test to check that the namespace is generated correctly might look like this:
 public void Generate_NamespaceSupplied_SetsCorrectNamespace()
 {
     // Arrange
-    var generator = new ThriftDocumentGenerator();
-    var document = new ThriftDocument("Thrift.Net.Tests", new List<EnumDefinition>());
+    var input = "namespace csharp Thrift.Net.Tests";
+    var compilationResult = this.Compiler.Compile(input.ToStream());
 
     // Act
-    var output = generator.Generate(document);
+    var output = this.Generator.Generate(compilationResult.Document);
 
     // Assert
-    var root = ParseCSharp(output);
-    var namespaceDeclaration = root.Members.First() as NamespaceDeclarationSyntax;
+    var (root, _, _) = ParseCSharp(output);
+    var namespaceDeclaration = root.GetCompilationUnitRoot().Members.First() as NamespaceDeclarationSyntax;
     Assert.Equal("Thrift.Net.Tests", namespaceDeclaration.Name.ToString());
 }
 ```
 
-In that test, we create a `ThriftDocument` to pass to the generator, generate
-our code, and then parse it using the `ParseCSharp()` method. This uses the
-[.NET Compiler Platform](https://github.com/dotnet/roslyn) (AKA Roslyn) to parse
-our generated code. Similar to the way that Thrift provides us with a Parse Tree
-of our Thrift syntax that we can then analyse, Roslyn provides us with an
-Abstract Syntax Tree (AST) that represents the C# we provide to it. This allows
-us to programmatically verify that our generator produces valid C#.
+In that test, we use the Thrift compiler to create a `Document` to pass to the
+generator, generate our code, and then parse it using the `ParseCSharp()`
+method. This uses the [.NET Compiler Platform](https://github.com/dotnet/roslyn)
+(AKA Roslyn) to parse our generated code.
 
-**NOTE:** since we're using Roslyn anyway for testing, it might actually make
-sense to use it to generate our C# code instead of StringTemplate. We'll just
-need to weigh up the benefits against whether it makes the code more complex and
-less maintainable.
+Similar to the way that Thrift provides us with a Parse Tree of our Thrift
+syntax that we can then analyse, Roslyn provides us with an Abstract Syntax Tree
+(AST) that represents the C# we provide to it. This allows us to
+programmatically verify that our generator produces valid C#.
 
 ## Run the Compiler
 

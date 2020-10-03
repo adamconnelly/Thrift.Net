@@ -57,7 +57,7 @@ check for an error message, so we'd write the following test:
 [Fact]
 public void Compile_ScopeMissing_ReportsError()
 {
-    this.AssertCompilerReturnsError(
+    this.AssertCompilerReturnsErrorMessage(
         "$namespace mynamespace$",
         CompilerMessageId.NamespaceScopeMissing);
 }
@@ -92,13 +92,29 @@ Add a new enum member for our new compiler error:
 ```csharp
 ...
 NamespaceScopeUnknown = 100,
-
-/// <summary>
-/// A namespace has been specified without a scope. For example
-/// `namespace mynamespace`.
-/// </summary>
-NamespaceScopeMissing = 101,
 ```
+
+### Message Documentation
+
+Each message in the enum includes documentation that includes an example of how
+to produce the message, along with how to resolve the problem. Use the existing
+enum members as a template.
+
+## Create or Update the Binder
+
+Each object that can be defined in the Thrift IDL file is represented by a
+Symbol, and each Symbol has an associated Binder that can create the Symbol from
+the Antlr parse tree. In our example, the Symbol is the
+[Namespace](src/Thrift.Net.Compilation/Symbols/Namespace.cs) class, and the
+Binder is the
+[NamespaceBinder](src/Thrift.Net.Compilation/Binding/NamespaceBinder.cs).
+
+Depending on your change, you may or may not need to adjust the Symbol and
+Binder. For example, if the `Scope` property didn't already exist on the
+`Namespace` object you would need to add it, and update the Binder to set the
+scope when creating a `Namespace`.
+
+For more information see the [binding](binding.md) documentation.
 
 ## Update the CompilationVisitor
 
@@ -110,8 +126,9 @@ public override int? VisitNamespaceStatement(
             ThriftParser.NamespaceStatementContext context)
 {
     var result = base.VisitNamespaceStatement(context);
+    var @namespace = this.Document.FindSymbolForNode(context);
 
-    if (context.namespaceScope == null)
+    if (@namespace.Scope == null)
     {
         // The namespace scope is missing. For example
         // `namespace mynamespace`
@@ -153,8 +170,3 @@ Compilation failed with 1 error(s):
 
 thrift-samples/enum.thrift(1,1-28): Error TC0007: A namespace scope must be specified [/home/adam/github.com/adamconnelly/thrift.net/thrift-samples/enum.thrift]
 ```
-
-## Add to Documentation
-
-Add your new message to the list of compiler messages in
-[compilation.md](compilation.md#messages).

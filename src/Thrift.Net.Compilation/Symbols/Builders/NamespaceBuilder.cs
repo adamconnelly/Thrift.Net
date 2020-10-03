@@ -41,10 +41,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
             return this;
         }
 
-        /// <summary>
-        /// Builds the namespace.
-        /// </summary>
-        /// <returns>The namespace.</returns>
+        /// <inheritdoc/>
         public override Namespace Build()
         {
             return new Namespace(
