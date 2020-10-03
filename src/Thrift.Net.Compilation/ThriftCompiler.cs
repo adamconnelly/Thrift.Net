@@ -22,10 +22,7 @@ namespace Thrift.Net.Compilation
 
             var document = parser.document();
 
-            var binderProvider = new BinderProvider();
-            binderProvider.AddDocument(document);
-
-            var visitor = new CompilationVisitor(binderProvider);
+            var visitor = new CompilationVisitor(BinderProvider.Instance);
             visitor.Visit(document);
 
             var combinedMessages = visitor.Messages

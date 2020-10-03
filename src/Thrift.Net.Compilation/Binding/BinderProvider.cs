@@ -1,8 +1,7 @@
 namespace Thrift.Net.Compilation.Binding
 {
-    using Antlr4.Runtime.Misc;
+    using System;
     using Antlr4.Runtime.Tree;
-    using Thrift.Net.Antlr;
     using Thrift.Net.Compilation.Symbols;
     using static Thrift.Net.Antlr.ThriftParser;
 
@@ -12,25 +11,37 @@ namespace Thrift.Net.Compilation.Binding
     /// </summary>
     public class BinderProvider : IBinderProvider
     {
-        private readonly ParseTreeProperty<IBinder> binderMap = new ParseTreeProperty<IBinder>();
-        private readonly BinderVisitor binderVisitor;
+        private static readonly DocumentBinder DocumentBinder;
+        private static readonly NamespaceBinder NamespaceBinder;
+        private static readonly StructBinder StructBinder;
+        private static readonly EnumBinder EnumBinder;
+        private static readonly EnumMemberBinder EnumMemberBinder;
+        private static readonly FieldBinder FieldBinder;
+        private static readonly FieldTypeBinder FieldTypeBinder;
+        private static readonly BinderProvider ProviderInstance;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BinderProvider" /> class.
-        /// </summary>
-        public BinderProvider()
+        static BinderProvider()
         {
-            this.binderVisitor = new BinderVisitor(this, this.binderMap);
+            ProviderInstance = new BinderProvider();
+            DocumentBinder = new DocumentBinder(ProviderInstance);
+            NamespaceBinder = new NamespaceBinder(ProviderInstance);
+            StructBinder = new StructBinder(ProviderInstance);
+            EnumBinder = new EnumBinder(ProviderInstance);
+            EnumMemberBinder = new EnumMemberBinder(ProviderInstance);
+            FieldBinder = new FieldBinder(StructBinder, ProviderInstance);
+            FieldTypeBinder = new FieldTypeBinder();
+        }
+
+        private BinderProvider()
+        {
         }
 
         /// <summary>
-        /// Adds the nodes in the document to the set that binders can be
-        /// provided for.
+        /// Gets the instance of the Binder provider.
         /// </summary>
-        /// <param name="documentContext">The document.</param>
-        public void AddDocument(DocumentContext documentContext)
+        public static IBinderProvider Instance
         {
-            documentContext.Accept(this.binderVisitor);
+            get { return ProviderInstance; }
         }
 
         /// <summary>
@@ -42,91 +53,38 @@ namespace Thrift.Net.Compilation.Binding
         /// </returns>
         public IBinder GetBinder(IParseTree node)
         {
-            return this.binderMap.Get(node);
-        }
-
-        private class BinderVisitor : ThriftBaseVisitor<IBinder>
-        {
-            private readonly ParseTreeProperty<IBinder> binderMap;
-            private readonly IBinderProvider binderProvider;
-
-            public BinderVisitor(
-                IBinderProvider binderProvider, ParseTreeProperty<IBinder> binderMap)
+            if (node is DocumentContext)
             {
-                this.binderProvider = binderProvider;
-                this.binderMap = binderMap;
+                return DocumentBinder;
+            }
+            else if (node is NamespaceStatementContext)
+            {
+                return NamespaceBinder;
+            }
+            else if (node is StructDefinitionContext)
+            {
+                return StructBinder;
+            }
+            else if (node is EnumDefinitionContext)
+            {
+                return EnumBinder;
+            }
+            else if (node is EnumMemberContext)
+            {
+                return EnumMemberBinder;
+            }
+            else if (node is FieldContext)
+            {
+                return FieldBinder;
+            }
+            else if (node is FieldTypeContext)
+            {
+                return FieldTypeBinder;
             }
 
-            public override IBinder VisitNamespaceStatement([NotNull] NamespaceStatementContext context)
-            {
-                var namespaceBinder = new NamespaceBinder(this.binderProvider);
-                this.binderMap.Put(context, namespaceBinder);
-
-                base.VisitNamespaceStatement(context);
-
-                return namespaceBinder;
-            }
-
-            public override IBinder VisitDocument([NotNull] DocumentContext context)
-            {
-                var documentBinder = new DocumentBinder(this.binderProvider);
-                this.binderMap.Put(context, documentBinder);
-
-                base.VisitDocument(context);
-
-                return documentBinder;
-            }
-
-            public override IBinder VisitField([NotNull] ThriftParser.FieldContext context)
-            {
-                var containerBinder = this.binderMap.Get(context.Parent) as IFieldContainerBinder;
-                var binder = new FieldBinder(containerBinder, this.binderProvider);
-                this.binderMap.Put(context, binder);
-
-                base.VisitField(context);
-
-                return binder;
-            }
-
-            public override IBinder VisitFieldType([NotNull] FieldTypeContext context)
-            {
-                base.VisitFieldType(context);
-
-                var binder = new FieldTypeBinder();
-                this.binderMap.Put(context, binder);
-
-                return binder;
-            }
-
-            public override IBinder VisitStructDefinition([NotNull] StructDefinitionContext context)
-            {
-                var structBinder = new StructBinder(this.binderProvider);
-                this.binderMap.Put(context, structBinder);
-
-                base.VisitStructDefinition(context);
-
-                return structBinder;
-            }
-
-            public override IBinder VisitEnumDefinition([NotNull] EnumDefinitionContext context)
-            {
-                var enumBinder = new EnumBinder(this.binderProvider);
-                this.binderMap.Put(context, enumBinder);
-
-                base.VisitEnumDefinition(context);
-
-                return enumBinder;
-            }
-
-            public override IBinder VisitEnumMember([NotNull] EnumMemberContext context)
-            {
-                var memberBinder = new EnumMemberBinder(this.binderProvider);
-                this.binderMap.Put(context, memberBinder);
-
-                base.VisitEnumMember(context);
-
-                return memberBinder;
-            }
+            throw new ArgumentException(
+                $"No binder could be found to bind the {node.GetType().Name} node type",
+                nameof(node));
         }
     }
 }

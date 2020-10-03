@@ -107,52 +107,6 @@ for analysis and code generation. In the case of the `Namespace`, this might be:
 via the constructor, and should not have setters. Because of this, any child
 symbols are created lazily since they need a reference to their parent.
 
-### Binder
-
-The Binder is the object responsible for creating the symbol from the Antlr
-parse tree. A Binder inherits from `Binder<TNode, TSymbol, TParentSymbol>`,
-where `TNode` is the Antlr node that the Binder binds, `TSymbol` is the type of
-Symbol it produces, and `TParentSymbol` is the type of the Symbol's parent
-(`Document` in the case of `Struct` and `Enum`, `Struct` in the case of `Field`,
-etc):
-
-```csharp
-public class NamespaceBinder : Binder<NamespaceStatementContext, Namespace, IDocument>
-{
-}
-```
-
-A Binder implementation needs to override the `Bind()` method to perform its
-work:
-
-```csharp
-/// <inheritdoc />
-protected override Namespace Bind(NamespaceStatementContext node, IDocument parent)
-{
-    var builder = new NamespaceBuilder()
-        .SetNode(node)
-        .SetParent(parent)
-        .SetBinderProvider(this.binderProvider)
-        .SetScope(node.namespaceScope?.Text)
-        .SetNamespaceName(node.ns?.Text);
-
-    return builder.Build();
-}
-```
-
-The `node` parameter contains information about the node in the tree that we're
-Binding. In our example it will contain an `IDENTIFIER()` method that contains a
-collection of identifiers (because our grammar rule specifies two identifiers
-after the `namespace` keyword). We can adjust our grammar using _labels_ to make
-it easier to grab pieces of information. For example:
-
-```antlr
-namespaceDeclaration: 'namespace' namespaceScope=IDENTIFIER ns=IDENTIFIER;
-```
-
-This allows us to access the two identifiers by name, as shown in the example
-above.
-
 ### Builder
 
 Builders are provided for all Symbols. A Builder is responsible for creating
@@ -200,6 +154,65 @@ public override Namespace Build()
         this.Parent,
         this.Scope,
         this.NamespaceName);
+}
+```
+
+### Binder
+
+The Binder is the object responsible for creating the symbol from the Antlr
+parse tree. A Binder inherits from `Binder<TNode, TSymbol, TParentSymbol>`,
+where `TNode` is the Antlr node that the Binder binds, `TSymbol` is the type of
+Symbol it produces, and `TParentSymbol` is the type of the Symbol's parent
+(`Document` in the case of `Struct` and `Enum`, `Struct` in the case of `Field`,
+etc):
+
+```csharp
+public class NamespaceBinder : Binder<NamespaceStatementContext, Namespace, IDocument>
+{
+}
+```
+
+A Binder implementation needs to override the `Bind()` method to perform its
+work:
+
+```csharp
+/// <inheritdoc />
+protected override Namespace Bind(NamespaceStatementContext node, IDocument parent)
+{
+    var builder = new NamespaceBuilder()
+        .SetNode(node)
+        .SetParent(parent)
+        .SetBinderProvider(this.binderProvider)
+        .SetScope(node.namespaceScope?.Text)
+        .SetNamespaceName(node.ns?.Text);
+
+    return builder.Build();
+}
+```
+
+The `node` parameter contains information about the node in the tree that we're
+Binding. In our example it will contain an `IDENTIFIER()` method that contains a
+collection of identifiers (because our grammar rule specifies two identifiers
+after the `namespace` keyword). We can adjust our grammar using _labels_ to make
+it easier to grab pieces of information. For example:
+
+```antlr
+namespaceDeclaration: 'namespace' namespaceScope=IDENTIFIER ns=IDENTIFIER;
+```
+
+This allows us to access the two identifiers by name, as shown in the example
+above.
+
+## Register Binder
+
+Once you've created your Binder, update the `BinderProvider.GetBinder()` method
+to return the binder for the type of node it binds:
+
+```csharp
+...
+else if (node is NamespaceStatementContext)
+{
+    return NamespaceBinder;
 }
 ```
 
