@@ -65,5 +65,10 @@ IDENTIFIER: ( [a-zA-Z] | '_' ) ( [a-zA-Z] | [0-9] | '.' | '_' )*;
 INT_CONSTANT: ('+' | '-')? [0-9]+;
 LIST_SEPARATOR: ',' | ';';
 
-// TODO: Do we need this?
 WS: [ \t\r\n]+ -> skip;
+COMMENT: (
+    // C++-style or shell-style, single-line comments
+    ( '//' | '#' ) ~[\r\n]* |
+
+    // C-style, multi-line comment
+    '/*' .*? '*/') -> skip;
