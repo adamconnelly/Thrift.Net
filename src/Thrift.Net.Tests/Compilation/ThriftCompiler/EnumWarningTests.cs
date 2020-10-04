@@ -20,5 +20,18 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
                 "$enum$ {}",
                 CompilerMessageId.EnumEmpty);
         }
+
+        [Fact]
+        public void Compile_EnumMemberDoesNotHaveExplicitValue_ReportsWarning()
+        {
+            this.AssertCompilerReturnsWarningMessage(
+@"enum UserType {
+    Administrator = 0
+    $User$
+}",
+CompilerMessageId.EnumMemberHasImplicitValue,
+"User",
+"1");
+        }
     }
 }

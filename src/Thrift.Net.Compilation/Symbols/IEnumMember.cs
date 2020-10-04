@@ -21,5 +21,12 @@ namespace Thrift.Net.Compilation.Symbols
         /// Gets the reason (if any) that the enum value has failed to be parsed.
         /// </summary>
         InvalidEnumValueReason InvalidValueReason { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the member's value is implicit (i.e.
+        /// generated automatically by the compiler instead of a value being provided
+        /// for the member in the source).
+        /// </summary>
+        bool IsValueImplicit { get; }
     }
 }

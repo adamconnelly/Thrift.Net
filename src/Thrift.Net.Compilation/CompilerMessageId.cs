@@ -200,6 +200,31 @@ namespace Thrift.Net.Compilation
         NameAlreadyDeclared = 8,
 
         /// <summary>
+        /// An enum member has been specified, but does not have an explicit value
+        /// defined. This means that a value will be generated implicitly, which
+        /// can lead to backwards-incompatible changes if the enum members are reordered.
+        /// </summary>
+        /// <example>
+        /// The following example produces this error:
+        /// <code>
+        /// enum UserType {
+        ///   Administrator = 0
+        ///   User
+        ///   ^^^^
+        /// }
+        /// </code>
+        ///
+        /// To fix this issue, specify a value for the enum member:
+        /// <code>
+        /// enum UserType {
+        ///   Administrator = 0
+        ///   User = 1
+        /// }
+        /// </code>
+        /// </example>
+        EnumMemberHasImplicitValue = 9,
+
+        /// <summary>
         /// The specified namespace scope is not in the list of known namespaces.
         /// </summary>
         /// <example>

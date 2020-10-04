@@ -31,7 +31,8 @@ namespace Thrift.Net.Compilation.Binding
                 .SetParent(parent)
                 .SetBinderProvider(this.binderProvider)
                 .SetName(node.IDENTIFIER()?.Symbol.Text)
-                .SetRawValue(node.enumValue?.Text);
+                .SetRawValue(node.enumValue?.Text)
+                .SetIsValueImplicit(node.EQUALS_OPERATOR() == null && node.enumValue == null);
 
             this.SetEnumValue(node, builder);
 

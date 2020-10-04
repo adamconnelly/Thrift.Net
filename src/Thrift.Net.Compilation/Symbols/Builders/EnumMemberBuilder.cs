@@ -1,6 +1,5 @@
 namespace Thrift.Net.Compilation.Symbols.Builders
 {
-    using Antlr4.Runtime.Tree;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
@@ -29,6 +28,13 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         public InvalidEnumValueReason InvalidValueReason { get; private set; }
 
         /// <summary>
+        /// Gets a value indicating whether the member's value is implicit (i.e.
+        /// generated automatically by the compiler instead of a value being provided
+        /// for the member in the source).
+        /// </summary>
+        public bool IsValueImplicit { get; private set; }
+
+        /// <summary>
         /// Sets the name of the enum member.
         /// </summary>
         /// <param name="name">The name of the enum member.</param>
@@ -48,6 +54,20 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         public EnumMemberBuilder SetValue(int? value)
         {
             this.Value = value;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Sets whether the enum value is implicit or not.
+        /// </summary>
+        /// <param name="isValueImplicit">
+        /// A value indicating whether the enum value is implicit or not.
+        /// </param>
+        /// <returns>The builder.</returns>
+        public EnumMemberBuilder SetIsValueImplicit(bool isValueImplicit)
+        {
+            this.IsValueImplicit = isValueImplicit;
 
             return this;
         }
@@ -88,7 +108,8 @@ namespace Thrift.Net.Compilation.Symbols.Builders
                 this.Name,
                 this.Value,
                 this.RawValue,
-                this.InvalidValueReason);
+                this.InvalidValueReason,
+                this.IsValueImplicit);
         }
     }
 }

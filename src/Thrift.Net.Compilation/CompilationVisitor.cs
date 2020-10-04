@@ -339,6 +339,21 @@ namespace Thrift.Net.Compilation
                     enumMember.Node.IDENTIFIER().Symbol,
                     enumMember.Name);
             }
+
+            if (enumMember.IsValueImplicit)
+            {
+                // The enum member doesn't have a value provided:
+                // ```
+                // enum UserType {
+                //   User
+                // }
+                // ```
+                this.AddWarning(
+                    CompilerMessageId.EnumMemberHasImplicitValue,
+                    enumMember.Node.IDENTIFIER().Symbol,
+                    enumMember.Name,
+                    enumMember.Value.ToString());
+            }
         }
 
         private void AddError(CompilerMessageId messageId, IToken token, params string[] messageParameters)
