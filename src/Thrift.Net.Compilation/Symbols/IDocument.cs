@@ -42,6 +42,12 @@ namespace Thrift.Net.Compilation.Symbols
         string CSharpNamespace { get; }
 
         /// <summary>
+        /// Gets a value indicating whether the Document contains any definitions
+        /// that can be generated.
+        /// </summary>
+        bool ContainsDefinitions { get; }
+
+        /// <summary>
         /// Checks whether another member with the specified name has already
         /// been declared in the document.
         /// </summary>

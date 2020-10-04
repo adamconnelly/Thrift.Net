@@ -512,5 +512,21 @@ namespace Thrift.Net.Compilation
         /// </code>
         /// </example>
         UnknownType = 400,
+
+        /// <summary>
+        /// A Thrift document has been declared with nothing other than imports
+        /// and namespace declarations.
+        /// </summary>
+        /// <example>
+        /// The following example produces this error:
+        /// <code>
+        /// namespace * Thrift.Net.Examples
+        ///
+        /// import "UserType.thrift"
+        /// </code>
+        ///
+        /// To resolve this issue, delete the file, or add some Thrift definitions.
+        /// </example>
+        DocumentEmpty = 500,
     }
 }

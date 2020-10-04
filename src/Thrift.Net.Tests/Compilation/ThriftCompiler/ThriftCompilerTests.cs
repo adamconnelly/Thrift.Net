@@ -60,5 +60,23 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
                 CompilerMessageType.Warning,
                 messageParameters);
         }
+
+        protected void AssertCompilerDoesNotReturnMessage(
+            string input,
+            CompilerMessageId messageId)
+        {
+            // Arrange
+            var compiler = new ThriftCompiler();
+            var parserInput = ParserInput.FromString(input);
+
+            // Act
+            var result = compiler.Compile(parserInput.GetStream());
+
+            // Assert
+            var message = result.Messages.FirstOrDefault(m => m.MessageId == messageId);
+            Assert.True(
+                message == null,
+                $"Message Id '{messageId}' should not have been reported");
+        }
     }
 }

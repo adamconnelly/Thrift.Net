@@ -5,7 +5,7 @@ document: header definitions EOF;
 header: (includeStatement | cppIncludeStatement | namespaceStatement)*;
 
 includeStatement: 'include' LITERAL;
-cppIncludeStatement: 'cppInclude' LITERAL;
+cppIncludeStatement: 'cpp_include' LITERAL;
 
 namespaceStatement: (
         // Successful parse

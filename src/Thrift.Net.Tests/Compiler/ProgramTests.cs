@@ -7,6 +7,7 @@ namespace Thrift.Net.Tests.Compiler
     using NSubstitute;
     using Thrift.Net.Compilation;
     using Thrift.Net.Compilation.Resources;
+    using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Compilation.Symbols.Builders;
     using Thrift.Net.Compiler;
     using Thrift.Net.Tests.Utility;
@@ -259,8 +260,11 @@ namespace Thrift.Net.Tests.Compiler
 
         private void SetupSuccessfulCompilation()
         {
+            var document = Substitute.For<IDocument>();
+            document.ContainsDefinitions.Returns(true);
+
             var compilationResult = new CompilationResult(
-                new DocumentBuilder().Build(),
+                document,
                 new List<CompilationMessage>());
 
             this.compiler.Compile(default).ReturnsForAnyArgs(compilationResult);
@@ -270,8 +274,9 @@ namespace Thrift.Net.Tests.Compiler
         {
             var errorMessage = new CompilationMessage(
                 CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Error, 1, 1, 1, null);
+            var document = Substitute.For<IDocument>();
             var compilationResult = new CompilationResult(
-                new DocumentBuilder().Build(),
+                document,
                 new List<CompilationMessage> { errorMessage });
 
             this.compiler.Compile(default).ReturnsForAnyArgs(compilationResult);
@@ -281,8 +286,11 @@ namespace Thrift.Net.Tests.Compiler
         {
             var errorMessage = new CompilationMessage(
                 CompilerMessageId.EnumMustHaveAName, CompilerMessageType.Warning, 1, 1, 1, null);
+            var document = Substitute.For<IDocument>();
+            document.ContainsDefinitions.Returns(true);
+
             var compilationResult = new CompilationResult(
-                new DocumentBuilder().Build(),
+                document,
                 new List<CompilationMessage> { errorMessage });
 
             this.compiler.Compile(default).ReturnsForAnyArgs(compilationResult);
@@ -290,9 +298,8 @@ namespace Thrift.Net.Tests.Compiler
 
         private void SetupCompilationWithMessages(params CompilationMessage[] messages)
         {
-            var compilationResult = new CompilationResult(
-                new DocumentBuilder().Build(),
-                messages);
+            var document = Substitute.For<IDocument>();
+            var compilationResult = new CompilationResult(document, messages);
 
             this.compiler.Compile(default).ReturnsForAnyArgs(compilationResult);
         }

@@ -93,9 +93,12 @@
                     return (int)ExitCode.CompilationFailed;
                 }
 
-                var generatedCode = DocumentGenerator.Generate(result.Document);
+                if (result.Document.ContainsDefinitions)
+                {
+                    var generatedCode = DocumentGenerator.Generate(result.Document);
 
-                FileWriter.Write(thriftFile, generatedCode);
+                    FileWriter.Write(thriftFile, generatedCode);
+                }
             }
 
             return (int)ExitCode.Success;

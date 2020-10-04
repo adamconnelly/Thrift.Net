@@ -92,6 +92,9 @@ namespace Thrift.Net.Compilation.Symbols
             }
         }
 
+        /// <inheritdoc/>
+        public bool ContainsDefinitions => this.AllTypes.Any();
+
         /// <inheritdoc />
         protected override IReadOnlyCollection<ISymbol> Children
         {

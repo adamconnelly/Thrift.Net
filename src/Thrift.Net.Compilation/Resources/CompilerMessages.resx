@@ -128,4 +128,7 @@
   <data name="TC0400" xml:space="preserve">
     <value>'{0}' could not be found. Please check the type's name is spelled correctly.</value>
   </data>
+  <data name="TC0500" xml:space="preserve">
+    <value>The Thrift file doesn't contain any definitions - no code will be generated. Please delete the file or add some definitions.</value>
+  </data>
 </root>

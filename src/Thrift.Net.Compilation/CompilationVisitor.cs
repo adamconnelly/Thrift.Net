@@ -17,6 +17,19 @@ namespace Thrift.Net.Compilation
         /// </summary>
         public IReadOnlyCollection<CompilationMessage> Messages => this.messages;
 
+        /// <inheritdoc/>
+        public override void VisitDocument(IDocument document)
+        {
+            if (!document.ContainsDefinitions)
+            {
+                // The document is empty - that means it is either literally empty,
+                // or it only includes namespace and include statements, but no types.
+                this.AddWarning(CompilerMessageId.DocumentEmpty, document.Node.Start);
+            }
+
+            base.VisitDocument(document);
+        }
+
         /// <inheritdoc />
         public override void VisitNamespace(INamespace @namespace)
         {
