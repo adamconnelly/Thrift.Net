@@ -89,5 +89,16 @@ enum $UserType$ {
 CompilerMessageId.NameAlreadyDeclared,
 "UserType");
         }
+
+        [Fact]
+        public void Compile_EnumValueInvalidHex_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"enum UserType {
+    User = $0xZZZ$
+}",
+CompilerMessageId.EnumValueInvalidHex,
+"0xZZZ");
+        }
     }
 }

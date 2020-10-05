@@ -1,6 +1,9 @@
 namespace Thrift.Net.Compilation.Binding
 {
+    using System;
+    using System.Globalization;
     using System.Linq;
+    using Thrift.Net.Antlr;
     using Thrift.Net.Compilation.Extensions;
     using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Compilation.Symbols.Builders;
@@ -60,16 +63,26 @@ namespace Thrift.Net.Compilation.Binding
 
         private (int?, InvalidEnumValueReason) GetEnumValue(EnumMemberContext node)
         {
+            if (node.enumValue.Type == ThriftParser.HEX_CONSTANT)
+            {
+                var hexText = node.enumValue.Text.AsSpan()[2..];
+
+                if (int.TryParse(hexText, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var hexValue))
+                {
+                    return (hexValue, InvalidEnumValueReason.None);
+                }
+
+                return (null, InvalidEnumValueReason.InvalidHexValue);
+            }
+
             if (int.TryParse(node.enumValue.Text, out var value))
             {
                 if (value >= 0)
                 {
                     return (value, InvalidEnumValueReason.None);
                 }
-                else
-                {
-                    return (null, InvalidEnumValueReason.Negative);
-                }
+
+                return (null, InvalidEnumValueReason.Negative);
             }
 
             return (null, InvalidEnumValueReason.NotAnInteger);

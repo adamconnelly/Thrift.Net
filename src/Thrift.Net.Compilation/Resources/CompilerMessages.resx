@@ -88,6 +88,9 @@
   <data name="TC0009" xml:space="preserve">
     <value>The enum member '{0}' does not have a value specified, and has an implicit value of '{1}'. Please specify a value.</value>
   </data>
+  <data name="TC0010" xml:space="preserve">
+    <value>The specified value '{0}' is not a valid hex number. Please change this to a valid hex or integer number.</value>
+  </data>
   <data name="TC0100" xml:space="preserve">
     <value>'{0}' is not a valid namespace scope</value>
   </data>

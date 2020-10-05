@@ -24,5 +24,11 @@ namespace Thrift.Net.Compilation.Symbols
         /// The enum value is negative.
         /// </summary>
         Negative,
+
+        /// <summary>
+        /// The enum value starts with the hex prefix (`0x`), but is not a valid
+        /// hex value.
+        /// </summary>
+        InvalidHexValue,
     }
 }

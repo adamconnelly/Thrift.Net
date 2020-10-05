@@ -1,7 +1,7 @@
 namespace * Thrift.Net.Samples
 
 enum UserType {
-    User,
+    User = 0x01,
     Administrator,
     Reseller
 }
@@ -13,8 +13,8 @@ enum Permissions {
 }
 
 enum Status {
-    Success = 2,
-    Failure
+    Success = 0xA1,
+    Failure = 0xa2
 }
 
 enum Empty {

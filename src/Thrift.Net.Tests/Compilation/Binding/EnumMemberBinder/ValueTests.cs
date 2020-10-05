@@ -14,6 +14,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.EnumMemberBinder
         [InlineData("User = 'abc'", null)]
         [InlineData("User = -1", null)]
         [InlineData("User = 0", 0)]
+        [InlineData("User = 0x3aF", 943)]
         public void SetsValueCorrectly(string input, int? expected)
         {
             // Arrange
@@ -34,6 +35,8 @@ namespace Thrift.Net.Tests.Compilation.Binding.EnumMemberBinder
         [InlineData("User =", null)]
         [InlineData("User = 'abc'", "'abc'")]
         [InlineData("User = -1", "-1")]
+        [InlineData("User = 0x3aF", "0x3aF")]
+        [InlineData("User = 0xZZZ", "0xZZZ")]
         public void SetsRawValueCorrectly(string input, string expected)
         {
             // Arrange
@@ -55,6 +58,8 @@ namespace Thrift.Net.Tests.Compilation.Binding.EnumMemberBinder
         [InlineData("User =", InvalidEnumValueReason.Missing)]
         [InlineData("User = 'abc'", InvalidEnumValueReason.NotAnInteger)]
         [InlineData("User = -1", InvalidEnumValueReason.Negative)]
+        [InlineData("User = 0x3aF", InvalidEnumValueReason.None)]
+        [InlineData("User = 0xZZZ", InvalidEnumValueReason.InvalidHexValue)]
         public void SetsInvalidValueReasonCorrectly(string input, InvalidEnumValueReason expected)
         {
             // Arrange

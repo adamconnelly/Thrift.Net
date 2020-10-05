@@ -225,6 +225,28 @@ namespace Thrift.Net.Compilation
         EnumMemberHasImplicitValue = 9,
 
         /// <summary>
+        /// An enum value has been specified with the hex specifier (`0x`), but
+        /// it is not a valid hex value.
+        /// </summary>
+        /// <example>
+        /// The following example produces this error:
+        /// <code>
+        /// enum UserType {
+        ///   Administrator = 0xZZZ
+        ///                   ^^^^^
+        /// }
+        /// </code>
+        ///
+        /// To fix this issue, specify a valid value:
+        /// <code>
+        /// enum UserType {
+        ///   Administrator = 0x0ab
+        /// }
+        /// </code>
+        /// </example>
+        EnumValueInvalidHex = 10,
+
+        /// <summary>
         /// The specified namespace scope is not in the list of known namespaces.
         /// </summary>
         /// <example>

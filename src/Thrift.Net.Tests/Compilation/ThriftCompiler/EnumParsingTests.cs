@@ -167,6 +167,26 @@ enum Permission
                 item => Assert.Equal(10, item.Value));
         }
 
+        [Fact]
+        public void Compile_EnumMembersHaveHexValue_SetsValueCorrectly()
+        {
+            // Arrange
+            var inputStream = CreateInputStream(
+@"enum UserType {
+    User = 0x01,
+    Administrator = 0xfA
+}");
+
+            // Act
+            var result = this.compiler.Compile(inputStream);
+
+            // Assert
+            Assert.Collection(
+                result.Document.Enums.Single().Members,
+                item => Assert.Equal(1, item.Value),
+                item => Assert.Equal(250, item.Value));
+        }
+
         private static MemoryStream CreateInputStream(string input)
         {
             return new MemoryStream(Encoding.UTF8.GetBytes(input));

@@ -305,6 +305,14 @@ namespace Thrift.Net.Compilation
                         enumMember.Node.enumValue);
                     break;
 
+                case InvalidEnumValueReason.InvalidHexValue:
+                    // An invalid hex value has been specified: `User = 0xZZZ`.
+                    this.AddError(
+                        CompilerMessageId.EnumValueInvalidHex,
+                        enumMember.Node.enumValue,
+                        enumMember.RawValue);
+                    break;
+
                 case InvalidEnumValueReason.Missing:
                     // An enum member has been defined with an equals sign, but a
                     // missing value: `User = `.

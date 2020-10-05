@@ -63,6 +63,10 @@ EQUALS_OPERATOR: '=';
 LITERAL: ( '"' .*? '"' ) | ( '\'' .*? '\'' );
 IDENTIFIER: ( [a-zA-Z] | '_' ) ( [a-zA-Z] | [0-9] | '.' | '_' )*;
 INT_CONSTANT: ('+' | '-')? [0-9]+;
+
+// NOTE: HEX_CONSTANT deliberately allows invalid hex (i.e. letters > F) to allow
+// for graceful error handling
+HEX_CONSTANT: '0' [xX] [0-9a-zA-Z]+;
 LIST_SEPARATOR: ',' | ';';
 
 WS: [ \t\r\n]+ -> skip;
