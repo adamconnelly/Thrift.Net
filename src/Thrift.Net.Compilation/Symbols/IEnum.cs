@@ -23,5 +23,16 @@ namespace Thrift.Net.Compilation.Symbols
         /// true if a member with the same name has already been declared, false otherwise.
         /// </returns>
         bool IsEnumMemberAlreadyDeclared(string memberName, EnumMemberContext node);
+
+        /// <summary>
+        /// Checks whether the specified value has already been used by another
+        /// enum member.
+        /// </summary>
+        /// <param name="enumMember">The member we're checking.</param>
+        /// <returns>
+        /// true if a member with the same value has already been declared (i.e.
+        /// <paramref name="enumMember" /> is a duplicate), false otherwise.
+        /// </returns>
+        bool IsEnumValueAlreadyDeclared(IEnumMember enumMember);
     }
 }

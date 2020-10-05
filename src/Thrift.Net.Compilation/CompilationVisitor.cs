@@ -348,6 +348,21 @@ namespace Thrift.Net.Compilation
                     enumMember.Name);
             }
 
+            if (enumMember.Parent.IsEnumValueAlreadyDeclared(enumMember))
+            {
+                // The same enum value has already been used by another member:
+                // ```
+                // enum UserType {
+                //     User = 1
+                //     Administrator = 1
+                // }
+                // ```
+                this.AddError(
+                    CompilerMessageId.EnumValueDuplicated,
+                    enumMember.Node.enumValue,
+                    enumMember.RawValue);
+            }
+
             if (enumMember.IsValueImplicit)
             {
                 // The enum member doesn't have a value provided:

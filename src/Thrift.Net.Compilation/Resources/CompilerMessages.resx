@@ -91,6 +91,9 @@
   <data name="TC0010" xml:space="preserve">
     <value>The specified value '{0}' is not a valid hex number. Please change this to a valid hex or integer number.</value>
   </data>
+  <data name="TC0011" xml:space="preserve">
+    <value>The specified enum value '{0}' has already been used by another member of this enum. Please change this to remove the duplication.</value>
+  </data>
   <data name="TC0100" xml:space="preserve">
     <value>'{0}' is not a valid namespace scope</value>
   </data>

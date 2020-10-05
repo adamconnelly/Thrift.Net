@@ -57,7 +57,7 @@ namespace Thrift.Net.Compilation.Symbols
             var parent = node.Parent as EnumDefinitionContext;
 
             // If there's only a single member, don't bother doing any more work
-            if (parent.enumMember().Length == 1)
+            if (this.Members.Count == 1)
             {
                 return false;
             }
@@ -65,6 +65,29 @@ namespace Thrift.Net.Compilation.Symbols
             var matchingMembers = this.Members
                 .Where(member => member.Name == memberName)
                 .TakeWhile(member => member.Node != node);
+
+            return matchingMembers.Any();
+        }
+
+        /// <inheritdoc/>
+        public bool IsEnumValueAlreadyDeclared(IEnumMember enumMember)
+        {
+            // If the member has no value (i.e. its value was invalid for some reason)
+            // don't bother doing any more work.
+            if (enumMember.Value == null)
+            {
+                return false;
+            }
+
+            // If there's only a single member, don't bother doing any more work
+            if (this.Members.Count == 1)
+            {
+                return false;
+            }
+
+            var matchingMembers = this.Members
+                .Where(member => member.Value == enumMember.Value)
+                .TakeWhile(member => member.Node != enumMember.Node);
 
             return matchingMembers.Any();
         }

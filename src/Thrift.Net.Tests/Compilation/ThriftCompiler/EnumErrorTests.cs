@@ -100,5 +100,29 @@ CompilerMessageId.NameAlreadyDeclared,
 CompilerMessageId.EnumValueInvalidHex,
 "0xZZZ");
         }
+
+        [Fact]
+        public void Compile_DuplicateEnumValue_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"enum UserType {
+    User = 10
+    Administrator = $10$
+}",
+CompilerMessageId.EnumValueDuplicated,
+"10");
+        }
+
+        [Fact]
+        public void Compile_EnumValueDuplicatedWithHexValue_ReportsHexValueInErrorMessage()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"enum UserType {
+    User = 1
+    Administrator = $0x01$
+}",
+CompilerMessageId.EnumValueDuplicated,
+"0x01");
+        }
     }
 }

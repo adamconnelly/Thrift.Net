@@ -247,6 +247,29 @@ namespace Thrift.Net.Compilation
         EnumValueInvalidHex = 10,
 
         /// <summary>
+        /// The specified enum value has already been used by another enum member.
+        /// </summary>
+        /// <example>
+        /// The following example produces this error:
+        /// <code>
+        /// enum UserType {
+        ///   User = 10
+        ///   Administrator = 10
+        ///                   ^^
+        /// }
+        /// </code>
+        ///
+        /// To fix this issue, make sure the values are unique:
+        /// <code>
+        /// enum UserType {
+        ///   User = 10
+        ///   Administrator = 11
+        /// }
+        /// </code>
+        /// </example>
+        EnumValueDuplicated = 11,
+
+        /// <summary>
         /// The specified namespace scope is not in the list of known namespaces.
         /// </summary>
         /// <example>
