@@ -333,7 +333,7 @@ namespace Thrift.Net.Compilation
                     enumMember.Node.enumValue);
             }
 
-            if (enumMember.Parent.IsEnumMemberAlreadyDeclared(enumMember.Name, enumMember.Node))
+            if (enumMember.Parent.IsEnumMemberAlreadyDeclared(enumMember))
             {
                 // The same enum member has been declared twice:
                 // ```

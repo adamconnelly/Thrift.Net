@@ -52,10 +52,8 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public bool IsEnumMemberAlreadyDeclared(string memberName, EnumMemberContext node)
+        public bool IsEnumMemberAlreadyDeclared(IEnumMember enumMember)
         {
-            var parent = node.Parent as EnumDefinitionContext;
-
             // If there's only a single member, don't bother doing any more work
             if (this.Members.Count == 1)
             {
@@ -63,8 +61,8 @@ namespace Thrift.Net.Compilation.Symbols
             }
 
             var matchingMembers = this.Members
-                .Where(member => member.Name == memberName)
-                .TakeWhile(member => member.Node != node);
+                .Where(member => member.Name == enumMember.Name)
+                .TakeWhile(member => member.Node != enumMember.Node);
 
             return matchingMembers.Any();
         }

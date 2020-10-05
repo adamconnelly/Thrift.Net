@@ -17,12 +17,11 @@ namespace Thrift.Net.Compilation.Symbols
         /// Checks whether the specified name has already been used by another
         /// enum member.
         /// </summary>
-        /// <param name="memberName">The name to check for.</param>
-        /// <param name="node">The node being defined.</param>
+        /// <param name="enumMember">The member we're checking.</param>
         /// <returns>
         /// true if a member with the same name has already been declared, false otherwise.
         /// </returns>
-        bool IsEnumMemberAlreadyDeclared(string memberName, EnumMemberContext node);
+        bool IsEnumMemberAlreadyDeclared(IEnumMember enumMember);
 
         /// <summary>
         /// Checks whether the specified value has already been used by another

@@ -14,11 +14,10 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Enum
 }";
             var @enum = this.CreateEnumFromInput(input);
 
-            this.SetupMember(@enum.Node.enumMember()[0], @enum, name: "User");
+            var user = this.SetupMember(@enum.Node.enumMember()[0], @enum, name: "User");
 
             // Act
-            var isAlreadyDefined = @enum.IsEnumMemberAlreadyDeclared(
-                "User", @enum.Node.enumMember()[0]);
+            var isAlreadyDefined = @enum.IsEnumMemberAlreadyDeclared(user);
 
             // Assert
             Assert.False(isAlreadyDefined);
@@ -36,11 +35,10 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Enum
             var @enum = this.CreateEnumFromInput(input);
 
             this.SetupMember(@enum.Node.enumMember()[0], @enum, name: "User");
-            this.SetupMember(@enum.Node.enumMember()[1], @enum, name: "User");
+            var duplicate = this.SetupMember(@enum.Node.enumMember()[1], @enum, name: "User");
 
             // Act
-            var isAlreadyDefined = @enum.IsEnumMemberAlreadyDeclared(
-                "User", @enum.Node.enumMember()[1]);
+            var isAlreadyDefined = @enum.IsEnumMemberAlreadyDeclared(duplicate);
 
             // Assert
             Assert.True(isAlreadyDefined);
@@ -57,12 +55,11 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Enum
 }";
             var @enum = this.CreateEnumFromInput(input);
 
-            this.SetupMember(@enum.Node.enumMember()[0], @enum, name: "User");
+            var original = this.SetupMember(@enum.Node.enumMember()[0], @enum, name: "User");
             this.SetupMember(@enum.Node.enumMember()[1], @enum, name: "User");
 
             // Act
-            var isAlreadyDefined = @enum.IsEnumMemberAlreadyDeclared(
-                "User", @enum.Node.enumMember()[0]);
+            var isAlreadyDefined = @enum.IsEnumMemberAlreadyDeclared(original);
 
             // Assert
             Assert.False(isAlreadyDefined);
