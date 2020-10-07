@@ -10,19 +10,6 @@
 - Transparent release process.
 - Provide linting and formatting support.
 
-## Rough Project Structure
-
-- ThriftSharp.Antlr - contains grammar files and hosts the generated code.
-- ThriftSharp - contains the main runtime.
-- ThriftSharp.Compiler - console app that can be used to compile Thrift code.
-- ThriftSharp.Tools - adds codegen support to a C# project.
-- ThriftSharp.Prometheus - adds Prometheus instrumentation.
-
-The idea should be that all you need to use Thrift should be `ThriftSharp`. If
-you want to add Prometheus metrics, you can opt-in to `ThriftSharp.Prometheus`.
-The core runtime will provide hooks that the Prometheus library can use to
-provide instrumentation.
-
 ## Compiler
 
 ### Errors and Warnings
@@ -68,6 +55,8 @@ recommend one or the other for consistency.
 
 ## First Class C# Citizen
 
-I want the library to feel like a C# library to other developers, in terms of
-naming, how the code is structured, etc. I don't want it to feel like a direct
-port from another language.
+The library should feel like a C# library to other developers, in terms of
+naming, how the code is structured, etc. It shouldn't feel like a direct port
+from another language. This means that we may take different decisions at
+certain points from the official Apache implementation. But it also doesn't
+prevent us from making the same decisions where it makes sense or is required.

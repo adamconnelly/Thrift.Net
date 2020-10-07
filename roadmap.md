@@ -1,12 +1,15 @@
 # Roadmap
 
-Milestones:
+We are currently working towards an initial stable release of the project. This
+is tracked on the
+[Initial Stable Release](https://github.com/adamconnelly/Thrift.Net/projects/1)
+project board, and consists of these main high-level milestones:
 
-1. Thrift compilation.
-2. Tools project to automate compilation.
-3. Runtime library.
-4. Instrumentation.
-5. Linting and formatting.
+1. [Thrift compilation](#thrift-compilation).
+2. [Tools project](#tools-project) to automate compilation.
+3. [Runtime library](#runtime-library).
+4. [Instrumentation](#instrumentation).
+5. [Linting and formatting](#linting-and-formatting).
 
 ## Thrift Compilation
 
