@@ -10,20 +10,22 @@ change.
 
 ## Table of Contents
 
-- [How Can I Contribute?](#how-can-i-contribute).
-  - [Making Feature Requests](#making-feature-requests).
-  - [Reporting Bugs](#reporting-bugs).
-  - [Pull Requests](#pull-requests).
-- [Getting Started](#getting-started).
-  - [Development environment](#development-environment).
-- [Installing NPM Packages](#installing-npm-packages).
-- [Antlr](#antlr).
-- [NPM Scripts](#npm-scripts).
-- [Development Guides](#development-guides).
-- [Code Style](#code-style).
-- [Commit Messages](#commit-messages).
-- [Compilation Docs](compilation.md).
-- [Other Resources](#other-resources).
+- [How Can I Contribute?](#how-can-i-contribute)
+  - [Making Feature Requests](#making-feature-requests)
+  - [Reporting Bugs](#reporting-bugs)
+  - [Pull Requests](#pull-requests)
+- [Getting Started](#getting-started)
+  - [Development environment](#development-environment)
+- [Installing NPM Packages](#installing-npm-packages)
+- [Antlr](#antlr)
+- [NPM Scripts](#npm-scripts)
+- [Development Guides](#development-guides)
+- [Code Style](#code-style)
+- [Commit Messages](#commit-messages)
+- [Compilation Docs](compilation.md)
+- [Issues](#issues)
+  - [Labels](#labels)
+- [Other Resources](#other-resources)
 
 ## How Can I Contribute
 
@@ -208,6 +210,31 @@ you need to check what the official compiler produces. Here's an example
 ```shell
 docker run -v "$PWD:/data" jaegertracing/thrift:0.13 thrift -o /data/thrift-output --gen netstd /data/thrift-samples/structs/User.thrift
 ```
+
+## Issues
+
+### Labels
+
+We use the following labels to organise issues. All of our labels are in the
+format `<type>/<value>`, for example `type/epic`.
+
+#### `type/<issue-type>`
+
+We support the following types of issue:
+
+- bug - used to report a bug in Thrift.Net.
+- feature-request - used to ask for new functionality.
+- epic - indicates a major piece of work that will need to worked on in multiple
+  pieces.
+
+#### `component/<component>`
+
+The `component` label is used to indicate the part of the project affected / the
+part of the project that the issue relates to. We have the following components:
+
+- benchmarks - anything relating to benchmarking or performance analysis.
+- compiler - anthing relating to the Thrift compiler itself.
+- docs - anything relating to our documentation.
 
 ## Other Resources
 
