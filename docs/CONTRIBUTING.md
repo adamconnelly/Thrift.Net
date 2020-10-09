@@ -116,10 +116,11 @@ The official Thrift grammar can be found
 the grammar from Thrift because we need to make our grammar slightly less strict
 in order to provide great errors and warnings.
 
-The [Thrift.Net.Antlr.csproj](/src/Thrift.Net.Antlr.csproj) file is configured
-to automatically build the grammar, so all you need to do to get up and running
-is make sure you have a valid install of the JDK, however you can follow the
-instructions on the Antlr site if you want to install the tool globally.
+The [Thrift.Net.Antlr.csproj](/src/Thrift.Net.Antlr/Thrift.Net.Antlr.csproj)
+file is configured to automatically build the grammar, so all you need to do to
+get up and running is make sure you have a valid install of the JDK, however you
+can follow the instructions on the Antlr site if you want to install the tool
+globally.
 
 ### Antlr vscode Extension
 
