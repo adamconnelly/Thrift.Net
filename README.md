@@ -6,7 +6,7 @@ providing a first class experience for .NET developers wanting to use Thrift.
 
 ## License
 
-Thrift.Net is provided under the apache license, which you can find
+Thrift.Net is provided under the MIT license, which you can find
 [here](LICENSE).
 
 ## Project Status

@@ -109,16 +109,16 @@ with a simple way of analysing the Thrift code and producing a Parse Tree that
 we can then extract information from.
 
 Our Antlr thrift grammar can be found in
-[src/Thrift.Net.Antlr/Thrift.g4](src/Thrift.Net.Antlr/Thrift.g4).
+[src/Thrift.Net.Antlr/Thrift.g4](/src/Thrift.Net.Antlr/Thrift.g4).
 
 The official Thrift grammar can be found
 [here](https://thrift.apache.org/docs/idl). Our grammar doesn't exactly match
 the grammar from Thrift because we need to make our grammar slightly less strict
 in order to provide great errors and warnings.
 
-The [Thrift.Net.Antlr.csproj](src/Thrift.Net.Antlr.csproj) file is configured to
-automatically build the grammar, so all you need to do to get up and running is
-make sure you have a valid install of the JDK, however you can follow the
+The [Thrift.Net.Antlr.csproj](/src/Thrift.Net.Antlr.csproj) file is configured
+to automatically build the grammar, so all you need to do to get up and running
+is make sure you have a valid install of the JDK, however you can follow the
 instructions on the Antlr site if you want to install the tool globally.
 
 ### Antlr vscode Extension
@@ -126,7 +126,7 @@ instructions on the Antlr site if you want to install the tool globally.
 Once you have the vscode extension installed, you can debug your grammar and
 view the parse tree generated from a particular input file by running the _Debug
 ANTLR4 grammar_ task from the _Run_ section of vscode. The file to parse can be
-configured via the [.vscode/launch.json](.vscode/launch.json) file.
+configured via the [.vscode/launch.json](/.vscode/launch.json) file.
 
 ## NPM Scripts
 
