@@ -1,8 +1,8 @@
 # Thrift.Net
 
-The aim of the Thrift.Net project is to create an implementation of the Thrift
-compiler and runtime library in C#, providing a first class experience for .NET
-developers wanting to use Thrift.
+The aim of the Thrift.Net project is to create an implementation of the
+[Thrift](https://thrift.apache.org/) compiler and runtime library in C#,
+providing a first class experience for .NET developers wanting to use Thrift.
 
 ## License
 
@@ -18,10 +18,10 @@ Once we have a working compiler, the next step will be to implement the runtime
 library to make Thrift.Net self contained.
 
 For information about the initial design goals for the project, see the
-[design goals](design-goals.md) page. For information on the project roadmap,
-see the [roadmap page](roadmap.md).
+[design goals](docs/design-goals.md) page. For information on the project
+roadmap, see the [roadmap page](docs/roadmap.md).
 
 ## Contributing
 
 If you want to contribute to the development of Thrift.Net, please see our
-[contribution guide](CONTRIBUTING.md).
+[contribution guide](docs/CONTRIBUTING.md).

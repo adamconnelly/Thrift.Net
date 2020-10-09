@@ -156,7 +156,11 @@ These guides explain how to work on particular parts of the code base:
 
 ## Code Style
 
-### C\
+<!-- markdownlint-disable MD026 -->
+
+### C&#35;
+
+<!-- markdownlint-enable MD026 -->
 
 We use [StyleCop](https://github.com/DotNetAnalyzers/StyleCopAnalyzers) to make
 sure our C# code conforms to a common standard, and is well documented. StyleCop
