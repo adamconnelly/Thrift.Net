@@ -21,7 +21,7 @@ steps:
   inputs:
     command: 'test'
     projects: '$(System.DefaultWorkingDirectory)/src/Thrift.Net.Tests/Thrift.Net.Tests.csproj'
-    arguments: '--collect "XPlat Code Coverage"'
+    arguments: '--configuration Release -warnaserror /p:PublishSingleFile=false --collect "XPlat Code Coverage"'
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish Code Coverage'
