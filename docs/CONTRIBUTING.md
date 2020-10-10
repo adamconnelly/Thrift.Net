@@ -25,6 +25,7 @@ change.
 - [Compilation Docs](compilation.md)
 - [Issues](#issues)
   - [Labels](#labels)
+- [Build Pipelines](#build-pipelines)
 - [Other Resources](#other-resources)
 
 ## How Can I Contribute
@@ -236,6 +237,17 @@ part of the project that the issue relates to. We have the following components:
 - benchmarks - anything relating to benchmarking or performance analysis.
 - compiler - anthing relating to the Thrift compiler itself.
 - docs - anything relating to our documentation.
+
+## Build Pipelines
+
+Our build pipelines can be found in the [pipelines](/pipelines) folder. We use
+Azure Pipelines for CI/CD, and you can view the configured pipelines
+[here](https://dev.azure.com/adamrpconnelly/Thrift.Net/_build).
+
+To edit an existing pipeline, just make a change to the pipeline's yaml
+definition and follow the standard PR process. If you need a new pipeline to be
+added, please discuss it in an issue so that someone with the correct
+permissions can set it up for you.
 
 ## Other Resources
 
