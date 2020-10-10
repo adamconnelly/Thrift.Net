@@ -2,7 +2,14 @@ trigger:
 - master
 
 pr:
-- master
+  branches:
+    include:
+    - master
+  paths:
+    exclude:
+    # Don't run the pipeline for documentation-only changes
+    - '*.md'
+    - 'docs/**/*.md'
 
 pool:
   vmImage: 'ubuntu-latest'
