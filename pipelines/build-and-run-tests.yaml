@@ -6,10 +6,11 @@ pr:
     include:
     - master
   paths:
-    exclude:
-    # Don't run the pipeline for documentation-only changes
-    - '*.md'
-    - 'docs/**/*.md'
+    include:
+    # Only run the pipeline if something in the src folder or this pipeline definition
+    # changes to try to avoid running for things like documentation-only changes.
+    - 'pipelines/build-and-run-tests.yaml'
+    - 'src'
 
 pool:
   vmImage: 'ubuntu-latest'
