@@ -1,0 +1,41 @@
+# Only run this pipeline for PRs, so exclude all branches
+trigger:
+  branches:
+    exclude:
+    - '*'
+
+pr:
+  branches:
+    include:
+    - 'master'
+
+jobs:
+- job: 'LintMarkdown'
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: Npm@1
+    displayName: 'Install NPM packages'
+    inputs:
+      command: 'install'
+
+  - task: Npm@1
+    displayName: 'Run markdownlint'
+    inputs:
+      command: 'custom'
+      customCommand: 'run --silent lint:markdown'
+
+- job: 'LintCommitMessages'
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: Npm@1
+    displayName: 'Install NPM packages'
+    inputs:
+      command: 'install'
+
+  - script: 'npx commitlint --config "commitlint-ci.config.js" --from `git rev-parse $TARGET_BRANCH` --to `git rev-parse $SOURCE_BRANCH`'
+    displayName: 'Lint Commit Messages'
+    env:
+      SOURCE_BRANCH: 'origin/$(System.PullRequest.SourceBranch)'
+      TARGET_BRANCH: 'origin/$(System.PullRequest.TargetBranch)'
