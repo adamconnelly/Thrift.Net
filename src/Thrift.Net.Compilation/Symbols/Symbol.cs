@@ -138,6 +138,12 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc />
+        public virtual INamedTypeSymbol ResolveType2(string typeName)
+        {
+            return this.Parent?.ResolveType2(typeName);
+        }
+
+        /// <inheritdoc />
         public virtual void Accept(ISymbolVisitor visitor)
         {
             foreach (var symbol in this.Children)

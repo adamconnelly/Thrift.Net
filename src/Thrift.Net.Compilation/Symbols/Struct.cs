@@ -47,6 +47,9 @@ namespace Thrift.Net.Compilation.Symbols
             .Where(field => field.Requiredness != FieldRequiredness.Required)
             .ToList();
 
+        /// <inheritdoc/>
+        public IDocument Document => this.Parent;
+
         /// <inheritdoc />
         protected override IReadOnlyCollection<ISymbol> Children
         {

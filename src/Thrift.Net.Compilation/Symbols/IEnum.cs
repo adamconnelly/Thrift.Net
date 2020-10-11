@@ -6,7 +6,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents an enum.
     /// </summary>
-    public interface IEnum : ISymbol<EnumDefinitionContext, IDocument>, INamedSymbol
+    public interface IEnum : ISymbol<EnumDefinitionContext, IDocument>, INamedTypeSymbol
     {
         /// <summary>
         /// Gets the enum members.

@@ -64,11 +64,11 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public IReadOnlyCollection<INamedSymbol> AllTypes
+        public IReadOnlyCollection<INamedTypeSymbol> AllTypes
         {
             get
             {
-                return this.Enums.Cast<INamedSymbol>()
+                return this.Enums.Cast<INamedTypeSymbol>()
                     .Union(this.Structs)
                     .OrderBy(symbol => symbol.Node.SourceInterval.a)
                     .ToList();
@@ -154,6 +154,12 @@ namespace Thrift.Net.Compilation.Symbols
             }
 
             return null;
+        }
+
+        /// <inheritdoc/>
+        public override INamedTypeSymbol ResolveType2(string typeName)
+        {
+            return this.AllTypes.FirstOrDefault(e => e.Name == typeName);
         }
 
         /// <inheritdoc/>

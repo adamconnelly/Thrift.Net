@@ -27,7 +27,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// Gets all the types contained by this document, in the order they
         /// appeared in the source.
         /// </summary>
-        IReadOnlyCollection<INamedSymbol> AllTypes { get; }
+        IReadOnlyCollection<INamedTypeSymbol> AllTypes { get; }
 
         /// <summary>
         /// Gets the C# namespace that should be used for generating this document.

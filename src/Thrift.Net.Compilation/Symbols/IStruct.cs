@@ -6,7 +6,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a Thrift struct.
     /// </summary>
-    public interface IStruct : ISymbol<StructDefinitionContext, IDocument>, INamedSymbol
+    public interface IStruct : ISymbol<StructDefinitionContext, IDocument>, INamedTypeSymbol
     {
         /// <summary>
         /// Gets the fields of the struct.

@@ -42,6 +42,9 @@ namespace Thrift.Net.Compilation.Symbols
             }
         }
 
+        /// <inheritdoc/>
+        public IDocument Document => this.Parent;
+
         /// <inheritdoc />
         protected override IReadOnlyCollection<ISymbol> Children
         {
