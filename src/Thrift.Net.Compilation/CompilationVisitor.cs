@@ -222,7 +222,7 @@ namespace Thrift.Net.Compilation
                 // ```
                 this.AddWarning(
                     CompilerMessageId.SlistDeprecated,
-                    field.Node.fieldType().IDENTIFIER().Symbol,
+                    field.Node.fieldType().baseType().typeName,
                     field.Name);
             }
 
@@ -236,7 +236,7 @@ namespace Thrift.Net.Compilation
                 // ```
                 this.AddError(
                     CompilerMessageId.UnknownType,
-                    field.Node.fieldType().IDENTIFIER().Symbol,
+                    field.Node.fieldType().userType().IDENTIFIER().Symbol,
                     field.Type.Name);
             }
 

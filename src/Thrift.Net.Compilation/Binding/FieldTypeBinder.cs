@@ -11,7 +11,7 @@ namespace Thrift.Net.Compilation.Binding
         /// <inheritdoc />
         protected override FieldType Bind(FieldTypeContext node, IField parent)
         {
-            var typeName = node.IDENTIFIER().Symbol.Text;
+            var typeName = node.GetText();
             var baseType = FieldType.ResolveBaseType(typeName);
             if (baseType != null)
             {

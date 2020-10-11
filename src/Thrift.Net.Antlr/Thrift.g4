@@ -49,7 +49,9 @@ field: (fieldType name=IDENTIFIER |
     fieldId=(INT_CONSTANT | IDENTIFIER | LITERAL)? ':' fieldRequiredness? fieldType name=IDENTIFIER) LIST_SEPARATOR?;
 
 fieldRequiredness: REQUIRED | OPTIONAL;
-fieldType: IDENTIFIER;
+fieldType: baseType | userType;
+baseType: typeName=('bool' | 'byte' | 'i8' | 'i16' | 'i32' | 'i64' | 'double' | 'string' | 'binary' | 'slist');
+userType: IDENTIFIER;
 
 NAMESPACE: 'namespace';
 ENUM: 'enum';

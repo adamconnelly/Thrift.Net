@@ -6,7 +6,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents the type of a field.
     /// </summary>
-    public class FieldType : Symbol<IParseTree, IField>
+    public class FieldType : Symbol<IParseTree, IField>, IFieldType
     {
         /// <summary>
         /// The 'bool' base type.
@@ -120,15 +120,10 @@ namespace Thrift.Net.Compilation.Symbols
         /// </summary>
         public static IReadOnlyCollection<FieldType> BaseTypes => BaseTypeMap.Values;
 
-        /// <summary>
-        /// Gets the name of the type.
-        /// </summary>
+        /// <inheritdoc />
         public string Name { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the type has successfully been
-        /// resolved. If this is false it means the type could not be found.
-        /// </summary>
+        /// <inheritdoc />
         public bool IsResolved { get; }
 
         /// <summary>
@@ -138,29 +133,19 @@ namespace Thrift.Net.Compilation.Symbols
         /// </summary>
         public int IdentifierPartsCount { get; }
 
-        /// <summary>
-        /// Gets the name of the C# type to use when generating an optional field.
-        /// </summary>
+        /// <inheritdoc />
         public string CSharpOptionalTypeName { get; }
 
-        /// <summary>
-        /// Gets the name of the C# type to use when generating a required field.
-        /// </summary>
+        /// <inheritdoc />
         public string CSharpRequiredTypeName { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the type is a base (i.e. built-in) type.
-        /// </summary>
+        /// <inheritdoc />
         public bool IsBaseType { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the type is a struct.
-        /// </summary>
+        /// <inheritdoc />
         public bool IsStruct { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the type is an enum.
-        /// </summary>
+        /// <inheritdoc />
         public bool IsEnum { get; }
 
         /// <summary>
