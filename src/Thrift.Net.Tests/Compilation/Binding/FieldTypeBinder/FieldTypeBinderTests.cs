@@ -1,8 +1,5 @@
 namespace Thrift.Net.Tests.Compilation.Binding.FieldTypeBinder
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using Antlr4.Runtime.Tree;
     using NSubstitute;
     using Thrift.Net.Compilation.Binding;
     using Thrift.Net.Compilation.Symbols;
@@ -12,108 +9,53 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldTypeBinder
 
     public class FieldTypeBinderTests
     {
-        private readonly FieldTypeBinder binder = new FieldTypeBinder();
+        private readonly IBinderProvider binderProvider = Substitute.For<IBinderProvider>();
+        private readonly IBinder typeBinder = Substitute.For<IBinder>();
+        private readonly FieldTypeBinder binder;
 
-        public static IEnumerable<object[]> GetBaseTypes()
+        public FieldTypeBinderTests()
         {
-            return FieldType.BaseTypes.Select(type => new object[] { type });
-        }
-
-        [Theory]
-        [MemberData(nameof(GetBaseTypes))]
-        public void Bind_BaseType_ResolvesType(FieldType expectedType)
-        {
-            // Arrange
-            var field = new FieldBuilder().Build();
-            var fieldTypeContext = ParserInput
-                .FromString(expectedType.Name)
-                .ParseInput(parser => parser.fieldType());
-
-            // Act
-            var type = this.binder.Bind<FieldType>(fieldTypeContext, field);
-
-            // Assert
-            Assert.Same(expectedType, type);
+            this.binder = new FieldTypeBinder(this.binderProvider);
         }
 
         [Fact]
-        public void Bind_NotBaseType_ResolvesTypeUsingParent()
-        {
-            // Arrange
-            var field = Substitute.For<IField>();
-            var input = "UserType";
-            var fieldTypeContext = ParserInput
-                .FromString(input)
-                .ParseInput(parser => parser.fieldType());
-
-            var targetType = Substitute.For<INamedSymbol>();
-            var resolvedType = FieldType.CreateResolvedType(
-                targetType, input, "UserType?", "UserType");
-
-            field.ResolveType(input).Returns(resolvedType);
-
-            // Act
-            var type = this.binder.Bind<FieldType>(fieldTypeContext, field);
-
-            // Assert
-            Assert.Same(resolvedType, type);
-        }
-
-        [Fact]
-        public void Bind_TypeCannotResolve_ReturnsUnresolvedType()
+        public void Bind_BaseType_ResolvesType()
         {
             // Arrange
             var field = new FieldBuilder().Build();
-            var input = "NonExistentType";
-            var fieldTypeContext = ParserInput
-                .FromString(input)
+            var node = ParserInput
+                .FromString("bool")
                 .ParseInput(parser => parser.fieldType());
 
-            // Act
-            var type = this.binder.Bind<FieldType>(fieldTypeContext, field);
-
-            // Assert
-            Assert.False(type.IsResolved);
-        }
-
-        [Theory]
-        [InlineData("i32", 1)]
-        [InlineData("Enums.UserType", 2)]
-        [InlineData("One.Two.Three", 3)]
-        public void Bind_MultiPartIdentifier_SetsIdentifierPartCount(
-            string identifier, int parts)
-        {
-            // Arrange
-            var field = new FieldBuilder().Build();
-            var fieldTypeContext = ParserInput
-                .FromString(identifier)
-                .ParseInput(parser => parser.fieldType());
+            this.binderProvider.GetBinder(node.baseType()).Returns(this.typeBinder);
+            var baseType = Substitute.For<IBaseType>();
+            this.typeBinder.Bind<IFieldType>(node.baseType(), field).Returns(baseType);
 
             // Act
-            var type = this.binder.Bind<FieldType>(fieldTypeContext, field);
+            var type = this.binder.Bind<IFieldType>(node, field);
 
             // Assert
-            Assert.Equal(parts, type.IdentifierPartsCount);
+            Assert.Same(baseType, type);
         }
 
         [Fact]
-        public void Bind_MultiPartIdentifierWithMoreThanTwoParts_DoesNotResolveTypeUsingParent()
+        public void Bind_UserType_ResolvesType()
         {
-            // Thrift only support simple names, or names with a single prefix,
-            // so don't bother trying to resolve a type if it has more than two
-            // parts.
-            //
             // Arrange
-            var field = Substitute.For<IField>();
-            var fieldTypeContext = ParserInput
-                .FromString("One.Two.Three")
+            var field = new FieldBuilder().Build();
+            var node = ParserInput
+                .FromString("User")
                 .ParseInput(parser => parser.fieldType());
 
+            this.binderProvider.GetBinder(node.userType()).Returns(this.typeBinder);
+            var userType = Substitute.For<IUserType>();
+            this.typeBinder.Bind<IFieldType>(node.userType(), field).Returns(userType);
+
             // Act
-            this.binder.Bind<FieldType>(fieldTypeContext, field);
+            var type = this.binder.Bind<IFieldType>(node, field);
 
             // Assert
-            field.DidNotReceive().ResolveType(Arg.Any<string>());
+            Assert.Same(userType, type);
         }
     }
 }

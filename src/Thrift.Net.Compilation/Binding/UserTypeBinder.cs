@@ -12,7 +12,7 @@ namespace Thrift.Net.Compilation.Binding
         /// <inheritdoc/>
         protected override IUserType Bind(UserTypeContext node, IField parent)
         {
-            var type = parent.ResolveType2(node.IDENTIFIER().Symbol.Text);
+            var type = parent.ResolveType(node.IDENTIFIER().Symbol.Text);
             if (type == null)
             {
                 type = new UnresolvedType(node, parent, node.IDENTIFIER().Symbol.Text);

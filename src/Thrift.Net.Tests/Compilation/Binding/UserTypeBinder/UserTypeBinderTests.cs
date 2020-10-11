@@ -15,7 +15,7 @@ namespace Thrift.Net.Tests.Compilation.Binding
             var binder = new UserTypeBinder();
             var resolvedType = Substitute.For<INamedTypeSymbol>();
             var field = Substitute.For<IField>();
-            field.ResolveType2("UserType").Returns(resolvedType);
+            field.ResolveType("UserType").Returns(resolvedType);
 
             var node = ParserInput
                 .FromString("UserType")
@@ -34,7 +34,7 @@ namespace Thrift.Net.Tests.Compilation.Binding
             // Arrange
             var binder = new UserTypeBinder();
             var field = Substitute.For<IField>();
-            field.ResolveType2(default).ReturnsForAnyArgs((INamedTypeSymbol)null);
+            field.ResolveType(default).ReturnsForAnyArgs((INamedTypeSymbol)null);
 
             var node = ParserInput
                 .FromString("UserType")

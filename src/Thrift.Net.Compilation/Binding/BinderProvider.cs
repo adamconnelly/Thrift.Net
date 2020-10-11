@@ -18,6 +18,8 @@ namespace Thrift.Net.Compilation.Binding
         private static readonly EnumMemberBinder EnumMemberBinder;
         private static readonly FieldBinder FieldBinder;
         private static readonly FieldTypeBinder FieldTypeBinder;
+        private static readonly BaseTypeBinder BaseTypeBinder;
+        private static readonly UserTypeBinder UserTypeBinder;
         private static readonly BinderProvider ProviderInstance;
 
         static BinderProvider()
@@ -29,7 +31,9 @@ namespace Thrift.Net.Compilation.Binding
             EnumBinder = new EnumBinder(ProviderInstance);
             EnumMemberBinder = new EnumMemberBinder(ProviderInstance);
             FieldBinder = new FieldBinder(StructBinder, ProviderInstance);
-            FieldTypeBinder = new FieldTypeBinder();
+            FieldTypeBinder = new FieldTypeBinder(ProviderInstance);
+            BaseTypeBinder = new BaseTypeBinder();
+            UserTypeBinder = new UserTypeBinder();
         }
 
         private BinderProvider()
@@ -80,6 +84,14 @@ namespace Thrift.Net.Compilation.Binding
             else if (node is FieldTypeContext)
             {
                 return FieldTypeBinder;
+            }
+            else if (node is BaseTypeContext)
+            {
+                return BaseTypeBinder;
+            }
+            else if (node is UserTypeContext)
+            {
+                return UserTypeBinder;
             }
 
             throw new ArgumentException(

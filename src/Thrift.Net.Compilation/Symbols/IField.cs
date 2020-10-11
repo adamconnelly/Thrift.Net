@@ -34,7 +34,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// <summary>
         /// Gets the data type of the field.
         /// </summary>
-        FieldType Type { get; }
+        IFieldType Type { get; }
 
         /// <summary>
         /// Gets a value indicating whether the field Id was generated implicitly,

@@ -18,9 +18,7 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Document
             var resolvedType = document.ResolveType("UserType");
 
             // Assert
-            Assert.True(resolvedType.IsResolved);
-            Assert.Equal("UserType?", resolvedType.CSharpOptionalTypeName);
-            Assert.Equal("UserType", resolvedType.CSharpRequiredTypeName);
+            Assert.Equal("UserType", resolvedType.Name);
         }
 
         [Fact]
@@ -37,9 +35,7 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Document
             var resolvedType = document.ResolveType("User");
 
             // Assert
-            Assert.True(resolvedType.IsResolved);
-            Assert.Equal("User", resolvedType.CSharpOptionalTypeName);
-            Assert.Equal("User", resolvedType.CSharpRequiredTypeName);
+            Assert.Equal("User", resolvedType.Name);
         }
 
         [Fact]
@@ -57,28 +53,6 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Document
 
             // Assert
             Assert.Null(resolvedType);
-        }
-
-        [Fact]
-        public void DocumentHasNamespace_IncludesNamespaceInName()
-        {
-            // Arrange
-            var input =
-@"namespace csharp Thrift.Net.Tests
-enum UserType {}";
-            var document = this.CreateDocumentFromInput(input);
-
-            this.SetupNamespace(
-                document.Node.header().namespaceStatement()[0], "csharp", "Thrift.Net.Tests", document);
-            this.SetupMember(
-                document.Node.definitions().enumDefinition()[0], "UserType", document);
-
-            // Act
-            var resolvedType = document.ResolveType("UserType");
-
-            // Assert
-            Assert.Equal("Thrift.Net.Tests.UserType?", resolvedType.CSharpOptionalTypeName);
-            Assert.Equal("Thrift.Net.Tests.UserType", resolvedType.CSharpRequiredTypeName);
         }
     }
 }

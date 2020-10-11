@@ -77,7 +77,7 @@ namespace Thrift.Net.Compilation.Symbols
 
         private string GetOptionalTypeName()
         {
-            return this.IsStruct ? this.Definition.Name + "?" : this.Definition.Name;
+            return this.IsEnum ? this.Definition.Name + "?" : this.Definition.Name;
         }
     }
 }

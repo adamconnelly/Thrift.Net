@@ -3,7 +3,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a field's type.
     /// </summary>
-    public interface IFieldType
+    public interface IFieldType : ISymbol
     {
         /// <summary>
         /// Gets the name of the type.

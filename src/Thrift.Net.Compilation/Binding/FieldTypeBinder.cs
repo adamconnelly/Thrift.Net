@@ -6,28 +6,32 @@ namespace Thrift.Net.Compilation.Binding
     /// <summary>
     /// Used to bind the type of fields.
     /// </summary>
-    public class FieldTypeBinder : Binder<FieldTypeContext, FieldType, IField>
+    public class FieldTypeBinder : Binder<FieldTypeContext, IFieldType, IField>
     {
-        /// <inheritdoc />
-        protected override FieldType Bind(FieldTypeContext node, IField parent)
+        private readonly IBinderProvider binderProvider;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FieldTypeBinder" /> class.
+        /// </summary>
+        /// <param name="binderProvider">Used to get binders for nodes.</param>
+        public FieldTypeBinder(IBinderProvider binderProvider)
         {
-            var typeName = node.GetText();
-            var baseType = FieldType.ResolveBaseType(typeName);
-            if (baseType != null)
+            this.binderProvider = binderProvider;
+        }
+
+        /// <inheritdoc />
+        protected override IFieldType Bind(FieldTypeContext node, IField parent)
+        {
+            if (node.baseType() != null)
             {
-                return baseType;
+                return this.binderProvider
+                    .GetBinder(node.baseType())
+                    .Bind<IFieldType>(node.baseType(), parent);
             }
 
-            if (typeName.Split('.').Length <= 2)
-            {
-                var userType = parent.ResolveType(typeName);
-                if (userType != null)
-                {
-                    return userType;
-                }
-            }
-
-            return FieldType.CreateUnresolvedType(typeName);
+            return this.binderProvider
+                .GetBinder(node.userType())
+                .Bind<IFieldType>(node.userType(), parent);
         }
     }
 }

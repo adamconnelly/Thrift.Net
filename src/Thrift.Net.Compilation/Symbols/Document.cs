@@ -133,31 +133,7 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public override FieldType ResolveType(string typeName)
-        {
-            var type = this.AllTypes.FirstOrDefault(e => e.Name == typeName);
-            if (type != null)
-            {
-                var requiredTypeName = typeName;
-                if (this.CSharpNamespace != null)
-                {
-                    requiredTypeName = $"{this.CSharpNamespace}.{typeName}";
-                }
-
-                var optionalTypeName = requiredTypeName;
-                if (type is IEnum)
-                {
-                    optionalTypeName += "?";
-                }
-
-                return FieldType.CreateResolvedType(type, typeName, optionalTypeName, requiredTypeName);
-            }
-
-            return null;
-        }
-
-        /// <inheritdoc/>
-        public override INamedTypeSymbol ResolveType2(string typeName)
+        public override INamedTypeSymbol ResolveType(string typeName)
         {
             return this.AllTypes.FirstOrDefault(e => e.Name == typeName);
         }

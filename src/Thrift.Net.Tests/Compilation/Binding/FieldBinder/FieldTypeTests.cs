@@ -34,15 +34,16 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
 
             this.binderProvider.GetBinder(structNode.field()[0].fieldType())
                 .Returns(this.typeBinder);
-            this.typeBinder.Bind<FieldType>(
+            var type = Substitute.For<IFieldType>();
+            this.typeBinder.Bind<IFieldType>(
                 structNode.field()[0].fieldType(), Arg.Any<ISymbol>())
-                .Returns(FieldType.Bool);
+                .Returns(type);
 
             // Act
             var field = this.binder.Bind<Field>(structNode.field()[0], @struct);
 
             // Assert
-            Assert.Same(FieldType.Bool, field.Type);
+            Assert.Same(type, field.Type);
         }
     }
 }

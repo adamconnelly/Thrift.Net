@@ -16,45 +16,45 @@ namespace Thrift.Net.Compilation
             = new Dictionary<string, ThriftTypeGenerationInfo>
         {
             {
-                FieldType.Byte.Name,
+                BaseType.Byte,
                 new ThriftTypeGenerationInfo(
                     "TType.Byte", "ReadByteAsync", "WriteByteAsync")
             },
             {
-                FieldType.I8.Name,
+                BaseType.I8,
                 new ThriftTypeGenerationInfo(
                     "TType.Byte", "ReadByteAsync", "WriteByteAsync")
             },
             {
-                FieldType.I16.Name,
+                BaseType.I16,
                 new ThriftTypeGenerationInfo("TType.I16", "ReadI16Async", "WriteI16Async")
             },
             {
-                FieldType.I32.Name,
+                BaseType.I32,
                 new ThriftTypeGenerationInfo("TType.I32", "ReadI32Async", "WriteI32Async")
             },
             {
-                FieldType.I64.Name,
+                BaseType.I64,
                 new ThriftTypeGenerationInfo("TType.I64", "ReadI64Async", "WriteI64Async")
             },
             {
-                FieldType.Bool.Name,
+                BaseType.Bool,
                 new ThriftTypeGenerationInfo("TType.Bool", "ReadBoolAsync", "WriteBoolAsync")
             },
             {
-                FieldType.Double.Name,
+                BaseType.Double,
                 new ThriftTypeGenerationInfo("TType.Double", "ReadDoubleAsync", "WriteDoubleAsync")
             },
             {
-                FieldType.String.Name,
+                BaseType.String,
                 new ThriftTypeGenerationInfo("TType.String", "ReadStringAsync", "WriteStringAsync")
             },
             {
-                FieldType.Binary.Name,
+                BaseType.Binary,
                 new ThriftTypeGenerationInfo("TType.String", "ReadBinaryAsync", "WriteBinaryAsync")
             },
             {
-                FieldType.SList.Name,
+                BaseType.Slist,
                 new ThriftTypeGenerationInfo("TType.String", "ReadStringAsync", "WriteStringAsync")
             },
         };

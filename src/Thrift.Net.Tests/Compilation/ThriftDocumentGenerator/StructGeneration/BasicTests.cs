@@ -5,15 +5,26 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using NSubstitute;
     using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Tests.Extensions;
+    using Thrift.Net.Tests.Utility;
     using Xunit;
 
     public class BasicTests : ThriftDocumentGeneratorTests
     {
         public static IEnumerable<object[]> GetBaseTypes()
         {
-            return FieldType.BaseTypes.Select(baseType => new[] { baseType });
+            var field = Substitute.For<IField>();
+
+            return BaseType.Names.Select(name => new[]
+            {
+                BaseType.Resolve(
+                    ParserInput
+                        .FromString(name)
+                        .ParseInput(parser => parser.baseType()),
+                    field),
+            });
         }
 
         [Fact]
@@ -74,7 +85,7 @@ struct User {
         [Theory]
         [MemberData(nameof(GetBaseTypes))]
         public void Generate_StructHasFields_GeneratesPropertiesWithCorrectTypes(
-            FieldType type)
+            BaseType type)
         {
             // Arrange
             var input =

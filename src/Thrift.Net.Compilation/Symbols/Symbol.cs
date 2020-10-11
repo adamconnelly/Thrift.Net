@@ -132,15 +132,9 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc />
-        public virtual FieldType ResolveType(string typeName)
+        public virtual INamedTypeSymbol ResolveType(string typeName)
         {
             return this.Parent?.ResolveType(typeName);
-        }
-
-        /// <inheritdoc />
-        public virtual INamedTypeSymbol ResolveType2(string typeName)
-        {
-            return this.Parent?.ResolveType2(typeName);
         }
 
         /// <inheritdoc />

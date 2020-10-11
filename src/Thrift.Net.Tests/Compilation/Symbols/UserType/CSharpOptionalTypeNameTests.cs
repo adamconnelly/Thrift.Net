@@ -8,7 +8,7 @@ namespace Thrift.Net.Tests.Compilation.Symbols.UserType
     public class CSharpOptionalTypeNameTests
     {
         [Fact]
-        public void IsEnum_ReturnsTypeName()
+        public void IsEnum_ReturnsNullableTypeName()
         {
             // Arrange
             var definition = Substitute.For<IEnum>();
@@ -21,7 +21,7 @@ namespace Thrift.Net.Tests.Compilation.Symbols.UserType
             var name = type.CSharpOptionalTypeName;
 
             // Assert
-            Assert.Equal("UserType", name);
+            Assert.Equal("UserType?", name);
         }
 
         [Fact]
@@ -40,11 +40,11 @@ namespace Thrift.Net.Tests.Compilation.Symbols.UserType
             var name = type.CSharpOptionalTypeName;
 
             // Assert
-            Assert.Equal("Thrift.Net.Tests.UserType", name);
+            Assert.Equal("Thrift.Net.Tests.UserType?", name);
         }
 
         [Fact]
-        public void IsStruct_ReturnsNullableTypeName()
+        public void IsStruct_ReturnsTypeName()
         {
             // Arrange
             var definition = Substitute.For<IStruct>();
@@ -57,7 +57,7 @@ namespace Thrift.Net.Tests.Compilation.Symbols.UserType
             var name = type.CSharpOptionalTypeName;
 
             // Assert
-            Assert.Equal("User?", name);
+            Assert.Equal("User", name);
         }
     }
 }

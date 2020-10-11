@@ -1,8 +1,8 @@
 namespace netstd Thrift.Net.Examples
 
 enum UserType {
-    User = 10
-    Administrator = 10
+    User = 1
+    Administrator = 2
 }
 
 struct Address {

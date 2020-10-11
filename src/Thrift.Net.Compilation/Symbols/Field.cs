@@ -65,12 +65,12 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public FieldType Type
+        public IFieldType Type
         {
             get
             {
                 var typeBinder = this.binderProvider.GetBinder(this.Node.fieldType());
-                return typeBinder.Bind<FieldType>(this.Node.fieldType(), this);
+                return typeBinder.Bind<IFieldType>(this.Node.fieldType(), this);
             }
         }
 

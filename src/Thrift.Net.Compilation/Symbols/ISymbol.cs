@@ -73,14 +73,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// </summary>
         /// <param name="typeName">The name of the type to resolve.</param>
         /// <returns>The type, or null if the type could not be resolved.</returns>
-        FieldType ResolveType(string typeName);
-
-        /// <summary>
-        /// Resolves the specified type.
-        /// </summary>
-        /// <param name="typeName">The name of the type to resolve.</param>
-        /// <returns>The type, or null if the type could not be resolved.</returns>
-        INamedTypeSymbol ResolveType2(string typeName);
+        INamedTypeSymbol ResolveType(string typeName);
 
         /// <summary>
         /// Accepts the visitor.

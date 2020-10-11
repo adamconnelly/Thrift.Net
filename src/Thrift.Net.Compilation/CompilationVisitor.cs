@@ -212,9 +212,9 @@ namespace Thrift.Net.Compilation
                 }
             }
 
-            if (field.Type == FieldType.SList)
+            if (field.Type.Name == BaseType.Slist)
             {
-                // A field has been declared using the slist type. For example:
+                // A field has been declared using a deprecated type. For example:
                 // ```
                 // struct User {
                 //     1: slist Username
