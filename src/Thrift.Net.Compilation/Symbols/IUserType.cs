@@ -5,7 +5,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a user-defined type like a struct or enum.
     /// </summary>
-    public interface IUserType : ISymbol<UserTypeContext, IField>, IFieldType
+    public interface IUserType : ISymbol<UserTypeContext, ISymbol>, IFieldType
     {
     }
 }

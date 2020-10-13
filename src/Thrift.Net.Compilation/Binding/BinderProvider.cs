@@ -20,6 +20,7 @@ namespace Thrift.Net.Compilation.Binding
         private static readonly FieldTypeBinder FieldTypeBinder;
         private static readonly BaseTypeBinder BaseTypeBinder;
         private static readonly UserTypeBinder UserTypeBinder;
+        private static readonly ListTypeBinder ListTypeBinder;
         private static readonly BinderProvider ProviderInstance;
 
         static BinderProvider()
@@ -34,6 +35,7 @@ namespace Thrift.Net.Compilation.Binding
             FieldTypeBinder = new FieldTypeBinder(ProviderInstance);
             BaseTypeBinder = new BaseTypeBinder();
             UserTypeBinder = new UserTypeBinder();
+            ListTypeBinder = new ListTypeBinder(ProviderInstance);
         }
 
         private BinderProvider()
@@ -92,6 +94,10 @@ namespace Thrift.Net.Compilation.Binding
             else if (node is UserTypeContext)
             {
                 return UserTypeBinder;
+            }
+            else if (node is ListTypeContext)
+            {
+                return ListTypeBinder;
             }
 
             throw new ArgumentException(

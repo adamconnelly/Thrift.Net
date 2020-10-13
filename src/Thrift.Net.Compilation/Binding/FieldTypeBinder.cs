@@ -6,7 +6,7 @@ namespace Thrift.Net.Compilation.Binding
     /// <summary>
     /// Used to bind the type of fields.
     /// </summary>
-    public class FieldTypeBinder : Binder<FieldTypeContext, IFieldType, IField>
+    public class FieldTypeBinder : Binder<FieldTypeContext, IFieldType, ISymbol>
     {
         private readonly IBinderProvider binderProvider;
 
@@ -20,7 +20,7 @@ namespace Thrift.Net.Compilation.Binding
         }
 
         /// <inheritdoc />
-        protected override IFieldType Bind(FieldTypeContext node, IField parent)
+        protected override IFieldType Bind(FieldTypeContext node, ISymbol parent)
         {
             if (node.baseType() != null)
             {
@@ -29,9 +29,16 @@ namespace Thrift.Net.Compilation.Binding
                     .Bind<IFieldType>(node.baseType(), parent);
             }
 
+            if (node.userType() != null)
+            {
+                return this.binderProvider
+                    .GetBinder(node.userType())
+                    .Bind<IFieldType>(node.userType(), parent);
+            }
+
             return this.binderProvider
-                .GetBinder(node.userType())
-                .Bind<IFieldType>(node.userType(), parent);
+                .GetBinder(node.collectionType().listType())
+                .Bind<IFieldType>(node.collectionType().listType(), parent);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a Thrift Base type (string, bool, i32, etc).
     /// </summary>
-    public class BaseType : Symbol<BaseTypeContext, IField>, IBaseType
+    public class BaseType : Symbol<BaseTypeContext, ISymbol>, IBaseType
     {
         /// <summary>
         /// The name of the byte type.
@@ -80,17 +80,17 @@ namespace Thrift.Net.Compilation.Symbols
         /// Initializes a new instance of the <see cref="BaseType" /> class.
         /// </summary>
         /// <param name="context">The node this symbol is being created from.</param>
-        /// <param name="field">The field that this is the type for.</param>
+        /// <param name="parent">The parent symbol.</param>
         /// <param name="name">The name of the type.</param>
         /// <param name="requiredTypeName">The C# type name to use for required fields.</param>
         /// <param name="optionalTypeName">The C# type name to use for optional fields.</param>
         public BaseType(
             BaseTypeContext context,
-            IField field,
+            ISymbol parent,
             string name,
             string requiredTypeName,
             string optionalTypeName)
-            : base(context, field)
+            : base(context, parent)
         {
             this.Name = name;
             this.CSharpRequiredTypeName = requiredTypeName;
@@ -124,6 +124,9 @@ namespace Thrift.Net.Compilation.Symbols
         /// <inheritdoc />
         public bool IsEnum => false;
 
+        /// <inheritdoc/>
+        public bool IsList => false;
+
         /// <summary>
         /// Resolves the specified node into a base type.
         /// </summary>
@@ -133,7 +136,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// <exception cref="InvalidOperationException">
         /// Thrown if the specified type is unknown.
         /// </exception>
-        public static BaseType Resolve(BaseTypeContext node, IField parent)
+        public static BaseType Resolve(BaseTypeContext node, ISymbol parent)
         {
             return node.typeName.Text switch
             {

@@ -7,10 +7,10 @@ namespace Thrift.Net.Compilation.Binding
     /// Binds a <see cref="FieldTypeContext" /> node to a <see cref="BaseType" />
     /// object.
     /// </summary>
-    public class BaseTypeBinder : Binder<BaseTypeContext, BaseType, IField>
+    public class BaseTypeBinder : Binder<BaseTypeContext, BaseType, ISymbol>
     {
         /// <inheritdoc />
-        protected override BaseType Bind(BaseTypeContext node, IField parent)
+        protected override BaseType Bind(BaseTypeContext node, ISymbol parent)
         {
             return BaseType.Resolve(node, parent);
         }

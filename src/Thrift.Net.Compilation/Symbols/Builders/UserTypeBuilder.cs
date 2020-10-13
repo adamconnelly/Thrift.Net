@@ -5,7 +5,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
     /// <summary>
     /// Builds <see cref="UserType" /> objects.
     /// </summary>
-    public class UserTypeBuilder : SymbolBuilder<UserTypeContext, UserType, IField, UserTypeBuilder>
+    public class UserTypeBuilder : SymbolBuilder<UserTypeContext, UserType, ISymbol, UserTypeBuilder>
     {
         private INamedTypeSymbol definition;
 

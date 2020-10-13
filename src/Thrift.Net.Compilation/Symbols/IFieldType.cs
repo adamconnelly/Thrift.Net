@@ -40,5 +40,10 @@ namespace Thrift.Net.Compilation.Symbols
         /// Gets a value indicating whether the type is an enum.
         /// </summary>
         public bool IsEnum { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the type is a list.
+        /// </summary>
+        public bool IsList { get; }
     }
 }

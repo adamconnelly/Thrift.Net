@@ -7,10 +7,10 @@ namespace Thrift.Net.Compilation.Binding
     /// <summary>
     /// Used to bind <see cref="IUserType" /> objects.
     /// </summary>
-    public class UserTypeBinder : Binder<UserTypeContext, IUserType, IField>
+    public class UserTypeBinder : Binder<UserTypeContext, IUserType, ISymbol>
     {
         /// <inheritdoc/>
-        protected override IUserType Bind(UserTypeContext node, IField parent)
+        protected override IUserType Bind(UserTypeContext node, ISymbol parent)
         {
             var type = parent.ResolveType(node.IDENTIFIER().Symbol.Text);
             if (type == null)

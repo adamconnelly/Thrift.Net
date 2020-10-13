@@ -6,7 +6,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a user-defined type like an enum, struct, etc.
     /// </summary>
-    public class UserType : Symbol<UserTypeContext, IField>, IUserType
+    public class UserType : Symbol<UserTypeContext, ISymbol>, IUserType
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="UserType" /> class.
@@ -16,7 +16,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="definition">The symbol representing the type definition.</param>
         public UserType(
             UserTypeContext node,
-            IField parent,
+            ISymbol parent,
             INamedTypeSymbol definition)
             : base(node, parent)
         {
@@ -74,6 +74,9 @@ namespace Thrift.Net.Compilation.Symbols
 
         /// <inheritdoc/>
         public bool IsBaseType => false;
+
+        /// <inheritdoc/>
+        public bool IsList => false;
 
         private string GetOptionalTypeName()
         {

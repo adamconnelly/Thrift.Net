@@ -1,6 +1,7 @@
 namespace Thrift.Net.Tests.Compilation.ThriftCompiler
 {
     using System.Linq;
+    using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Tests.Extensions;
     using Xunit;
 
@@ -178,6 +179,26 @@ struct User {
                 f => f.Name == "Type");
 
             Assert.Equal("UserType", field.Type.Name);
+        }
+
+        [Fact]
+        public void Compile_StructHasList_ParsesList()
+        {
+            // Arrange
+            var input =
+@"struct User {
+    1: list<string> Emails
+}";
+
+            // Act
+            var result = this.compiler.Compile(input.ToStream());
+
+            // Assert
+            var field = result.Document.Structs.Single().Fields.FirstOrDefault(
+                f => f.Name == "Emails");
+
+            var list = Assert.IsType<ListType>(field.Type);
+            Assert.Equal(BaseType.String, list.ElementType.Name);
         }
     }
 }

@@ -186,23 +186,10 @@ public bool $field.Name$;
 
 generateReadFieldCaseStatement(field, typeMap) ::= <<
 case FieldIds.$field.Name$:
-$if(field.Type.IsBaseType)$
-    if (field.Type == $typeMap.(field.Type.Name).TypeName$)
+    if (field.Type == $getTType(field.Type, typeMap)$)
     {
-        this.$field.Name$ = await protocol.$typeMap.(field.Type.Name).ReadMethodName$(cancellationToken);
+        $generateReadMethod(qualifyWithThis(field.Name), field.Type, typeMap, false)$
     }
-$elseif(field.Type.IsEnum)$
-    if (field.Type == TType.I32)
-    {
-        this.$field.Name$ = ($field.Type.CSharpRequiredTypeName$)await protocol.ReadI32Async(cancellationToken);
-    }
-$else$
-    if (field.Type == TType.Struct)
-    {
-        this.$field.Name$ = new $field.Type.CSharpRequiredTypeName$();
-        await this.$field.Name$.ReadAsync(protocol, cancellationToken);
-    }
-$endif$
     else
     {
         await TProtocolUtil.SkipAsync(protocol, field.Type, cancellationToken);
@@ -211,27 +198,108 @@ $endif$
     break;
 >>
 
+generateReadMethod(variableName, type, typeMap, isNested) ::= <%
+$if(type.IsBaseType)$
+    $generateBaseTypeReadMethod(variableName, type, typeMap, isNested)$
+$elseif(type.IsEnum)$
+    $generateEnumReadMethod(variableName, type, isNested)$
+$elseif(type.IsStruct)$
+    $generateStructReadMethod(variableName, type, isNested)$
+$else$
+    $generateListReadMethod(variableName, type, typeMap, isNested)$
+$endif$
+%>
+
+generateBaseTypeReadMethod(variableName, type, typeMap, isNested) ::= <<
+$if(isNested)$var $endif$$variableName$ = await protocol.$typeMap.(type.Name).ReadMethodName$(cancellationToken);
+>>
+
+generateEnumReadMethod(variableName, type, isNested) ::= <<
+$if(isNested)$var $endif$$variableName$ = ($type.CSharpRequiredTypeName$)await protocol.ReadI32Async(cancellationToken);
+>>
+
+generateStructReadMethod(variableName, type, isNested) ::= <<
+$if(isNested)$var $endif$$variableName$ = new $type.CSharpRequiredTypeName$();
+await $variableName$.ReadAsync(protocol, cancellationToken);
+>>
+
+generateListReadMethod(variableName, type, typeMap, isNested) ::= <<
+var $getListVariableName("listInfo", type.NestingDepth)$ = await protocol.ReadListBeginAsync(cancellationToken);
+$if(isNested)$var $endif$$variableName$ = new $type.CSharpRequiredTypeName$($getListVariableName("listInfo", type.NestingDepth)$.Count);
+
+for (var $getListVariableName("i", type.NestingDepth)$ = 0; $getListVariableName("i", type.NestingDepth)$ < $getListVariableName("listInfo", type.NestingDepth)$.Count; $getListVariableName("i", type.NestingDepth)$++)
+{
+    $generateReadMethod(getListVariableName("element", type.NestingDepth), type.ElementType, typeMap, true)$
+    $variableName$.Add($getListVariableName("element", type.NestingDepth)$);
+}
+
+await protocol.ReadListEndAsync(cancellationToken);
+>>
+
+getTType(type, typeMap) ::= <%
+$if(type.IsBaseType)$
+    $typeMap.(type.Name).TypeName$
+$elseif(type.IsEnum)$
+    TType.I32
+$elseif(type.IsStruct)$
+    TType.Struct
+$else$
+    TType.List
+$endif$
+%>
+
+getListVariableName(name, nestingDepth) ::= <%
+$name$$nestingDepth$
+%>
+
+generateBaseTypeWriteMethod(variableName, type, typeMap) ::= <%
+await protocol.$typeMap.(type.Name).WriteMethodName$($variableName$ ?? default, cancellationToken);
+%>
+
+generateEnumWriteMethod(variableName) ::= <%
+await protocol.WriteI32Async((int)$variableName$, cancellationToken);
+%>
+
+generateStructWriteMethod(variableName) ::= <%
+await $variableName$.WriteAsync(protocol, cancellationToken);
+%>
+
+generateListWriteMethod(variableName, type, typeMap) ::= <<
+await protocol.WriteListBeginAsync(new TList($getTType(type.ElementType, typeMap)$, $variableName$.Count), cancellationToken);
+
+foreach (var $getListVariableName("element", type.NestingDepth)$ in $variableName$)
+{
+    $generateWriteMethod(getListVariableName("element", type.NestingDepth), type.ElementType, typeMap)$
+}
+
+await protocol.WriteListEndAsync(cancellationToken);
+>>
+
+generateWriteMethod(variableName, type, typeMap) ::= <%
+$if(type.IsBaseType)$
+    $generateBaseTypeWriteMethod(variableName, type, typeMap)$
+$elseif(type.IsEnum)$
+    $generateEnumWriteMethod(variableName)$
+$elseif(type.IsStruct)$
+    $generateStructWriteMethod(variableName)$
+$else$
+    $generateListWriteMethod(variableName, type, typeMap)$
+$endif$
+%>
+
+qualifyWithThis(name) ::= <%
+this.$name$
+%>
+
 generateWriteField(field, typeMap) ::= <<
 if (this.$field.Name$ != null && this.IsSet.$field.Name$)
 {
     field.Name = "$field.Name$";
     field.ID = FieldIds.$field.Name$;
-$if(field.Type.IsBaseType)$
-    field.Type = $typeMap.(field.Type.Name).TypeName$;
-$elseif(field.Type.IsEnum)$
-    field.Type = TType.I32;
-$else$
-    field.Type = TType.Struct;
-$endif$
+    field.Type = $getTType(field.Type, typeMap)$;
 
     await protocol.WriteFieldBeginAsync(field, cancellationToken);
-$if(field.Type.IsBaseType)$
-    await protocol.$typeMap.(field.Type.Name).WriteMethodName$(this.$field.Name$ ?? default, cancellationToken);
-$elseif(field.Type.IsEnum)$
-    await protocol.WriteI32Async((int)this.$field.Name$, cancellationToken);
-$else$
-    await this.$field.Name$.WriteAsync(protocol, cancellationToken);
-$endif$
+    $generateWriteMethod(qualifyWithThis(field.Name), field.Type, typeMap)$
     await protocol.WriteFieldEndAsync(cancellationToken);
 }
 >>
