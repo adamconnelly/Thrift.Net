@@ -53,13 +53,15 @@ fieldType: baseType | userType | collectionType;
 baseType: typeName=('bool' | 'byte' | 'i8' | 'i16' | 'i32' | 'i64' | 'double' | 'string' | 'binary' | 'slist');
 userType: IDENTIFIER;
 collectionType: listType;
-listType: 'list' '<' fieldType? '>';
+listType: 'list' LT_OPERATOR fieldType? GT_OPERATOR;
 
 NAMESPACE: 'namespace';
 ENUM: 'enum';
 STRUCT: 'struct';
 REQUIRED: 'required';
 OPTIONAL: 'optional';
+LT_OPERATOR: '<';
+GT_OPERATOR: '>';
 KNOWN_NAMESPACE_SCOPES: '*' | 'c_glib' | 'cpp' | 'csharp' | 'delphi' | 'go' |
     'java' | 'js' | 'lua' | 'netcore' | 'netstd' | 'perl' | 'php' | 'py' |
     'py.twisted' | 'rb' | 'st' | 'xsd';

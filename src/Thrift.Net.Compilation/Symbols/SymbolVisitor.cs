@@ -34,5 +34,10 @@ namespace Thrift.Net.Compilation.Symbols
         public virtual void VisitStruct(IStruct @struct)
         {
         }
+
+        /// <inheritdoc/>
+        public virtual void VisitListType(IListType listType)
+        {
+        }
     }
 }

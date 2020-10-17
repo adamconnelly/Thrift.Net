@@ -40,5 +40,11 @@ namespace Thrift.Net.Compilation.Symbols
         /// </summary>
         /// <param name="struct">The struct to visit.</param>
         void VisitStruct(IStruct @struct);
+
+        /// <summary>
+        /// Visits a list type reference.
+        /// </summary>
+        /// <param name="listType">The list type being referenced by a field.</param>
+        void VisitListType(IListType listType);
     }
 }

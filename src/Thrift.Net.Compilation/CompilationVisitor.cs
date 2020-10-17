@@ -243,6 +243,20 @@ namespace Thrift.Net.Compilation
             base.VisitField(field);
         }
 
+        /// <inheritdoc/>
+        public override void VisitListType(IListType listType)
+        {
+            if (listType.ElementType == null)
+            {
+                this.AddError(
+                    CompilerMessageId.ListMustHaveElementTypeSpecified,
+                    listType.Node.LT_OPERATOR().Symbol,
+                    listType.Node.GT_OPERATOR().Symbol);
+            }
+
+            base.VisitListType(listType);
+        }
+
         private void AddEnumMessages(IEnum enumDefinition)
         {
             if (enumDefinition.Name == null)

@@ -1,5 +1,6 @@
 namespace Thrift.Net.Compilation.Symbols
 {
+    using System.Collections.Generic;
     using Thrift.Net.Compilation.Binding;
     using static Thrift.Net.Antlr.ThriftParser;
 
@@ -76,6 +77,10 @@ namespace Thrift.Net.Compilation.Symbols
 
         /// <inheritdoc/>
         public bool IsFieldIdImplicit { get; }
+
+        /// <inheritdoc/>
+        protected override IReadOnlyCollection<ISymbol> Children =>
+            this.Type != null ? new List<ISymbol> { this.Type } : new List<ISymbol>();
 
         /// <inheritdoc/>
         public override void Accept(ISymbolVisitor visitor)

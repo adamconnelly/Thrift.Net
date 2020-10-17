@@ -79,5 +79,25 @@ CompilerMessageId.StructFieldIdMustBeAPositiveInteger,
 CompilerMessageId.UnknownType,
 "UserType");
         }
+
+        [Fact]
+        public void Compile_ListElementTypeNotSpecified_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"struct User {
+    1: list$<>$ Emails
+}",
+CompilerMessageId.ListMustHaveElementTypeSpecified);
+        }
+
+        [Fact]
+        public void Compile_NestedListElementTypeNotSpecified_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"struct User {
+    1: list<list$<>$> Addresses
+}",
+CompilerMessageId.ListMustHaveElementTypeSpecified);
+        }
     }
 }
