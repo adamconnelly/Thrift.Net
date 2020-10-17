@@ -78,6 +78,13 @@ namespace Thrift.Net.Compilation.Symbols
         /// <inheritdoc/>
         public bool IsList => false;
 
+        /// <inheritdoc/>
+        public override void Accept(ISymbolVisitor visitor)
+        {
+            visitor.VisitUserType(this);
+            base.Accept(visitor);
+        }
+
         private string GetOptionalTypeName()
         {
             return this.IsEnum ? this.Definition.Name + "?" : this.Definition.Name;

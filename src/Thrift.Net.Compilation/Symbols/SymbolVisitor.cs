@@ -39,5 +39,10 @@ namespace Thrift.Net.Compilation.Symbols
         public virtual void VisitListType(IListType listType)
         {
         }
+
+        /// <inheritdoc/>
+        public virtual void VisitUserType(IUserType userType)
+        {
+        }
     }
 }

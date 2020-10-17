@@ -99,5 +99,16 @@ CompilerMessageId.ListMustHaveElementTypeSpecified);
 }",
 CompilerMessageId.ListMustHaveElementTypeSpecified);
         }
+
+        [Fact]
+        public void Compile_ListElementUnresolved_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"struct User {
+    1: list<$PermissionType$> Permissions
+}",
+CompilerMessageId.UnknownType,
+"PermissionType");
+        }
     }
 }

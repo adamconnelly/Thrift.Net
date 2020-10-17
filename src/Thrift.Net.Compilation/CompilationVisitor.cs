@@ -226,20 +226,6 @@ namespace Thrift.Net.Compilation
                     field.Name);
             }
 
-            if (!field.Type.IsResolved)
-            {
-                // A field has referenced a type that doesn't exist. For example:
-                // ```
-                // struct User {
-                //     1: UserType Type
-                // }
-                // ```
-                this.AddError(
-                    CompilerMessageId.UnknownType,
-                    field.Node.fieldType().userType().IDENTIFIER().Symbol,
-                    field.Type.Name);
-            }
-
             base.VisitField(field);
         }
 
@@ -255,6 +241,26 @@ namespace Thrift.Net.Compilation
             }
 
             base.VisitListType(listType);
+        }
+
+        /// <inheritdoc/>
+        public override void VisitUserType(IUserType userType)
+        {
+            if (!userType.IsResolved)
+            {
+                // A field has referenced a type that doesn't exist. For example:
+                // ```
+                // struct User {
+                //     1: UserType Type
+                // }
+                // ```
+                this.AddError(
+                    CompilerMessageId.UnknownType,
+                    userType.Node.IDENTIFIER().Symbol,
+                    userType.Name);
+            }
+
+            base.VisitUserType(userType);
         }
 
         private void AddEnumMessages(IEnum enumDefinition)

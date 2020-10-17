@@ -46,5 +46,11 @@ namespace Thrift.Net.Compilation.Symbols
         /// </summary>
         /// <param name="listType">The list type being referenced by a field.</param>
         void VisitListType(IListType listType);
+
+        /// <summary>
+        /// Visits a reference to a user-defined type.
+        /// </summary>
+        /// <param name="userType">The user type being referenced by a field.</param>
+        void VisitUserType(IUserType userType);
     }
 }
