@@ -171,7 +171,9 @@ public $getFieldType(field)$ $field.Name$
     set
     {
         this.$backingFieldName(field)$ = value;
+        $if(!field.IsRequired)$
         this.isSet.$field.Name$ = value != null;
+        $endif$
     }
 }
 >>
@@ -292,14 +294,18 @@ this.$name$
 %>
 
 generateWriteField(field, typeMap) ::= <<
-if (this.$field.Name$ != null && this.IsSet.$field.Name$)
+$if(field.IsRequired)$$generateWriteFieldInner(field, typeMap)$$else$if (this.$field.Name$ != null && this.IsSet.$field.Name$)
 {
-    field.Name = "$field.Name$";
-    field.ID = FieldIds.$field.Name$;
-    field.Type = $getTType(field.Type, typeMap)$;
+    $generateWriteFieldInner(field, typeMap)$
+}$endif$
+>>
 
-    await protocol.WriteFieldBeginAsync(field, cancellationToken);
-    $generateWriteMethod(qualifyWithThis(field.Name), field.Type, typeMap)$
-    await protocol.WriteFieldEndAsync(cancellationToken);
-}
+generateWriteFieldInner(field, typeMap) ::= <<
+field.Name = "$field.Name$";
+field.ID = FieldIds.$field.Name$;
+field.Type = $getTType(field.Type, typeMap)$;
+
+await protocol.WriteFieldBeginAsync(field, cancellationToken);
+$generateWriteMethod(qualifyWithThis(field.Name), field.Type, typeMap)$
+await protocol.WriteFieldEndAsync(cancellationToken);
 >>
