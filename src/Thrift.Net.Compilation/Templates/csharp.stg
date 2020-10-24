@@ -253,22 +253,35 @@ for (var $getCollectionVariableName("i", type.NestingDepth)$ = 0; $getCollection
 await protocol.ReadSetEndAsync(cancellationToken);
 >>
 
-getTType(type, typeMap) ::= <%
-$if(type.IsBaseType)$
-    $typeMap.(type.Name).TypeName$
-$elseif(type.IsEnum)$
-    TType.I32
-$elseif(type.IsStruct)$
-    TType.Struct
-$elseif(type.IsList)$
-    TType.List
-$else$
-    TType.Set
-$endif$
-%>
+generateWriteField(field, typeMap) ::= <<
+$if(field.IsRequired)$$generateWriteFieldInner(field, typeMap)$$else$if (this.$field.Name$ != null && this.IsSet.$field.Name$)
+{
+    $generateWriteFieldInner(field, typeMap)$
+}$endif$
+>>
 
-getCollectionVariableName(name, nestingDepth) ::= <%
-$name$$nestingDepth$
+generateWriteFieldInner(field, typeMap) ::= <<
+field.Name = "$field.Name$";
+field.ID = FieldIds.$field.Name$;
+field.Type = $getTType(field.Type, typeMap)$;
+
+await protocol.WriteFieldBeginAsync(field, cancellationToken);
+$generateWriteMethod(qualifyWithThis(field.Name), field.Type, typeMap)$
+await protocol.WriteFieldEndAsync(cancellationToken);
+>>
+
+generateWriteMethod(variableName, type, typeMap) ::= <%
+$if(type.IsBaseType)$
+    $generateBaseTypeWriteMethod(variableName, type, typeMap)$
+$elseif(type.IsEnum)$
+    $generateEnumWriteMethod(variableName)$
+$elseif(type.IsStruct)$
+    $generateStructWriteMethod(variableName)$
+$elseif(type.IsList)$
+    $generateListWriteMethod(variableName, type, typeMap)$
+$else$
+    $generateSetWriteMethod(variableName, type, typeMap)$
+$endif$
 %>
 
 generateBaseTypeWriteMethod(variableName, type, typeMap) ::= <%
@@ -306,37 +319,24 @@ foreach (var $getCollectionVariableName("element", type.NestingDepth)$ in $varia
 await protocol.WriteSetEndAsync(cancellationToken);
 >>
 
-generateWriteMethod(variableName, type, typeMap) ::= <%
+getTType(type, typeMap) ::= <%
 $if(type.IsBaseType)$
-    $generateBaseTypeWriteMethod(variableName, type, typeMap)$
+    $typeMap.(type.Name).TypeName$
 $elseif(type.IsEnum)$
-    $generateEnumWriteMethod(variableName)$
+    TType.I32
 $elseif(type.IsStruct)$
-    $generateStructWriteMethod(variableName)$
+    TType.Struct
 $elseif(type.IsList)$
-    $generateListWriteMethod(variableName, type, typeMap)$
+    TType.List
 $else$
-    $generateSetWriteMethod(variableName, type, typeMap)$
+    TType.Set
 $endif$
+%>
+
+getCollectionVariableName(name, nestingDepth) ::= <%
+$name$$nestingDepth$
 %>
 
 qualifyWithThis(name) ::= <%
 this.$name$
 %>
-
-generateWriteField(field, typeMap) ::= <<
-$if(field.IsRequired)$$generateWriteFieldInner(field, typeMap)$$else$if (this.$field.Name$ != null && this.IsSet.$field.Name$)
-{
-    $generateWriteFieldInner(field, typeMap)$
-}$endif$
->>
-
-generateWriteFieldInner(field, typeMap) ::= <<
-field.Name = "$field.Name$";
-field.ID = FieldIds.$field.Name$;
-field.Type = $getTType(field.Type, typeMap)$;
-
-await protocol.WriteFieldBeginAsync(field, cancellationToken);
-$generateWriteMethod(qualifyWithThis(field.Name), field.Type, typeMap)$
-await protocol.WriteFieldEndAsync(cancellationToken);
->>
