@@ -52,5 +52,11 @@ namespace Thrift.Net.Compilation.Symbols
         /// </summary>
         /// <param name="userType">The user type being referenced by a field.</param>
         void VisitUserType(IUserType userType);
+
+        /// <summary>
+        /// Visits a set type reference.
+        /// </summary>
+        /// <param name="setType">The set type being referenced by a field.</param>
+        void VisitSetType(ISetType setType);
     }
 }

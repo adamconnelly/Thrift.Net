@@ -133,6 +133,9 @@
   <data name="TC0206" xml:space="preserve">
     <value>The list must have an element type specified.</value>
   </data>
+  <data name="TC0207" xml:space="preserve">
+    <value>The set must have an element type specified.</value>
+  </data>
   <data name="TC0300" xml:space="preserve">
     <!-- Generic Antlr parsing error - just report the message from Antlr -->
     <value>{0}</value>

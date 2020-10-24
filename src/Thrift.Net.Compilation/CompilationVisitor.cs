@@ -234,6 +234,12 @@ namespace Thrift.Net.Compilation
         {
             if (listType.ElementType == null)
             {
+                // A list has been declared with no element type specified. For example:
+                // ```
+                // struct User {
+                //   1: list<> Emails
+                // }
+                // ```
                 this.AddError(
                     CompilerMessageId.ListMustHaveElementTypeSpecified,
                     listType.Node.LT_OPERATOR().Symbol,
@@ -261,6 +267,26 @@ namespace Thrift.Net.Compilation
             }
 
             base.VisitUserType(userType);
+        }
+
+        /// <inheritdoc/>
+        public override void VisitSetType(ISetType setType)
+        {
+            if (setType.ElementType == null)
+            {
+                // A set has been declared with no element type specified. For example:
+                // ```
+                // struct User {
+                //   1: set<> Emails
+                // }
+                // ```
+                this.AddError(
+                    CompilerMessageId.SetMustHaveElementTypeSpecified,
+                    setType.Node.LT_OPERATOR().Symbol,
+                    setType.Node.GT_OPERATOR().Symbol);
+            }
+
+            base.VisitSetType(setType);
         }
 
         private void AddEnumMessages(IEnum enumDefinition)

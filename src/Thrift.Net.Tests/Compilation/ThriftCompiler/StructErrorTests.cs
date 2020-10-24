@@ -110,5 +110,25 @@ CompilerMessageId.ListMustHaveElementTypeSpecified);
 CompilerMessageId.UnknownType,
 "PermissionType");
         }
+
+        [Fact]
+        public void Compile_SetElementTypeNotSpecified_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"struct User {
+    1: set$<>$ Emails
+}",
+CompilerMessageId.SetMustHaveElementTypeSpecified);
+        }
+
+        [Fact]
+        public void Compile_NestedSetElementTypeNotSpecified_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"struct User {
+    1: set<set$<>$> Emails
+}",
+CompilerMessageId.SetMustHaveElementTypeSpecified);
+        }
     }
 }

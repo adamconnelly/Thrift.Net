@@ -555,6 +555,27 @@ namespace Thrift.Net.Compilation
         ListMustHaveElementTypeSpecified = 206,
 
         /// <summary>
+        /// A set has been declared, but no element type has been specified.
+        /// </summary>
+        /// <example>
+        /// The following example produces this warning:
+        /// <code>
+        /// struct User {
+        ///   1: set&lt;&gt; Emails
+        ///          ^^
+        /// }
+        /// </code>
+        ///
+        /// To fix this issue, specify an element type:
+        /// <code>
+        /// struct User {
+        ///   1: set&lt;string&gt; Emails
+        /// }
+        /// </code>
+        /// </example>
+        SetMustHaveElementTypeSpecified = 207,
+
+        /// <summary>
         /// A syntax error has been reported by the Antlr parser.
         /// </summary>
         /// <example>
