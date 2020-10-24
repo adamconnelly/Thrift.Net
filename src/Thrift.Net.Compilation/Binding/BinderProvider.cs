@@ -21,6 +21,7 @@ namespace Thrift.Net.Compilation.Binding
         private static readonly BaseTypeBinder BaseTypeBinder;
         private static readonly UserTypeBinder UserTypeBinder;
         private static readonly ListTypeBinder ListTypeBinder;
+        private static readonly SetTypeBinder SetTypeBinder;
         private static readonly BinderProvider ProviderInstance;
 
         static BinderProvider()
@@ -36,6 +37,7 @@ namespace Thrift.Net.Compilation.Binding
             BaseTypeBinder = new BaseTypeBinder();
             UserTypeBinder = new UserTypeBinder();
             ListTypeBinder = new ListTypeBinder(ProviderInstance);
+            SetTypeBinder = new SetTypeBinder(ProviderInstance);
         }
 
         private BinderProvider()
@@ -59,6 +61,11 @@ namespace Thrift.Net.Compilation.Binding
         /// </returns>
         public IBinder GetBinder(IParseTree node)
         {
+            if (node is null)
+            {
+                throw new ArgumentNullException(nameof(node));
+            }
+
             if (node is DocumentContext)
             {
                 return DocumentBinder;
@@ -98,6 +105,10 @@ namespace Thrift.Net.Compilation.Binding
             else if (node is ListTypeContext)
             {
                 return ListTypeBinder;
+            }
+            else if (node is SetTypeContext)
+            {
+                return SetTypeBinder;
             }
 
             throw new ArgumentException(

@@ -207,8 +207,10 @@ $elseif(type.IsEnum)$
     $generateEnumReadMethod(variableName, type, isNested)$
 $elseif(type.IsStruct)$
     $generateStructReadMethod(variableName, type, isNested)$
-$else$
+$elseif(type.IsList)$
     $generateListReadMethod(variableName, type, typeMap, isNested)$
+$else$
+    $generateSetReadMethod(variableName, type, typeMap, isNested)$
 $endif$
 %>
 
@@ -226,16 +228,29 @@ await $variableName$.ReadAsync(protocol, cancellationToken);
 >>
 
 generateListReadMethod(variableName, type, typeMap, isNested) ::= <<
-var $getListVariableName("listInfo", type.NestingDepth)$ = await protocol.ReadListBeginAsync(cancellationToken);
-$if(isNested)$var $endif$$variableName$ = new $type.CSharpRequiredTypeName$($getListVariableName("listInfo", type.NestingDepth)$.Count);
+var $getCollectionVariableName("listInfo", type.NestingDepth)$ = await protocol.ReadListBeginAsync(cancellationToken);
+$if(isNested)$var $endif$$variableName$ = new $type.CSharpRequiredTypeName$($getCollectionVariableName("listInfo", type.NestingDepth)$.Count);
 
-for (var $getListVariableName("i", type.NestingDepth)$ = 0; $getListVariableName("i", type.NestingDepth)$ < $getListVariableName("listInfo", type.NestingDepth)$.Count; $getListVariableName("i", type.NestingDepth)$++)
+for (var $getCollectionVariableName("i", type.NestingDepth)$ = 0; $getCollectionVariableName("i", type.NestingDepth)$ < $getCollectionVariableName("listInfo", type.NestingDepth)$.Count; $getCollectionVariableName("i", type.NestingDepth)$++)
 {
-    $generateReadMethod(getListVariableName("element", type.NestingDepth), type.ElementType, typeMap, true)$
-    $variableName$.Add($getListVariableName("element", type.NestingDepth)$);
+    $generateReadMethod(getCollectionVariableName("element", type.NestingDepth), type.ElementType, typeMap, true)$
+    $variableName$.Add($getCollectionVariableName("element", type.NestingDepth)$);
 }
 
 await protocol.ReadListEndAsync(cancellationToken);
+>>
+
+generateSetReadMethod(variableName, type, typeMap, isNested) ::= <<
+var $getCollectionVariableName("setInfo", type.NestingDepth)$ = await protocol.ReadSetBeginAsync(cancellationToken);
+$if(isNested)$var $endif$$variableName$ = new $type.CSharpRequiredTypeName$($getCollectionVariableName("setInfo", type.NestingDepth)$.Count);
+
+for (var $getCollectionVariableName("i", type.NestingDepth)$ = 0; $getCollectionVariableName("i", type.NestingDepth)$ < $getCollectionVariableName("setInfo", type.NestingDepth)$.Count; $getCollectionVariableName("i", type.NestingDepth)$++)
+{
+    $generateReadMethod(getCollectionVariableName("element", type.NestingDepth), type.ElementType, typeMap, true)$
+    $variableName$.Add($getCollectionVariableName("element", type.NestingDepth)$);
+}
+
+await protocol.ReadSetEndAsync(cancellationToken);
 >>
 
 getTType(type, typeMap) ::= <%
@@ -245,16 +260,19 @@ $elseif(type.IsEnum)$
     TType.I32
 $elseif(type.IsStruct)$
     TType.Struct
-$else$
+$elseif(type.IsList)$
     TType.List
+$else$
+    TType.Set
 $endif$
 %>
 
-getListVariableName(name, nestingDepth) ::= <%
+getCollectionVariableName(name, nestingDepth) ::= <%
 $name$$nestingDepth$
 %>
 
 generateBaseTypeWriteMethod(variableName, type, typeMap) ::= <%
+$! TODO: $variableName$ ?? default doesn't work for bool, so probably want to add something to indicate if the type is nullable !$
 await protocol.$typeMap.(type.Name).WriteMethodName$($variableName$ ?? default, cancellationToken);
 %>
 
@@ -269,12 +287,23 @@ await $variableName$.WriteAsync(protocol, cancellationToken);
 generateListWriteMethod(variableName, type, typeMap) ::= <<
 await protocol.WriteListBeginAsync(new TList($getTType(type.ElementType, typeMap)$, $variableName$.Count), cancellationToken);
 
-foreach (var $getListVariableName("element", type.NestingDepth)$ in $variableName$)
+foreach (var $getCollectionVariableName("element", type.NestingDepth)$ in $variableName$)
 {
-    $generateWriteMethod(getListVariableName("element", type.NestingDepth), type.ElementType, typeMap)$
+    $generateWriteMethod(getCollectionVariableName("element", type.NestingDepth), type.ElementType, typeMap)$
 }
 
 await protocol.WriteListEndAsync(cancellationToken);
+>>
+
+generateSetWriteMethod(variableName, type, typeMap) ::= <<
+await protocol.WriteSetBeginAsync(new TSet($getTType(type.ElementType, typeMap)$, $variableName$.Count), cancellationToken);
+
+foreach (var $getCollectionVariableName("element", type.NestingDepth)$ in $variableName$)
+{
+    $generateWriteMethod(getCollectionVariableName("element", type.NestingDepth), type.ElementType, typeMap)$
+}
+
+await protocol.WriteSetEndAsync(cancellationToken);
 >>
 
 generateWriteMethod(variableName, type, typeMap) ::= <%
@@ -284,8 +313,10 @@ $elseif(type.IsEnum)$
     $generateEnumWriteMethod(variableName)$
 $elseif(type.IsStruct)$
     $generateStructWriteMethod(variableName)$
-$else$
+$elseif(type.IsList)$
     $generateListWriteMethod(variableName, type, typeMap)$
+$else$
+    $generateSetWriteMethod(variableName, type, typeMap)$
 $endif$
 %>
 

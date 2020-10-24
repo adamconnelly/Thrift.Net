@@ -1,4 +1,4 @@
-namespace Thrift.Net.Tests.Compilation.Symbols.ListType
+namespace Thrift.Net.Tests.Compilation.Symbols.SetType
 {
     using NSubstitute;
     using Thrift.Net.Compilation.Symbols;
@@ -8,11 +8,11 @@ namespace Thrift.Net.Tests.Compilation.Symbols.ListType
     public class NestingDepthTests
     {
         [Fact]
-        public void TopLevelList_ReturnsNull()
+        public void TopLevelSet_ReturnsNull()
         {
             // Arrange
             var field = Substitute.For<ISymbol>();
-            var type = new ListTypeBuilder()
+            var type = new SetTypeBuilder()
                 .SetParent(field)
                 .Build();
 
@@ -24,11 +24,11 @@ namespace Thrift.Net.Tests.Compilation.Symbols.ListType
         }
 
         [Fact]
-        public void ListIsNested_ReturnsOne()
+        public void SetIsNested_ReturnsOne()
         {
             // Arrange
-            var parent = Substitute.For<IListType>();
-            var type = new ListTypeBuilder()
+            var parent = Substitute.For<ISetType>();
+            var type = new SetTypeBuilder()
                 .SetParent(parent)
                 .Build();
 
@@ -40,14 +40,14 @@ namespace Thrift.Net.Tests.Compilation.Symbols.ListType
         }
 
         [Fact]
-        public void ListIsNestedMultipleLevelsDeep_ReturnsNestingLevel()
+        public void SetIsNestedMultipleLevelsDeep_ReturnsNestingLevel()
         {
             // Arrange
-            // Simulate List<List<List<T>>>
+            // Simulate set<set<set<T>>>
             var field = Substitute.For<IField>();
-            var type = new ListTypeBuilder() // List<>
-                .SetParent(new ListTypeBuilder() // List<List<>>
-                    .SetParent(new ListTypeBuilder() // List<List<List<>>>
+            var type = new SetTypeBuilder() // set<>
+                .SetParent(new SetTypeBuilder() // set<set<>>
+                    .SetParent(new SetTypeBuilder() // set<set<set<>>>
                         .SetParent(field)
                         .Build())
                     .Build())
@@ -64,11 +64,11 @@ namespace Thrift.Net.Tests.Compilation.Symbols.ListType
         public void MixtureOfNestedTypes_ReturnsNestingLevel()
         {
             // Arrange
-            // Simulate list<set<list<T>>>
+            // Simulate set<list<set<T>>>
             var field = Substitute.For<IField>();
-            var type = new ListTypeBuilder() // list<>
-                .SetParent(new SetTypeBuilder() // set<list<>>
-                    .SetParent(new ListTypeBuilder() // list<set<list<>>>
+            var type = new SetTypeBuilder() // set<>
+                .SetParent(new ListTypeBuilder() // list<set<>>
+                    .SetParent(new SetTypeBuilder() // set<list<set<>>>
                         .SetParent(field)
                         .Build())
                     .Build())

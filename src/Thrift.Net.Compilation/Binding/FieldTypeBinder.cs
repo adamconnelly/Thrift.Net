@@ -36,9 +36,16 @@ namespace Thrift.Net.Compilation.Binding
                     .Bind<IFieldType>(node.userType(), parent);
             }
 
+            if (node.collectionType().listType() != null)
+            {
+                return this.binderProvider
+                    .GetBinder(node.collectionType().listType())
+                    .Bind<IFieldType>(node.collectionType().listType(), parent);
+            }
+
             return this.binderProvider
-                .GetBinder(node.collectionType().listType())
-                .Bind<IFieldType>(node.collectionType().listType(), parent);
+                .GetBinder(node.collectionType().setType())
+                .Bind<IFieldType>(node.collectionType().setType(), parent);
         }
     }
 }

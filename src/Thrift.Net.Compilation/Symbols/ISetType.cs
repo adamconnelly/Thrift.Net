@@ -3,9 +3,9 @@ namespace Thrift.Net.Compilation.Symbols
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
-    /// Represents a Thrift list.
+    /// Represents a Thrift set.
     /// </summary>
-    public interface IListType : ISymbol<ListTypeContext, ISymbol>, IFieldType, ICollectionType
+    public interface ISetType : ISymbol<SetTypeContext, ISymbol>, IFieldType, ICollectionType
     {
     }
 }

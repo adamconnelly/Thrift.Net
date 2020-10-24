@@ -79,5 +79,27 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldTypeBinder
             // Assert
             Assert.Same(listType, type);
         }
+
+        [Fact]
+        public void Bind_SetType_ResolvesType()
+        {
+            // Arrange
+            var field = new FieldBuilder().Build();
+            var node = ParserInput
+                .FromString("set<string>")
+                .ParseInput(parser => parser.fieldType());
+
+            this.binderProvider.GetBinder(node.collectionType().setType())
+                .Returns(this.typeBinder);
+            var setType = Substitute.For<ISetType>();
+            this.typeBinder.Bind<IFieldType>(node.collectionType().setType(), field)
+                .Returns(setType);
+
+            // Act
+            var type = this.binder.Bind<IFieldType>(node, field);
+
+            // Assert
+            Assert.Same(setType, type);
+        }
     }
 }

@@ -197,7 +197,27 @@ struct User {
             var field = result.Document.Structs.Single().Fields.FirstOrDefault(
                 f => f.Name == "Emails");
 
-            var list = Assert.IsType<ListType>(field.Type);
+            var list = Assert.IsAssignableFrom<IListType>(field.Type);
+            Assert.Equal(BaseType.String, list.ElementType.Name);
+        }
+
+        [Fact]
+        public void Compile_StructHasSet_ParsesSet()
+        {
+            // Arrange
+            var input =
+@"struct User {
+    1: set<string> Emails
+}";
+
+            // Act
+            var result = this.compiler.Compile(input.ToStream());
+
+            // Assert
+            var field = result.Document.Structs.Single().Fields.FirstOrDefault(
+                f => f.Name == "Emails");
+
+            var list = Assert.IsAssignableFrom<ISetType>(field.Type);
             Assert.Equal(BaseType.String, list.ElementType.Name);
         }
     }

@@ -1,24 +1,23 @@
 namespace Thrift.Net.Compilation.Symbols
 {
     using System;
-    using System.Collections.Generic;
     using Thrift.Net.Compilation.Binding;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
-    /// Represents a Thrift list.
+    /// Represents a Thrift set.
     /// </summary>
-    public class ListType : Symbol<ListTypeContext, ISymbol>, IListType
+    public class SetType : Symbol<SetTypeContext, ISymbol>, ISetType
     {
         private readonly IBinderProvider binderProvider;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ListType" /> class.
+        /// Initializes a new instance of the <see cref="SetType" /> class.
         /// </summary>
-        /// <param name="node">The node the symbol was created from.</param>
-        /// <param name="parent">The parent of this type.</param>
-        /// <param name="binderProvider">Used to get binders.</param>
-        public ListType(ListTypeContext node, ISymbol parent, IBinderProvider binderProvider)
+        /// <param name="node">The node this symbol is bound to.</param>
+        /// <param name="parent">This symbol's parent.</param>
+        /// <param name="binderProvider">Used to bind child symbols.</param>
+        public SetType(SetTypeContext node, ISymbol parent, IBinderProvider binderProvider)
             : base(node, parent)
         {
             this.binderProvider = binderProvider;
@@ -41,7 +40,7 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public string Name => $"list<{this.ElementType?.Name}>";
+        public string Name => $"set<{this.ElementType?.Name}>";
 
         /// <inheritdoc/>
         public bool IsResolved => true;
@@ -62,7 +61,7 @@ namespace Thrift.Net.Compilation.Symbols
         public bool IsEnum => false;
 
         /// <inheritdoc/>
-        public bool IsList => true;
+        public bool IsList => false;
 
         /// <inheritdoc/>
         public int? NestingDepth
@@ -86,22 +85,11 @@ namespace Thrift.Net.Compilation.Symbols
             }
         }
 
-        /// <inheritdoc/>
-        protected override IReadOnlyCollection<ISymbol> Children =>
-            this.ElementType != null ? new List<ISymbol> { this.ElementType } : new List<ISymbol>();
-
-        /// <inheritdoc/>
-        public override void Accept(ISymbolVisitor visitor)
-        {
-            visitor.VisitListType(this);
-            base.Accept(visitor);
-        }
-
         private string GetTypeName()
         {
             if (this.ElementType != null)
             {
-                return $"System.Collections.Generic.List<{this.ElementType.CSharpRequiredTypeName}>";
+                return $"System.Collections.Generic.HashSet<{this.ElementType.CSharpRequiredTypeName}>";
             }
 
             throw new InvalidOperationException("Cannot get the type name because no element type was provided.");

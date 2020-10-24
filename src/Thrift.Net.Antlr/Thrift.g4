@@ -52,8 +52,9 @@ fieldRequiredness: REQUIRED | OPTIONAL;
 fieldType: baseType | userType | collectionType;
 baseType: typeName=('bool' | 'byte' | 'i8' | 'i16' | 'i32' | 'i64' | 'double' | 'string' | 'binary' | 'slist');
 userType: IDENTIFIER;
-collectionType: listType;
+collectionType: listType | setType;
 listType: 'list' LT_OPERATOR fieldType? GT_OPERATOR;
+setType: 'set' LT_OPERATOR fieldType? GT_OPERATOR;
 
 NAMESPACE: 'namespace';
 ENUM: 'enum';
