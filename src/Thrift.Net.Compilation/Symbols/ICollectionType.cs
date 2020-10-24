@@ -3,7 +3,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a collection type, like a list or set.
     /// </summary>
-    public interface ICollectionType
+    public interface ICollectionType : IFieldType
     {
         /// <summary>
         /// Gets the type of element this set contains.

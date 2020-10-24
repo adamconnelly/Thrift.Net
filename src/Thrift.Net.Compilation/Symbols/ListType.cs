@@ -1,16 +1,23 @@
 namespace Thrift.Net.Compilation.Symbols
 {
-    using System;
-    using System.Collections.Generic;
+    using Antlr4.Runtime.Tree;
     using Thrift.Net.Compilation.Binding;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
     /// Represents a Thrift list.
     /// </summary>
-    public class ListType : Symbol<ListTypeContext, ISymbol>, IListType
+    public class ListType : CollectionType<ListTypeContext>, IListType
     {
-        private readonly IBinderProvider binderProvider;
+        /// <summary>
+        /// The Thrift type name for a list.
+        /// </summary>
+        public const string ThriftTypeName = "list";
+
+        /// <summary>
+        /// The C# collection type used to represent a Thrift list.
+        /// </summary>
+        public const string CSharpTypeName = "System.Collections.Generic.List";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ListType" /> class.
@@ -19,76 +26,12 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="parent">The parent of this type.</param>
         /// <param name="binderProvider">Used to get binders.</param>
         public ListType(ListTypeContext node, ISymbol parent, IBinderProvider binderProvider)
-            : base(node, parent)
+            : base(node, parent, binderProvider, ThriftTypeName, CSharpTypeName)
         {
-            this.binderProvider = binderProvider;
         }
 
         /// <inheritdoc/>
-        public IFieldType ElementType
-        {
-            get
-            {
-                if (this.Node.fieldType() != null)
-                {
-                    return this.binderProvider
-                        .GetBinder(this.Node.fieldType())
-                        .Bind<IFieldType>(this.Node.fieldType(), this);
-                }
-
-                return null;
-            }
-        }
-
-        /// <inheritdoc/>
-        public string Name => $"list<{this.ElementType?.Name}>";
-
-        /// <inheritdoc/>
-        public bool IsResolved => true;
-
-        /// <inheritdoc/>
-        public string CSharpOptionalTypeName => this.GetTypeName();
-
-        /// <inheritdoc/>
-        public string CSharpRequiredTypeName => this.GetTypeName();
-
-        /// <inheritdoc/>
-        public bool IsBaseType => false;
-
-        /// <inheritdoc/>
-        public bool IsStruct => false;
-
-        /// <inheritdoc/>
-        public bool IsEnum => false;
-
-        /// <inheritdoc/>
-        public bool IsList => true;
-
-        /// <inheritdoc/>
-        public int? NestingDepth
-        {
-            get
-            {
-                if (this.Parent is ICollectionType)
-                {
-                    var depth = 1;
-                    var parent = this.Parent;
-                    while (parent.Parent is ICollectionType)
-                    {
-                        parent = parent.Parent;
-                        depth++;
-                    }
-
-                    return depth;
-                }
-
-                return null;
-            }
-        }
-
-        /// <inheritdoc/>
-        protected override IReadOnlyCollection<ISymbol> Children =>
-            this.ElementType != null ? new List<ISymbol> { this.ElementType } : new List<ISymbol>();
+        public override bool IsList => true;
 
         /// <inheritdoc/>
         public override void Accept(ISymbolVisitor visitor)
@@ -97,14 +40,10 @@ namespace Thrift.Net.Compilation.Symbols
             base.Accept(visitor);
         }
 
-        private string GetTypeName()
+        /// <inheritdoc/>
+        protected override IParseTree GetElementNode()
         {
-            if (this.ElementType != null)
-            {
-                return $"System.Collections.Generic.List<{this.ElementType.CSharpRequiredTypeName}>";
-            }
-
-            throw new InvalidOperationException("Cannot get the type name because no element type was provided.");
+            return this.Node.fieldType();
         }
     }
 }
