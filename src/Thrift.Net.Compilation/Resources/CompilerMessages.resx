@@ -122,7 +122,7 @@
     <value>Field Id '{0}' has already been used by another field in this struct.</value>
   </data>
   <data name="TC0203" xml:space="preserve">
-    <value>Field Id '{0}' is not valid. Field Ids must be positive integers.</value>
+    <value>Field Id '{0}' is not valid. Please use a positive number.</value>
   </data>
   <data name="TC0204" xml:space="preserve">
     <value>'{0}' uses the `slist` type, which should no-longer be used. Please use the `string` type instead.</value>

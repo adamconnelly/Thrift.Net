@@ -146,5 +146,21 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
             // Assert
             Assert.Null(field.FieldId);
         }
+
+        [Fact]
+        public void Bind_FieldIdZero_SetsFieldIdNull()
+        {
+            // Arrange
+            var @struct = new StructBuilder().Build();
+            var fieldContext = ParserInput
+                .FromString("0: i32 Id")
+                .ParseInput(parser => parser.field());
+
+            // Act
+            var field = this.binder.Bind<Field>(fieldContext, @struct);
+
+            // Assert
+            Assert.Null(field.FieldId);
+        }
     }
 }

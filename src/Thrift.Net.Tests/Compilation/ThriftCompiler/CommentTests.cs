@@ -10,7 +10,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
             var input =
 @"// Represents a User
 struct User {
-    0: i32 Id
+    1: i32 Id
 }";
             this.AssertCompilerDoesNotReturnAnyMessages(input);
         }
@@ -21,7 +21,7 @@ struct User {
             var input =
 @"# Represents a User
 struct User {
-    0: i32 Id
+    1: i32 Id
 }";
             this.AssertCompilerDoesNotReturnAnyMessages(input);
         }
@@ -34,7 +34,7 @@ struct User {
  * Represents a user.
  */
 struct User {
-    0: i32 Id
+    1: i32 Id
 }";
             this.AssertCompilerDoesNotReturnAnyMessages(input);
         }

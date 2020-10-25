@@ -1,6 +1,5 @@
 namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
 {
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.CodeAnalysis;
@@ -8,8 +7,6 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
     using Microsoft.CodeAnalysis.CSharp.Scripting;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Microsoft.CodeAnalysis.Scripting;
-    using Thrift.Net.Compilation.Symbols;
-    using Thrift.Net.Compilation.Symbols.Builders;
     using Thrift.Net.Tests.Extensions;
     using Thrift.Protocol;
     using Xunit;
@@ -108,8 +105,8 @@ struct User {
             // Arrange
             var input =
 @"struct User {
-    0: bool Field1
-    1: bool Field2
+    1: bool Field1
+    2: bool Field2
 }";
             var compilationResult = this.Compiler.Compile(input.ToStream());
 
@@ -139,7 +136,7 @@ return user.IsSet.Field1 == false &&
             // Arrange
             var input =
 @"struct User {
-    0: bool Field1
+    1: bool Field1
 }";
             var compilationResult = this.Compiler.Compile(input.ToStream());
 
@@ -169,7 +166,7 @@ return user.IsSet.Field1;";
             // Arrange
             var input =
 @"struct User {
-    0: bool Field1
+    1: bool Field1
 }";
             var compilationResult = this.Compiler.Compile(input.ToStream());
 

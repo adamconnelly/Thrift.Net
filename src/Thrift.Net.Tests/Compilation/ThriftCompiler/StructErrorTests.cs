@@ -70,6 +70,17 @@ CompilerMessageId.StructFieldIdMustBeAPositiveInteger,
         }
 
         [Fact]
+        public void Compile_FieldIdZero_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"struct User {
+    $0$: string Username
+}",
+CompilerMessageId.StructFieldIdMustBeAPositiveInteger,
+"0");
+        }
+
+        [Fact]
         public void Compile_FieldTypeCannotBeResolved_ReportsError()
         {
             this.AssertCompilerReturnsErrorMessage(

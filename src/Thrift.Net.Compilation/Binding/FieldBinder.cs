@@ -61,7 +61,7 @@ namespace Thrift.Net.Compilation.Binding
             if (node.fieldId != null)
             {
                 if (int.TryParse(node.fieldId.Text, out var fieldId) &&
-                    fieldId >= 0)
+                    fieldId > 0)
                 {
                     return fieldId;
                 }

@@ -3,6 +3,7 @@
 - [Compilation Overview](#compilation-overview).
 - [Explanation of the message format](#message-format).
 - [Full list of messages](#messages).
+- [Differences to official compiler](#differences-to-official-compiler).
 
 ## Compilation Overview
 
@@ -107,3 +108,45 @@ The absolute path to the thrift file that has an error. For example:
 
 The full list of compilation messages can be found in the
 [CompilerMessageId](/src/Thrift.Net.Compilation/CompilerMessageId.cs) enum.
+
+## Differences to Official Compiler
+
+This section documents any deliberate decisions we have taken to vary the
+functionality from the way the official compiler works.
+
+### Negative and Zero Field Ids
+
+The official compiler disallows negative or zero field Ids, meaning that the
+following example is invalid:
+
+```thrift
+struct User {
+  0: string Name
+  -1: string Email
+}
+```
+
+The official compiler outputs a warning for this because it uses negative field
+Ids when no field Id is specified, but it still generates the code, and just
+ignores the field Ids that have been specified.
+
+We are increasing this to the level of an error since it ends up producing code
+that doesn't match the original Thrift IDL.
+
+Here's an example of the message from the official compiler:
+
+```shell
+[WARNING:/data/thrift-samples/structs/User.thrift:9] Nonpositive value (0) not allowed as a field key.
+
+[WARNING:/data/thrift-samples/structs/User.thrift:10] No field key specified for Line1, resulting protocol may have conflicts or not be backwards compatible!
+```
+
+Here's an example of the Thrift.Net message:
+
+```shell
+thrift-samples/structs/User.thrift(9,5-5): Error TC0203: Field Id '0' is not valid. Please use a positive number. [/home/adam/github.com/adamconnelly/thrift.net/thrift-samples/structs/User.thrift]
+```
+
+**NOTE:** the official compiler supports a command-line argument to allow
+non-positive field Ids. At the moment we are taking the decision not to support
+this option unless someone requests it.
