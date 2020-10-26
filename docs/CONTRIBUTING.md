@@ -237,6 +237,7 @@ part of the project that the issue relates to. We have the following components:
 - benchmarks - anything relating to benchmarking or performance analysis.
 - compiler - anthing relating to the Thrift compiler itself.
 - docs - anything relating to our documentation.
+- testing - anything relating to testing.
 
 ## Build Pipelines
 
