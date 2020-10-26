@@ -14,9 +14,11 @@ $endif$
 >>
 
 generateDocument(model, typeMap) ::= <<
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Thrift.Collections;
 using Thrift.Protocol;
 using Thrift.Protocol.Entities;
 using Thrift.Protocol.Utilities;
@@ -44,6 +46,7 @@ $member.Name$ = $member.Value$
 generateStruct(struct, typeMap) ::= <<
 public class $struct.Name$ : TBase
 {
+$if(struct.Fields)$
 $if(struct.OptionalFields)$
     private IsSetInfo isSet;
 $endif$
@@ -61,6 +64,7 @@ $if(struct.OptionalFields)$
 $endif$
     $struct.Fields:generateField(); separator="\n\n"$
 
+$endif$
     /// <inheritdoc />
     public async Task ReadAsync(TProtocol protocol, CancellationToken cancellationToken)
     {
@@ -80,8 +84,10 @@ $endif$
 
                 switch (field.ID)
                 {
+$if(struct.Fields)$
                     $struct.Fields:{field | $generateReadFieldCaseStatement(field, typeMap)$}; separator="\n\n"$
 
+$endif$
                     default: 
                         await TProtocolUtil.SkipAsync(protocol, field.Type, cancellationToken);
 
@@ -108,11 +114,12 @@ $endif$
         {
             var @struct = new TStruct("$struct.Name$");
             await protocol.WriteStructBeginAsync(@struct, cancellationToken);
-
+$if(struct.Fields)$
             var field = new TField();
 
             $struct.Fields:{field | $generateWriteField(field, typeMap)$}; separator="\n\n"$
-      
+
+$endif$      
             await protocol.WriteFieldStopAsync(cancellationToken);
             await protocol.WriteStructEndAsync(cancellationToken);
         }
@@ -120,6 +127,33 @@ $endif$
         {
             protocol.DecrementRecursionDepth();
         }
+    }
+$if(struct.Fields)$
+
+    /// <inheritdoc />
+    public override bool Equals(object obj)
+    {
+        return obj is $struct.Name$ other && this.Equals(other);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+        var hashCode = new HashCode();
+        $struct.Fields:{f | hashCode.Add(this.$f.Name$);}; separator="\n"$
+
+        return hashCode.ToHashCode();
+    }
+
+    private bool Equals($struct.Name$ other)
+    {
+        if (object.ReferenceEquals(this, other))
+        {
+            return true;
+        }
+
+        return other != null &&
+            $struct.Fields:generateEqualsComparison(); separator=" &&\n"$;
     }
 
     /// <summary>
@@ -130,6 +164,7 @@ $endif$
     {
         $struct.Fields:generateFieldId(); separator="\n\n"$
     }
+$endif$
 $if(struct.OptionalFields)$
 
     /// <summary>
@@ -339,4 +374,12 @@ $name$$nestingDepth$
 
 qualifyWithThis(name) ::= <%
 this.$name$
+%>
+
+generateEqualsComparison(field) ::= <%
+$if(field.Type.IsCollection)$
+    TCollections.Equals(this.$field.Name$, other.$field.Name$)
+$else$
+    object.Equals(this.$field.Name$, other.$field.Name$)
+$endif$
 %>

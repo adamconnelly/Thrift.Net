@@ -101,6 +101,9 @@ namespace Thrift.Net.Compilation.Symbols
         public abstract bool IsList { get; }
 
         /// <inheritdoc/>
+        public bool IsCollection => true;
+
+        /// <inheritdoc/>
         protected override IReadOnlyCollection<ISymbol> Children =>
             this.ElementType != null ? new List<ISymbol> { this.ElementType } : new List<ISymbol>();
 

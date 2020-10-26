@@ -79,6 +79,9 @@ namespace Thrift.Net.Compilation.Symbols
         public bool IsList => false;
 
         /// <inheritdoc/>
+        public bool IsCollection => false;
+
+        /// <inheritdoc/>
         public override void Accept(ISymbolVisitor visitor)
         {
             visitor.VisitUserType(this);

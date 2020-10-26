@@ -1,7 +1,7 @@
 namespace netstd Thrift.Net.Examples
 
 enum UserType {
-    User = 1
+    User = 0
     Administrator = 2
 }
 
@@ -13,17 +13,22 @@ struct Address {
     5: string Country
 }
 
+enum PermissionType {
+    Read = 0
+    Write = 1
+    Execute = 2
+}
+
+struct Permission {
+    1: PermissionType Type
+    2: string Name
+}
+
 struct User {
     1: i32 Id
     2: required UserType Type
-    3: Address Address
-    4: PermissionType PermissionType
+    3: list<Address> Addresses
+    4: set<Permission> Permissions
     5: UserType SecondaryType
-    // 5: Unknown Unknown
-}
-
-enum PermissionType {
-    Read
-    Write
-    Execute
+    6: set<string> Emails
 }

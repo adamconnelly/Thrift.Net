@@ -45,5 +45,10 @@ namespace Thrift.Net.Compilation.Symbols
         /// Gets a value indicating whether the type is a list.
         /// </summary>
         public bool IsList { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the type is a collection.
+        /// </summary>
+        public bool IsCollection { get; }
     }
 }

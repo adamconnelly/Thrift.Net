@@ -127,6 +127,9 @@ namespace Thrift.Net.Compilation.Symbols
         /// <inheritdoc/>
         public bool IsList => false;
 
+        /// <inheritdoc/>
+        public bool IsCollection => false;
+
         /// <summary>
         /// Resolves the specified node into a base type.
         /// </summary>
