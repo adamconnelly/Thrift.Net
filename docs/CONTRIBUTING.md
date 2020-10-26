@@ -14,6 +14,7 @@ change.
   - [Making Feature Requests](#making-feature-requests)
   - [Reporting Bugs](#reporting-bugs)
   - [Pull Requests](#pull-requests)
+- [Branches](#branches)
 - [Getting Started](#getting-started)
   - [Development environment](#development-environment)
 - [Installing NPM Packages](#installing-npm-packages)
@@ -67,6 +68,11 @@ as a result of feedback.
 Where possible we prefer smaller, more focused commits to make sure that changes
 are easier to review. This isn't always possible, but any attempts you can make
 to keep your changes small and focused will definitely be appreciated!
+
+## Branches
+
+The main development branch for this project is called `main`. Any pull requests
+should target the `main` branch.
 
 ## Getting Started
 

@@ -1,10 +1,10 @@
 trigger:
-- master
+- main
 
 pr:
   branches:
     include:
-    - master
+    - main
   paths:
     include:
     # Only run the pipeline if something in the src folder or this pipeline definition

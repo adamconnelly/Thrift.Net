@@ -1,6 +1,6 @@
 # Thrift.Net
 
-[![Build Status](https://dev.azure.com/adamrpconnelly/Thrift.Net/_apis/build/status/Build%20and%20Run%20Tests?branchName=master)](https://dev.azure.com/adamrpconnelly/Thrift.Net/_build/latest?definitionId=3&branchName=master)
+[![Build Status](https://dev.azure.com/adamrpconnelly/Thrift.Net/_apis/build/status/Build%20and%20Run%20Tests?branchName=main)](https://dev.azure.com/adamrpconnelly/Thrift.Net/_build/latest?definitionId=3&branchName=main)
 
 The aim of the Thrift.Net project is to create an implementation of the
 [Thrift](https://thrift.apache.org/) compiler and runtime library in C#,
