@@ -244,8 +244,10 @@ $elseif(type.IsStruct)$
     $generateStructReadMethod(variableName, type, isNested)$
 $elseif(type.IsList)$
     $generateListReadMethod(variableName, type, typeMap, isNested)$
-$else$
+$elseif(type.IsSet)$
     $generateSetReadMethod(variableName, type, typeMap, isNested)$
+$else$
+    $generateMapReadMethod(variableName, type, typeMap, isNested)$
 $endif$
 %>
 
@@ -288,6 +290,22 @@ for (var $getCollectionVariableName("i", type.NestingDepth)$ = 0; $getCollection
 await protocol.ReadSetEndAsync(cancellationToken);
 >>
 
+generateMapReadMethod(variableName, type, typeMap, isNested) ::= <<
+var $getCollectionVariableName("mapInfo", type.NestingDepth)$ = await protocol.ReadMapBeginAsync(cancellationToken);
+$if(isNested)$var $endif$$variableName$ = new $type.CSharpRequiredTypeName$($getCollectionVariableName("mapInfo", type.NestingDepth)$.Count);
+
+for (var $getCollectionVariableName("i", type.NestingDepth)$ = 0; $getCollectionVariableName("i", type.NestingDepth)$ < $getCollectionVariableName("mapInfo", type.NestingDepth)$.Count; $getCollectionVariableName("i", type.NestingDepth)$++)
+{
+    $generateReadMethod(getCollectionVariableName("key", type.NestingDepth), type.KeyType, typeMap, true)$
+
+    $generateReadMethod(getCollectionVariableName("value", type.NestingDepth), type.ValueType, typeMap, true)$
+    
+    $variableName$[$getCollectionVariableName("key", type.NestingDepth)$] = $getCollectionVariableName("value", type.NestingDepth)$;
+}
+
+await protocol.ReadMapEndAsync(cancellationToken);
+>>
+
 generateWriteField(field, typeMap) ::= <<
 $if(field.IsRequired)$$generateWriteFieldInner(field, typeMap)$$else$if (this.$field.Name$ != null && this.IsSet.$field.Name$)
 {
@@ -314,8 +332,10 @@ $elseif(type.IsStruct)$
     $generateStructWriteMethod(variableName)$
 $elseif(type.IsList)$
     $generateListWriteMethod(variableName, type, typeMap)$
-$else$
+$elseif(type.IsSet)$
     $generateSetWriteMethod(variableName, type, typeMap)$
+$else$
+    $generateMapWriteMethod(variableName, type, typeMap)$
 $endif$
 %>
 
@@ -354,6 +374,19 @@ foreach (var $getCollectionVariableName("element", type.NestingDepth)$ in $varia
 await protocol.WriteSetEndAsync(cancellationToken);
 >>
 
+generateMapWriteMethod(variableName, type, typeMap) ::= <<
+await protocol.WriteMapBeginAsync(new TMap($getTType(type.KeyType, typeMap)$, $getTType(type.ValueType, typeMap)$, $variableName$.Count), cancellationToken);
+
+foreach (var $getCollectionVariableName("pair", type.NestingDepth)$ in $variableName$)
+{
+    $generateWriteMethod(getKeyVariableName("pair", type.NestingDepth), type.KeyType, typeMap)$
+
+    $generateWriteMethod(getValueVariableName("pair", type.NestingDepth), type.ValueType, typeMap)$
+}
+
+await protocol.WriteMapEndAsync(cancellationToken);
+>>
+
 getTType(type, typeMap) ::= <%
 $if(type.IsBaseType)$
     $typeMap.(type.Name).TypeName$
@@ -363,14 +396,24 @@ $elseif(type.IsStruct)$
     TType.Struct
 $elseif(type.IsList)$
     TType.List
-$else$
+$elseif(type.IsSet)$
     TType.Set
+$else$
+    TType.Map
 $endif$
 %>
 
 getCollectionVariableName(name, nestingDepth) ::= <%
 $name$$nestingDepth$
 %>
+
+getKeyVariableName(variableName, nestingDepth) ::= <<
+$getCollectionVariableName(variableName, nestingDepth)$.Key
+>>
+
+getValueVariableName(variableName, nestingDepth) ::= <<
+$getCollectionVariableName(variableName, nestingDepth)$.Value
+>>
 
 qualifyWithThis(name) ::= <%
 this.$name$

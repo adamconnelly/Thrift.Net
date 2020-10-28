@@ -130,6 +130,12 @@ namespace Thrift.Net.Compilation.Symbols
         /// <inheritdoc/>
         public bool IsCollection => false;
 
+        /// <inheritdoc/>
+        public bool IsSet => false;
+
+        /// <inheritdoc/>
+        public bool IsMap => false;
+
         /// <summary>
         /// Resolves the specified node into a base type.
         /// </summary>

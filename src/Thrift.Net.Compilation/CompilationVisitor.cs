@@ -84,7 +84,7 @@ namespace Thrift.Net.Compilation
                 }
             }
 
-            if (@namespace.Node.separator != null)
+            if (@namespace.Node.listSeparator() != null)
             {
                 // The namespace statement includes a list separator, which is
                 // not allowed. For example:
@@ -92,10 +92,12 @@ namespace Thrift.Net.Compilation
                 // namespace csharp Thrift.Net.Examples,
                 // namespace netstd Thrift.Net.Examples;
                 // ```
+                var separator = @namespace.Node.listSeparator().SEMICOLON() ??
+                    @namespace.Node.listSeparator().COMMA();
                 this.AddError(
                     CompilerMessageId.NamespaceStatementTerminatedBySeparator,
-                    @namespace.Node.separator,
-                    @namespace.Node.separator.Text);
+                    separator.Symbol,
+                    separator.GetText());
             }
 
             base.VisitNamespace(@namespace);

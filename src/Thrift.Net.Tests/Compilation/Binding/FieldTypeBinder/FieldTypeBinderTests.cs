@@ -1,5 +1,6 @@
 namespace Thrift.Net.Tests.Compilation.Binding.FieldTypeBinder
 {
+    using System;
     using NSubstitute;
     using Thrift.Net.Compilation.Binding;
     using Thrift.Net.Compilation.Symbols;
@@ -100,6 +101,41 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldTypeBinder
 
             // Assert
             Assert.Same(setType, type);
+        }
+
+        [Fact]
+        public void Bind_MapType_ResolvesType()
+        {
+            // Arrange
+            var field = new FieldBuilder().Build();
+            var node = ParserInput
+                .FromString("map<string, string>")
+                .ParseInput(parser => parser.fieldType());
+
+            this.binderProvider.GetBinder(node.collectionType().mapType())
+                .Returns(this.typeBinder);
+            var mapType = Substitute.For<IMapType>();
+            this.typeBinder.Bind<IFieldType>(node.collectionType().mapType(), field)
+                .Returns(mapType);
+
+            // Act
+            var type = this.binder.Bind<IFieldType>(node, field);
+
+            // Assert
+            Assert.Same(mapType, type);
+        }
+
+        [Fact]
+        public void Bind_UnknownType_ThrowsException()
+        {
+            // Arrange
+            var field = new FieldBuilder().Build();
+            var node = ParserInput
+                .FromString("12345")
+                .ParseInput(parser => parser.fieldType());
+
+            // Act / Assert
+            Assert.Throws<ArgumentException>(() => this.binder.Bind<IFieldType>(node, field));
         }
     }
 }

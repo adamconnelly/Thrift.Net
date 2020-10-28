@@ -1,5 +1,6 @@
 namespace Thrift.Net.Compilation.Binding
 {
+    using System;
     using Thrift.Net.Compilation.Symbols;
     using static Thrift.Net.Antlr.ThriftParser;
 
@@ -36,16 +37,28 @@ namespace Thrift.Net.Compilation.Binding
                     .Bind<IFieldType>(node.userType(), parent);
             }
 
-            if (node.collectionType().listType() != null)
+            if (node.collectionType()?.listType() != null)
             {
                 return this.binderProvider
                     .GetBinder(node.collectionType().listType())
                     .Bind<IFieldType>(node.collectionType().listType(), parent);
             }
 
-            return this.binderProvider
-                .GetBinder(node.collectionType().setType())
-                .Bind<IFieldType>(node.collectionType().setType(), parent);
+            if (node.collectionType()?.setType() != null)
+            {
+                return this.binderProvider
+                    .GetBinder(node.collectionType().setType())
+                    .Bind<IFieldType>(node.collectionType().setType(), parent);
+            }
+
+            if (node.collectionType()?.mapType() != null)
+            {
+                return this.binderProvider
+                    .GetBinder(node.collectionType().mapType())
+                    .Bind<IFieldType>(node.collectionType().mapType(), parent);
+            }
+
+            throw new ArgumentException("The node could not be bound to a field type symbol.", nameof(node));
         }
     }
 }

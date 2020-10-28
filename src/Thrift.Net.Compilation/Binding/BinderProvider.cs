@@ -22,6 +22,7 @@ namespace Thrift.Net.Compilation.Binding
         private static readonly UserTypeBinder UserTypeBinder;
         private static readonly ListTypeBinder ListTypeBinder;
         private static readonly SetTypeBinder SetTypeBinder;
+        private static readonly MapTypeBinder MapTypeBinder;
         private static readonly BinderProvider ProviderInstance;
 
         static BinderProvider()
@@ -37,6 +38,7 @@ namespace Thrift.Net.Compilation.Binding
             BaseTypeBinder = new BaseTypeBinder();
             UserTypeBinder = new UserTypeBinder();
             ListTypeBinder = new ListTypeBinder(ProviderInstance);
+            MapTypeBinder = new MapTypeBinder(ProviderInstance);
             SetTypeBinder = new SetTypeBinder(ProviderInstance);
         }
 
@@ -109,6 +111,10 @@ namespace Thrift.Net.Compilation.Binding
             else if (node is SetTypeContext)
             {
                 return SetTypeBinder;
+            }
+            else if (node is MapTypeContext)
+            {
+                return MapTypeBinder;
             }
 
             throw new ArgumentException(

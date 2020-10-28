@@ -82,6 +82,12 @@ namespace Thrift.Net.Compilation.Symbols
         public bool IsCollection => false;
 
         /// <inheritdoc/>
+        public bool IsSet => false;
+
+        /// <inheritdoc/>
+        public bool IsMap => false;
+
+        /// <inheritdoc/>
         public override void Accept(ISymbolVisitor visitor)
         {
             visitor.VisitUserType(this);

@@ -7,5 +7,9 @@ namespace Thrift.Net.Compilation.Symbols
     /// </summary>
     public interface ISetType : ISymbol<SetTypeContext, ISymbol>, ICollectionType
     {
+        /// <summary>
+        /// Gets the type of element this set contains.
+        /// </summary>
+        IFieldType ElementType { get; }
     }
 }

@@ -37,7 +37,9 @@ namespace Thrift.Net.Compilation.Symbols
             this.csharpCollectionTypeName = csharpCollectionTypeName;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Gets the type of the collection's element.
+        /// </summary>
         public IFieldType ElementType
         {
             get
@@ -98,10 +100,16 @@ namespace Thrift.Net.Compilation.Symbols
         public bool IsEnum => false;
 
         /// <inheritdoc/>
-        public abstract bool IsList { get; }
+        public bool IsList => this is IListType;
 
         /// <inheritdoc/>
         public bool IsCollection => true;
+
+        /// <inheritdoc/>
+        public bool IsSet => this is ISetType;
+
+        /// <inheritdoc/>
+        public bool IsMap => false;
 
         /// <inheritdoc/>
         protected override IReadOnlyCollection<ISymbol> Children =>

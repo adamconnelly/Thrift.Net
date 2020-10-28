@@ -217,8 +217,29 @@ struct User {
             var field = result.Document.Structs.Single().Fields.FirstOrDefault(
                 f => f.Name == "Emails");
 
-            var list = Assert.IsAssignableFrom<ISetType>(field.Type);
-            Assert.Equal(BaseType.String, list.ElementType.Name);
+            var set = Assert.IsAssignableFrom<ISetType>(field.Type);
+            Assert.Equal(BaseType.String, set.ElementType.Name);
+        }
+
+        [Fact]
+        public void Compile_StructHasMap_ParsesSet()
+        {
+            // Arrange
+            var input =
+@"struct User {
+    1: map<string, PermissionType> Permissions
+}";
+
+            // Act
+            var result = this.compiler.Compile(input.ToStream());
+
+            // Assert
+            var field = result.Document.Structs.Single().Fields.FirstOrDefault(
+                f => f.Name == "Permissions");
+
+            var map = Assert.IsAssignableFrom<IMapType>(field.Type);
+            Assert.Equal(BaseType.String, map.KeyType.Name);
+            Assert.Equal("PermissionType", map.ValueType.Name);
         }
     }
 }

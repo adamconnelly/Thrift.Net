@@ -19,6 +19,11 @@ enum PermissionType {
     Execute = 2
 }
 
+enum PhoneType {
+    Home,
+    Mobile
+}
+
 struct Permission {
     1: PermissionType Type
     2: string Name
@@ -31,4 +36,5 @@ struct User {
     4: set<Permission> Permissions
     5: UserType SecondaryType
     6: set<string> Emails
+    7: map<PhoneType, string> PhoneNumbers
 }

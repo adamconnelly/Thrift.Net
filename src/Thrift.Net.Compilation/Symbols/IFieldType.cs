@@ -47,6 +47,16 @@ namespace Thrift.Net.Compilation.Symbols
         public bool IsList { get; }
 
         /// <summary>
+        /// Gets a value indicating whether the type is a set.
+        /// </summary>
+        public bool IsSet { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the type is a map.
+        /// </summary>
+        public bool IsMap { get; }
+
+        /// <summary>
         /// Gets a value indicating whether the type is a collection.
         /// </summary>
         public bool IsCollection { get; }

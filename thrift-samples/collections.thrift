@@ -20,4 +20,6 @@ struct User {
     6: set<string> PhoneNumbers,
     7: set<PermissionType> Permissions
     8: set<list<set<bool>>> NestedSet
+    9: map<string, bool> Map
+    10: map<set<string>, map<string, PermissionType>> NestedMap
 }

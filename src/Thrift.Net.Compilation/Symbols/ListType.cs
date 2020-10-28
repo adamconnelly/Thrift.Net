@@ -31,9 +31,6 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public override bool IsList => true;
-
-        /// <inheritdoc/>
         public override void Accept(ISymbolVisitor visitor)
         {
             visitor.VisitListType(this);
