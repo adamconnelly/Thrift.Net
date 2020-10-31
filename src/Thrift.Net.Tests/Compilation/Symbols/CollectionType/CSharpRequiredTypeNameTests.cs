@@ -30,7 +30,7 @@ namespace Thrift.Net.Tests.Compilation.Symbols.CollectionType
         }
 
         [Fact]
-        public void ElementNotSpecified_ThrowsException()
+        public void CSharpRequiredTypeName_ElementNotSpecified_ThrowsException()
         {
             // Arrange
             var (elementNode, collectionType) = this.ParseInput($"{this.collectionTypeName}<>");

@@ -7,7 +7,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a Thrift list.
     /// </summary>
-    public class ListType : CollectionType<ListTypeContext>, IListType
+    public class ListType : ListOrSetType<ListTypeContext>, IListType
     {
         /// <summary>
         /// The Thrift type name for a list.
@@ -26,7 +26,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="parent">The parent of this type.</param>
         /// <param name="binderProvider">Used to get binders.</param>
         public ListType(ListTypeContext node, ISymbol parent, IBinderProvider binderProvider)
-            : base(node, parent, binderProvider, ThriftTypeName, CSharpTypeName)
+            : base(node, parent, binderProvider, CSharpTypeName)
         {
         }
 

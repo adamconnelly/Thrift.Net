@@ -29,7 +29,7 @@ namespace Thrift.Net.Tests.Compilation.Symbols.CollectionType
         }
 
         [Fact]
-        public void ElementNotSpecified_DoesNotIncludeElementTypeInName()
+        public void Name_ElementNotSpecified_DoesNotIncludeElementTypeInName()
         {
             // Arrange
             var (elementNode, listType) = this.ParseInput($"{this.collectionTypeName}<>");

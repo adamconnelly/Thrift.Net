@@ -16,7 +16,7 @@ namespace Thrift.Net.Tests.Compilation.Symbols.ListType
         protected override (IParseTree elementNode, ICollectionType collectionType) ParseInput(string input)
         {
             var node = ParserInput
-                .FromString("list<string>")
+                .FromString(input)
                 .ParseInput(parser => parser.listType());
 
             var listType = new ListTypeBuilder()

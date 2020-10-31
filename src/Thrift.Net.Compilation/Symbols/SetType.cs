@@ -7,7 +7,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a Thrift set.
     /// </summary>
-    public class SetType : CollectionType<SetTypeContext>, ISetType
+    public class SetType : ListOrSetType<SetTypeContext>, ISetType
     {
         /// <summary>
         /// The Thrift type name for a set.
@@ -26,7 +26,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// <param name="parent">This symbol's parent.</param>
         /// <param name="binderProvider">Used to bind child symbols.</param>
         public SetType(SetTypeContext node, ISymbol parent, IBinderProvider binderProvider)
-            : base(node, parent, binderProvider, ThriftTypeName, CSharpTypeName)
+            : base(node, parent, binderProvider, CSharpTypeName)
         {
         }
 

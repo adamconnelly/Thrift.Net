@@ -5,11 +5,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a Thrift list.
     /// </summary>
-    public interface IListType : ISymbol<ListTypeContext, ISymbol>, ICollectionType
+    public interface IListType : ISymbol<ListTypeContext, ISymbol>, IListOrSetType
     {
-        /// <summary>
-        /// Gets the type of element this set contains.
-        /// </summary>
-        IFieldType ElementType { get; }
     }
 }

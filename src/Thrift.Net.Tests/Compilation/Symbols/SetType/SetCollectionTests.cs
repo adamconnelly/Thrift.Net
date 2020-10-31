@@ -16,7 +16,7 @@ namespace Thrift.Net.Tests.Compilation.Symbols.SetType
         protected override (IParseTree elementNode, ICollectionType collectionType) ParseInput(string input)
         {
             var node = ParserInput
-                .FromString("set<string>")
+                .FromString(input)
                 .ParseInput(parser => parser.setType());
 
             var setType = new SetTypeBuilder()
