@@ -34,8 +34,13 @@ jobs:
     inputs:
       command: 'install'
 
-  - script: 'npx commitlint --config "commitlint-ci.config.js" --from `git rev-parse $TARGET_BRANCH` --to `git rev-parse $SOURCE_BRANCH`'
+  - script: |
+      # When building a PR, the HEAD commit is actually a merge commit for the
+      # merge between the PR branch and the target branch. Because of this we
+      # want to ignore this merge commit and look at the previous commit.
+      SOURCE_COMMIT=`git rev-parse @^2`
+
+      npx commitlint --config "commitlint-ci.config.js" --from `git rev-parse $TARGET_BRANCH` --to "$SOURCE_COMMIT"
     displayName: 'Lint Commit Messages'
     env:
-      SOURCE_BRANCH: 'origin/$(System.PullRequest.SourceBranch)'
       TARGET_BRANCH: 'origin/$(System.PullRequest.TargetBranch)'
