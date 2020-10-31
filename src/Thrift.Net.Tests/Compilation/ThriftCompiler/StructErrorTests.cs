@@ -91,13 +91,15 @@ CompilerMessageId.UnknownType,
 "UserType");
         }
 
-        [Fact]
-        public void Compile_ListElementTypeNotSpecified_ReportsError()
+        [Theory]
+        [InlineData("$list$")]
+        [InlineData("$list<>$")]
+        public void Compile_ListElementTypeNotSpecified_ReportsError(string scenario)
         {
             this.AssertCompilerReturnsErrorMessage(
-@"struct User {
-    1: list$<>$ Emails
-}",
+$@"struct User {{
+    1: {scenario} Emails
+}}",
 CompilerMessageId.ListMustHaveElementTypeSpecified);
         }
 
@@ -106,7 +108,7 @@ CompilerMessageId.ListMustHaveElementTypeSpecified);
         {
             this.AssertCompilerReturnsErrorMessage(
 @"struct User {
-    1: list<list$<>$> Addresses
+    1: list<$list<>$> Addresses
 }",
 CompilerMessageId.ListMustHaveElementTypeSpecified);
         }
@@ -122,13 +124,15 @@ CompilerMessageId.UnknownType,
 "PermissionType");
         }
 
-        [Fact]
-        public void Compile_SetElementTypeNotSpecified_ReportsError()
+        [Theory]
+        [InlineData("$set$")]
+        [InlineData("$set<>$")]
+        public void Compile_SetElementTypeNotSpecified_ReportsError(string scenario)
         {
             this.AssertCompilerReturnsErrorMessage(
-@"struct User {
-    1: set$<>$ Emails
-}",
+$@"struct User {{
+    1: {scenario} Emails
+}}",
 CompilerMessageId.SetMustHaveElementTypeSpecified);
         }
 
@@ -137,9 +141,62 @@ CompilerMessageId.SetMustHaveElementTypeSpecified);
         {
             this.AssertCompilerReturnsErrorMessage(
 @"struct User {
-    1: set<set$<>$> Emails
+    1: set<$set<>$> Emails
 }",
 CompilerMessageId.SetMustHaveElementTypeSpecified);
+        }
+
+        [Fact]
+        public void Compile_MapKeyTypeNotSpecified_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"struct User {
+    1: $map<, string>$ Emails
+}",
+CompilerMessageId.MapMustHaveKeyTypeSpecified);
+        }
+
+        [Fact]
+        public void Compile_NestedMapKeyTypeNotSpecified_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"struct User {
+    1: map<$map<, string>$, bool> Emails
+}",
+CompilerMessageId.MapMustHaveKeyTypeSpecified);
+        }
+
+        [Fact]
+        public void Compile_MapValueTypeNotSpecified_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"struct User {
+    1: $map<EmailType, >$ Emails
+}",
+CompilerMessageId.MapMustHaveValueTypeSpecified);
+        }
+
+        [Fact]
+        public void Compile_NestedMapValueTypeNotSpecified_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+@"struct User {
+    1: map<bool, $map<EmailType, >$> Emails
+}",
+CompilerMessageId.MapMustHaveValueTypeSpecified);
+        }
+
+        [Theory]
+        [InlineData("$map<>$")]
+        [InlineData("$map<,>$")]
+        [InlineData("$map$")]
+        public void Compile_MapKeyAndValueTypeNotSpecified_ReportsError(string scenario)
+        {
+            this.AssertCompilerReturnsErrorMessage(
+$@"struct User {{
+    1: {scenario} Emails
+}}",
+CompilerMessageId.MapMustHaveKeyAndValueTypeSpecified);
         }
     }
 }

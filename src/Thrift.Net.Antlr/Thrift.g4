@@ -54,9 +54,9 @@ fieldType: baseType | userType | collectionType;
 baseType: typeName=('bool' | 'byte' | 'i8' | 'i16' | 'i32' | 'i64' | 'double' | 'string' | 'binary' | 'slist');
 userType: IDENTIFIER;
 collectionType: listType | setType | mapType;
-listType: 'list' LT_OPERATOR fieldType? GT_OPERATOR;
-setType: 'set' LT_OPERATOR fieldType? GT_OPERATOR;
-mapType: 'map' LT_OPERATOR keyType=fieldType? COMMA valueType=fieldType? GT_OPERATOR;
+listType: LIST LT_OPERATOR? fieldType? GT_OPERATOR?;
+setType: SET LT_OPERATOR? fieldType? GT_OPERATOR?;
+mapType: MAP LT_OPERATOR? keyType=fieldType? COMMA? valueType=fieldType? GT_OPERATOR?;
 
 listSeparator: COMMA | SEMICOLON;
 
@@ -65,6 +65,9 @@ ENUM: 'enum';
 STRUCT: 'struct';
 REQUIRED: 'required';
 OPTIONAL: 'optional';
+LIST: 'list';
+SET: 'set';
+MAP: 'map';
 LT_OPERATOR: '<';
 GT_OPERATOR: '>';
 COMMA: ',';

@@ -576,6 +576,73 @@ namespace Thrift.Net.Compilation
         SetMustHaveElementTypeSpecified = 207,
 
         /// <summary>
+        /// A map has been declared, but no key type has been specified.
+        /// </summary>
+        /// <example>
+        /// The following example produces this warning:
+        /// <code>
+        /// struct User {
+        ///   1: map&lt;, string&gt; Emails
+        ///          ^^^^^^^^
+        /// }
+        /// </code>
+        ///
+        /// To fix this issue, specify an element type:
+        /// <code>
+        /// struct User {
+        ///   1: map&lt;EmailType, string&gt; Emails
+        /// }
+        /// </code>
+        /// </example>
+        MapMustHaveKeyTypeSpecified = 208,
+
+        /// <summary>
+        /// A map has been declared, but no value type has been specified.
+        /// </summary>
+        /// <example>
+        /// The following example produces this warning:
+        /// <code>
+        /// struct User {
+        ///   1: map&lt;EmailType, &gt; Emails
+        ///          ^^^^^^^^^^^^^
+        /// }
+        /// </code>
+        ///
+        /// To fix this issue, specify an element type:
+        /// <code>
+        /// struct User {
+        ///   1: map&lt;EmailType, string&gt; Emails
+        /// }
+        /// </code>
+        /// </example>
+        MapMustHaveValueTypeSpecified = 209,
+
+        /// <summary>
+        /// A map has been declared, but no key or value types have been specified.
+        /// </summary>
+        /// <example>
+        /// The following example produces this warning:
+        /// <code>
+        /// struct User {
+        ///   1: map&lt;&gt; One
+        ///          ^^
+        ///   2: map&lt;,&gt; Two
+        ///          ^^^
+        ///   2: map Three
+        ///       ^^^
+        /// }
+        /// </code>
+        ///
+        /// To fix this issue, specify an element type:
+        /// <code>
+        /// struct User {
+        ///   1: map&lt;EmailType, string&gt; Emails
+        /// }
+        /// </code>
+        /// </example>
+        MapMustHaveKeyAndValueTypeSpecified = 210,
+
+        /// <summary>
         /// A syntax error has been reported by the Antlr parser.
         /// </summary>
         /// <example>

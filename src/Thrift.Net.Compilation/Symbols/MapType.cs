@@ -1,5 +1,6 @@
 namespace Thrift.Net.Compilation.Symbols
 {
+    using System.Collections.Generic;
     using Thrift.Net.Compilation.Binding;
     using static Thrift.Net.Antlr.ThriftParser;
 
@@ -108,6 +109,33 @@ namespace Thrift.Net.Compilation.Symbols
 
                 return null;
             }
+        }
+
+        /// <inheritdoc/>
+        protected override IReadOnlyCollection<ISymbol> Children
+        {
+            get
+            {
+                var children = new List<ISymbol>();
+                if (this.KeyType != null)
+                {
+                    children.Add(this.KeyType);
+                }
+
+                if (this.ValueType != null)
+                {
+                    children.Add(this.ValueType);
+                }
+
+                return children;
+            }
+        }
+
+        /// <inheritdoc/>
+        public override void Accept(ISymbolVisitor visitor)
+        {
+            visitor.VisitMapType(this);
+            base.Accept(visitor);
         }
 
         private string GetCSharpTypeName()

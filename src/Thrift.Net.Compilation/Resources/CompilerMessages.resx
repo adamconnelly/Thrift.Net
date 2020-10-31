@@ -136,6 +136,15 @@
   <data name="TC0207" xml:space="preserve">
     <value>The set must have an element type specified.</value>
   </data>
+  <data name="TC0208" xml:space="preserve">
+    <value>The map must have a key type specified.</value>
+  </data>
+  <data name="TC0209" xml:space="preserve">
+    <value>The map must have a value type specified.</value>
+  </data>
+  <data name="TC0210" xml:space="preserve">
+    <value>The map must have both a key and a value type specified.</value>
+  </data>
   <data name="TC0300" xml:space="preserve">
     <!-- Generic Antlr parsing error - just report the message from Antlr -->
     <value>{0}</value>

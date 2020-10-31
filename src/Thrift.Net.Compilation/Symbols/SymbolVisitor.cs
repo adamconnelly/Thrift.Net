@@ -49,5 +49,10 @@ namespace Thrift.Net.Compilation.Symbols
         public virtual void VisitSetType(ISetType setType)
         {
         }
+
+        /// <inheritdoc/>
+        public virtual void VisitMapType(MapType mapType)
+        {
+        }
     }
 }

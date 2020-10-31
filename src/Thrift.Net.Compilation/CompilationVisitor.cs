@@ -244,8 +244,8 @@ namespace Thrift.Net.Compilation
                 // ```
                 this.AddError(
                     CompilerMessageId.ListMustHaveElementTypeSpecified,
-                    listType.Node.LT_OPERATOR().Symbol,
-                    listType.Node.GT_OPERATOR().Symbol);
+                    listType.Node.LIST().Symbol,
+                    listType.Node.GT_OPERATOR()?.Symbol ?? listType.Node.LIST().Symbol);
             }
 
             base.VisitListType(listType);
@@ -284,11 +284,58 @@ namespace Thrift.Net.Compilation
                 // ```
                 this.AddError(
                     CompilerMessageId.SetMustHaveElementTypeSpecified,
-                    setType.Node.LT_OPERATOR().Symbol,
-                    setType.Node.GT_OPERATOR().Symbol);
+                    setType.Node.SET().Symbol,
+                    setType.Node.GT_OPERATOR()?.Symbol ?? setType.Node.SET().Symbol);
             }
 
             base.VisitSetType(setType);
+        }
+
+        /// <inheritdoc/>
+        public override void VisitMapType(MapType mapType)
+        {
+            if (mapType.KeyType == null && mapType.ValueType == null)
+            {
+                // A map has been declared with no key or value types specified.
+                // For example:
+                // ```
+                // struct User {
+                //   1: map<> Emails
+                // }
+                // ```
+                this.AddError(
+                    CompilerMessageId.MapMustHaveKeyAndValueTypeSpecified,
+                    mapType.Node.MAP().Symbol,
+                    mapType.Node.GT_OPERATOR()?.Symbol ?? mapType.Node.MAP().Symbol);
+            }
+            else if (mapType.KeyType == null)
+            {
+                // A map has been declared with no key type specified. For example:
+                // ```
+                // struct User {
+                //   1: map<, string> Emails
+                // }
+                // ```
+                this.AddError(
+                    CompilerMessageId.MapMustHaveKeyTypeSpecified,
+                    mapType.Node.MAP().Symbol,
+                    mapType.Node.GT_OPERATOR().Symbol);
+            }
+            else if (mapType.ValueType == null)
+            {
+                // A map has been declared with no value type specified. For example:
+                // ```
+                // struct User {
+                //   1: map<EmailType, > Emails
+                // }
+                // ```
+                this.AddError(
+                    CompilerMessageId.MapMustHaveValueTypeSpecified,
+                    mapType.Node.MAP().Symbol,
+                    mapType.Node.GT_OPERATOR().Symbol);
+            }
+
+            base.VisitMapType(mapType);
         }
 
         private void AddEnumMessages(IEnum enumDefinition)

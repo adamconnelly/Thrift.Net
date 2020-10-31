@@ -58,5 +58,11 @@ namespace Thrift.Net.Compilation.Symbols
         /// </summary>
         /// <param name="setType">The set type being referenced by a field.</param>
         void VisitSetType(ISetType setType);
+
+        /// <summary>
+        /// Visits a map type reference.
+        /// </summary>
+        /// <param name="mapType">The map type being reference by a field.</param>
+        void VisitMapType(MapType mapType);
     }
 }
