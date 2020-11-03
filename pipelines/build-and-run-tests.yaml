@@ -12,6 +12,9 @@ pr:
     - 'pipelines/build-and-run-tests.yaml'
     - 'src'
 
+variables:
+  coverageThreshold: 0.9
+
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -21,11 +24,27 @@ steps:
   inputs:
     command: 'test'
     projects: '$(System.DefaultWorkingDirectory)/src/Thrift.Net.Tests/Thrift.Net.Tests.csproj'
-    arguments: '--configuration Release -warnaserror /p:PublishSingleFile=false --collect "XPlat Code Coverage"'
+    arguments: '--configuration Release -warnaserror /p:PublishSingleFile=false --collect "XPlat Code Coverage" --settings "$(System.DefaultWorkingDirectory)/src/Thrift.Net.Tests/Thrift.Net.Tests.runsettings"'
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish Code Coverage'
   inputs:
     codeCoverageTool: 'cobertura'
-    summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.cobertura.xml'
+    summaryFileLocation: '$(Agent.TempDirectory)/*/coverage.cobertura.xml'
     failIfCoverageEmpty: true
+
+# In theory we should be able to add a `/p:Threshold=X` parameter to the dotnet test
+# command, but in practice it doesn't seem to work. Instead of that we can just
+# parse the value from the coverage results file.
+- pwsh: |
+    [xml]$coverageResults = Get-Content -Path '$(Agent.TempDirectory)/*/coverage.cobertura.xml'
+    $branchRate = $coverageResults.coverage.GetAttribute("branch-rate")
+
+    if ($branchRate -lt $Env:CoverageThreshold) {
+      Write-Error "Branch code coverage of '$branchRate' is less than the required threshold of '$Env:CoverageThreshold'"
+    }
+
+    echo "Success: code coverage meets threshold"
+  displayName: 'Check coverage meets threshold'
+  env:
+    CoverageThreshold: $(coverageThreshold)
