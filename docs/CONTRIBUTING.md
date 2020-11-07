@@ -24,6 +24,8 @@ change.
 - [Code Style](#code-style)
 - [Commit Messages](#commit-messages)
 - [Compilation Docs](compilation.md)
+- [Benchmarking](benchmarking.md)
+- [Testing](testing.md)
 - [Issues](#issues)
   - [Labels](#labels)
 - [Build Pipelines](#build-pipelines)
