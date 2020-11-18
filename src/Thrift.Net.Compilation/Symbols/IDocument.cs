@@ -24,6 +24,11 @@ namespace Thrift.Net.Compilation.Symbols
         IReadOnlyCollection<IStruct> Structs { get; }
 
         /// <summary>
+        /// Gets any unions that have been defined.
+        /// </summary>
+        IReadOnlyCollection<IUnion> Unions { get; }
+
+        /// <summary>
         /// Gets all the types contained by this document, in the order they
         /// appeared in the source.
         /// </summary>

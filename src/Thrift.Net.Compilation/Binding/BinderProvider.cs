@@ -14,6 +14,7 @@ namespace Thrift.Net.Compilation.Binding
         private static readonly DocumentBinder DocumentBinder;
         private static readonly NamespaceBinder NamespaceBinder;
         private static readonly StructBinder StructBinder;
+        private static readonly UnionBinder UnionBinder;
         private static readonly EnumBinder EnumBinder;
         private static readonly EnumMemberBinder EnumMemberBinder;
         private static readonly FieldBinder FieldBinder;
@@ -31,9 +32,10 @@ namespace Thrift.Net.Compilation.Binding
             DocumentBinder = new DocumentBinder(ProviderInstance);
             NamespaceBinder = new NamespaceBinder(ProviderInstance);
             StructBinder = new StructBinder(ProviderInstance);
+            UnionBinder = new UnionBinder(ProviderInstance);
             EnumBinder = new EnumBinder(ProviderInstance);
             EnumMemberBinder = new EnumMemberBinder(ProviderInstance);
-            FieldBinder = new FieldBinder(StructBinder, ProviderInstance);
+            FieldBinder = new FieldBinder(ProviderInstance);
             FieldTypeBinder = new FieldTypeBinder(ProviderInstance);
             BaseTypeBinder = new BaseTypeBinder();
             UserTypeBinder = new UserTypeBinder();
@@ -79,6 +81,10 @@ namespace Thrift.Net.Compilation.Binding
             else if (node is StructDefinitionContext)
             {
                 return StructBinder;
+            }
+            else if (node is UnionDefinitionContext)
+            {
+                return UnionBinder;
             }
             else if (node is EnumDefinitionContext)
             {

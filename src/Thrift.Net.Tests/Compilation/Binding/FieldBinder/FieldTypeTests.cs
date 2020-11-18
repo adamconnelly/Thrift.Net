@@ -9,14 +9,13 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
 
     public class FieldTypeTests
     {
-        private readonly IFieldContainerBinder containerBinder = Substitute.For<IFieldContainerBinder>();
         private readonly IBinderProvider binderProvider = Substitute.For<IBinderProvider>();
         private readonly IBinder typeBinder = Substitute.For<IBinder>();
         private readonly FieldBinder binder;
 
         public FieldTypeTests()
         {
-            this.binder = new FieldBinder(this.containerBinder, this.binderProvider);
+            this.binder = new FieldBinder(this.binderProvider);
         }
 
         [Fact]

@@ -9,15 +9,8 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Document
 
     public abstract class DocumentTests
     {
-        private readonly IBinder enumBinder = Substitute.For<IBinder>();
-        private readonly IBinder structBinder = Substitute.For<IBinder>();
-        private readonly IBinder namespaceBinder = Substitute.For<IBinder>();
+        private readonly IBinder memberBinder = Substitute.For<IBinder>();
         private readonly IBinderProvider binderProvider = Substitute.For<IBinderProvider>();
-
-        public IBinder EnumBinder => this.enumBinder;
-        public IBinder StructBinder => this.structBinder;
-        public IBinder NamespaceBinder => this.namespaceBinder;
-        public IBinderProvider BinderProvider => this.binderProvider;
 
         protected Enum SetupMember(EnumDefinitionContext enumNode, string enumName, Document document)
         {
@@ -26,9 +19,9 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Document
                 .SetName(enumName)
                 .Build();
 
-            this.BinderProvider.GetBinder(enumNode).Returns(this.enumBinder);
-            this.EnumBinder.Bind<INamedSymbol>(enumNode, document).Returns(member);
-            this.EnumBinder.Bind<Enum>(enumNode, document).Returns(member);
+            this.binderProvider.GetBinder(enumNode).Returns(this.memberBinder);
+            this.memberBinder.Bind<INamedSymbol>(enumNode, document).Returns(member);
+            this.memberBinder.Bind<Enum>(enumNode, document).Returns(member);
 
             return member;
         }
@@ -40,9 +33,23 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Document
                 .SetName(structName)
                 .Build();
 
-            this.BinderProvider.GetBinder(structNode).Returns(this.structBinder);
-            this.StructBinder.Bind<INamedSymbol>(structNode, document).Returns(member);
-            this.StructBinder.Bind<Struct>(structNode, document).Returns(member);
+            this.binderProvider.GetBinder(structNode).Returns(this.memberBinder);
+            this.memberBinder.Bind<INamedSymbol>(structNode, document).Returns(member);
+            this.memberBinder.Bind<Struct>(structNode, document).Returns(member);
+
+            return member;
+        }
+
+        protected IUnion SetupMember(UnionDefinitionContext node, string name, Document document)
+        {
+            var member = new UnionBuilder()
+                .SetNode(node)
+                .SetName(name)
+                .Build();
+
+            this.binderProvider.GetBinder(node).Returns(this.memberBinder);
+            this.memberBinder.Bind<INamedSymbol>(node, document).Returns(member);
+            this.memberBinder.Bind<IUnion>(node, document).Returns(member);
 
             return member;
         }
@@ -55,8 +62,8 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Document
                 .SetNamespaceName(name)
                 .Build();
 
-            this.BinderProvider.GetBinder(namespaceNode).Returns(this.namespaceBinder);
-            this.NamespaceBinder.Bind<Namespace>(namespaceNode, document).Returns(@namespace);
+            this.binderProvider.GetBinder(namespaceNode).Returns(this.memberBinder);
+            this.memberBinder.Bind<Namespace>(namespaceNode, document).Returns(@namespace);
 
             return @namespace;
         }
@@ -69,7 +76,7 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Document
 
             return new DocumentBuilder()
                 .SetNode(documentNode)
-                .SetBinderProvider(this.BinderProvider)
+                .SetBinderProvider(this.binderProvider)
                 .Build();
         }
     }

@@ -7,25 +7,25 @@ namespace Thrift.Net.Compilation.Binding
     /// <summary>
     /// Used to bind a <see cref="Struct" /> from the parse tree.
     /// </summary>
-    public class StructBinder : Binder<StructDefinitionContext, Struct, IDocument>
+    public class UnionBinder : Binder<UnionDefinitionContext, Union, IDocument>
     {
         private readonly IBinderProvider binderProvider;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StructBinder" /> class.
+        /// Initializes a new instance of the <see cref="UnionBinder" /> class.
         /// </summary>
         /// <param name="binderProvider">
         /// Used to get the correct binder for a particular node.
         /// </param>
-        public StructBinder(IBinderProvider binderProvider)
+        public UnionBinder(IBinderProvider binderProvider)
         {
             this.binderProvider = binderProvider;
         }
 
         /// <inheritdoc />
-        protected override Struct Bind(StructDefinitionContext node, IDocument parent)
+        protected override Union Bind(UnionDefinitionContext node, IDocument parent)
         {
-            var builder = new StructBuilder()
+            var builder = new UnionBuilder()
                 .SetNode(node)
                 .SetParent(parent)
                 .SetBinderProvider(this.binderProvider)

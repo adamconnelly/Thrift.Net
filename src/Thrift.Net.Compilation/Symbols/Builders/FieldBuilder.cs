@@ -5,7 +5,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
     /// <summary>
     /// Used to build <see cref="Field" /> objects.
     /// </summary>
-    public class FieldBuilder : SymbolBuilder<FieldContext, Field, IStruct, FieldBuilder>
+    public class FieldBuilder : SymbolBuilder<FieldContext, Field, IFieldContainer, FieldBuilder>
     {
         /// <summary>
         /// Gets the field's name.

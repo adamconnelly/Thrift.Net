@@ -8,25 +8,21 @@ namespace Thrift.Net.Compilation.Binding
     /// <summary>
     /// Used to bind fields based on a parse tree.
     /// </summary>
-    public class FieldBinder : Binder<FieldContext, Field, IStruct>
+    public class FieldBinder : Binder<FieldContext, Field, IFieldContainer>
     {
-        private readonly IFieldContainerBinder containerBinder;
         private readonly IBinderProvider binderProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FieldBinder" /> class.
         /// </summary>
-        /// <param name="containerBinder">The container binder.</param>
         /// <param name="binderProvider">Used to find binders for child nodes.</param>
-        public FieldBinder(
-            IFieldContainerBinder containerBinder, IBinderProvider binderProvider)
+        public FieldBinder(IBinderProvider binderProvider)
         {
-            this.containerBinder = containerBinder;
             this.binderProvider = binderProvider;
         }
 
         /// <inheritdoc />
-        protected override Field Bind(FieldContext node, IStruct parent)
+        protected override Field Bind(FieldContext node, IFieldContainer parent)
         {
             var builder = new FieldBuilder()
                 .SetNode(node)
@@ -53,7 +49,7 @@ namespace Thrift.Net.Compilation.Binding
                 return FieldRequiredness.Optional;
             }
 
-            return this.containerBinder.DefaultFieldRequiredness;
+            return FieldRequiredness.Default;
         }
 
         private int? GetFieldId(FieldContext node)
@@ -69,15 +65,23 @@ namespace Thrift.Net.Compilation.Binding
                 return null;
             }
 
-            if (!(node.Parent is StructDefinitionContext parentNode))
+            if (node.Parent is StructDefinitionContext structNode)
             {
-                return -1;
+                return (structNode.field()
+                    .Where(field => field.fieldId == null)
+                    .ToList()
+                    .IndexOf(node) + 1) * -1;
             }
 
-            return (parentNode.field()
-                .Where(field => field.fieldId == null)
-                .ToList()
-                .IndexOf(node) + 1) * -1;
+            if (node.Parent is UnionDefinitionContext unionNode)
+            {
+                return (unionNode.field()
+                    .Where(field => field.fieldId == null)
+                    .ToList()
+                    .IndexOf(node) + 1) * -1;
+            }
+
+            return -1;
         }
     }
 }

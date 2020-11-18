@@ -9,13 +9,12 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
 
     public class RequirednessTests
     {
-        private readonly IFieldContainerBinder containerBinder = Substitute.For<IFieldContainerBinder>();
         private readonly IBinderProvider binderProvider = Substitute.For<IBinderProvider>();
         private readonly FieldBinder binder;
 
         public RequirednessTests()
         {
-            this.binder = new FieldBinder(this.containerBinder, this.binderProvider);
+            this.binder = new FieldBinder(this.binderProvider);
         }
 
         [Fact]
@@ -23,8 +22,6 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
         {
             // Arrange
             var @struct = new StructBuilder().Build();
-            this.containerBinder.DefaultFieldRequiredness
-                .Returns(FieldRequiredness.Optional);
 
             var fieldContext = ParserInput
                 .FromString("i32 Id")
@@ -34,7 +31,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.FieldBinder
             var field = this.binder.Bind<Field>(fieldContext, @struct);
 
             // Assert
-            Assert.Equal(FieldRequiredness.Optional, field.Requiredness);
+            Assert.Equal(FieldRequiredness.Default, field.Requiredness);
         }
 
         [Fact]

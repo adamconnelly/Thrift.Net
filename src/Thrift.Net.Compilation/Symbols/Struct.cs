@@ -60,22 +60,6 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public bool IsFieldNameAlreadyDefined(string name, FieldContext node)
-        {
-            return this.Fields
-                .Where(item => item.Name == name)
-                .FirstOrDefault().Node != node;
-        }
-
-        /// <inheritdoc/>
-        public bool IsFieldIdAlreadyDefined(int fieldId, FieldContext node)
-        {
-            return this.Fields
-                .Where(item => item.FieldId == fieldId)
-                .FirstOrDefault().Node != node;
-        }
-
-        /// <inheritdoc/>
         public override void Accept(ISymbolVisitor visitor)
         {
             visitor.VisitStruct(this);

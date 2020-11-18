@@ -1,25 +1,25 @@
-namespace Thrift.Net.Tests.Compilation.Symbols.Struct
+namespace Thrift.Net.Tests.Compilation.Symbols.Union
 {
     using Xunit;
 
-    public class FieldTests : StructTests
+    public class FieldTests : UnionTests
     {
         [Fact]
         public void Bind_FieldsSupplied_UsesBinderToCreateFields()
         {
             // Arrange
             var input =
-@"struct User {
+@"union User {
     1: i32 Id
     2: string Username
 }";
-            var @struct = this.CreateStructFromInput(input);
+            var union = this.CreateUnionFromInput(input);
 
-            var idField = this.SetupField(@struct.Node.field()[0], @struct);
-            var usernameField = this.SetupField(@struct.Node.field()[1], @struct);
+            var idField = this.SetupField(union.Node.field()[0], union);
+            var usernameField = this.SetupField(union.Node.field()[1], union);
 
             // Act
-            var fields = @struct.Fields;
+            var fields = union.Fields;
 
             // Assert
             Assert.Collection(

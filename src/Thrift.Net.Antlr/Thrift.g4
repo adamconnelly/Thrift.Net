@@ -26,7 +26,7 @@ namespaceStatement: (
                                  // but allowing it lets us handle the situation
                                  // where someone has added a separator by accident
 
-definitions: (enumDefinition | structDefinition)*;
+definitions: (enumDefinition | structDefinition | unionDefinition)*;
 
 enumDefinition: ENUM name=IDENTIFIER?
     '{'
@@ -40,6 +40,11 @@ enumMember: (
     ) listSeparator?;
 
 structDefinition: STRUCT name=IDENTIFIER?
+    '{'
+        field*
+    '}';
+
+unionDefinition: UNION name=IDENTIFIER?
     '{'
         field*
     '}';
@@ -63,6 +68,7 @@ listSeparator: COMMA | SEMICOLON;
 NAMESPACE: 'namespace';
 ENUM: 'enum';
 STRUCT: 'struct';
+UNION: 'union';
 REQUIRED: 'required';
 OPTIONAL: 'optional';
 LIST: 'list';

@@ -64,6 +64,19 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
+        public IReadOnlyCollection<IUnion> Unions
+        {
+            get
+            {
+                return this.Node.definitions().unionDefinition()
+                    .Select(unionNode => this.binderProvider
+                        .GetBinder(unionNode)
+                        .Bind<IUnion>(unionNode, this))
+                    .ToList();
+            }
+        }
+
+        /// <inheritdoc/>
         public IReadOnlyCollection<INamedTypeSymbol> AllTypes
         {
             get

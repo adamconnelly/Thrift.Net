@@ -1,8 +1,9 @@
-namespace Thrift.Net.Tests.Compilation.Symbols.Struct
+namespace Thrift.Net.Tests.Compilation.Symbols.FieldContainerExtensions
 {
+    using Thrift.Net.Compilation.Symbols;
     using Xunit;
 
-    public class IsFieldIdAlreadyDefinedTests : StructTests
+    public class IsFieldIdAlreadyDefinedTests : FieldContainerExtensionsTests
     {
         [Fact]
         public void SingleField_ReturnsFalse()
