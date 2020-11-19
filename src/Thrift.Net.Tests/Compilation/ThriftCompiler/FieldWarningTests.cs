@@ -3,7 +3,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
     using Thrift.Net.Compilation;
     using Xunit;
 
-    public class StructWarningTests : ThriftCompilerTests
+    public class FieldWarningTests : ThriftCompilerTests
     {
         [Fact]
         public void FieldUsesSlist_ReportsWarning()
