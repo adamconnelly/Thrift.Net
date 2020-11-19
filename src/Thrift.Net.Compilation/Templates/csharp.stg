@@ -28,7 +28,11 @@ $model.Enums:generateEnum(); separator="\n\n"$
 $endif$
 $if(model.Structs)$
 
-$model.Structs:{struct | $generateStruct(struct, typeMap)$}; separator="\n\n"$
+$model.Structs:{struct | $generateMessage(struct, typeMap)$}; separator="\n\n"$
+$endif$
+$if(model.Unions)$
+
+$model.Unions:{union | $generateMessage(union, typeMap)$}; separator="\n\n"$
 $endif$
 >>
 
@@ -43,7 +47,7 @@ generateEnumMember(member) ::= <<
 $member.Name$ = $member.Value$
 >>
 
-generateStruct(struct, typeMap) ::= <<
+generateMessage(struct, typeMap) ::= <<
 public class $struct.Name$ : TBase
 {
 $if(struct.Fields)$
@@ -241,7 +245,7 @@ $if(type.IsBaseType)$
 $elseif(type.IsEnum)$
     $generateEnumReadMethod(variableName, type, isNested)$
 $elseif(type.IsStruct)$
-    $generateStructReadMethod(variableName, type, isNested)$
+    $generateMessageReadMethod(variableName, type, isNested)$
 $elseif(type.IsList)$
     $generateListReadMethod(variableName, type, typeMap, isNested)$
 $elseif(type.IsSet)$
@@ -259,7 +263,7 @@ generateEnumReadMethod(variableName, type, isNested) ::= <<
 $if(isNested)$var $endif$$variableName$ = ($type.CSharpRequiredTypeName$)await protocol.ReadI32Async(cancellationToken);
 >>
 
-generateStructReadMethod(variableName, type, isNested) ::= <<
+generateMessageReadMethod(variableName, type, isNested) ::= <<
 $if(isNested)$var $endif$$variableName$ = new $type.CSharpRequiredTypeName$();
 await $variableName$.ReadAsync(protocol, cancellationToken);
 >>
@@ -329,7 +333,7 @@ $if(type.IsBaseType)$
 $elseif(type.IsEnum)$
     $generateEnumWriteMethod(variableName)$
 $elseif(type.IsStruct)$
-    $generateStructWriteMethod(variableName)$
+    $generateMessageWriteMethod(variableName)$
 $elseif(type.IsList)$
     $generateListWriteMethod(variableName, type, typeMap)$
 $elseif(type.IsSet)$
@@ -348,7 +352,7 @@ generateEnumWriteMethod(variableName) ::= <%
 await protocol.WriteI32Async((int)$variableName$, cancellationToken);
 %>
 
-generateStructWriteMethod(variableName) ::= <%
+generateMessageWriteMethod(variableName) ::= <%
 await $variableName$.WriteAsync(protocol, cancellationToken);
 %>
 
