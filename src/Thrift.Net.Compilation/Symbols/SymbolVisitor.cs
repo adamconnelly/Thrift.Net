@@ -54,5 +54,10 @@ namespace Thrift.Net.Compilation.Symbols
         public virtual void VisitMapType(MapType mapType)
         {
         }
+
+        /// <inheritdoc/>
+        public virtual void VisitUnion(IUnion union)
+        {
+        }
     }
 }

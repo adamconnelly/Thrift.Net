@@ -83,7 +83,7 @@
     <value>Enum member '{0}' has already been defined</value>
   </data>
   <data name="TC0008" xml:space="preserve">
-    <value>Another item called '{0}' has already been declared. Please choose another name.</value>
+    <value>Another item named '{0}' has already been declared. Please choose another name.</value>
   </data>
   <data name="TC0009" xml:space="preserve">
     <value>The enum member '{0}' does not have a value specified, and has an implicit value of '{1}'. Please specify a value.</value>
@@ -113,7 +113,7 @@
     <value>Namespace statements cannot end with '{0}'. Please remove the '{0}' character.</value>
   </data>
   <data name="TC0200" xml:space="preserve">
-    <value>A struct name must be specified</value>
+    <value>A struct name must be specified.</value>
   </data>
   <data name="TC0201" xml:space="preserve">
     <value>A field called '{0}' has already been defined.</value>
@@ -154,5 +154,11 @@
   </data>
   <data name="TC0500" xml:space="preserve">
     <value>The Thrift file doesn't contain any definitions - no code will be generated. Please delete the file or add some definitions.</value>
+  </data>
+  <data name="TC0600" xml:space="preserve">
+    <value>'{0}' cannot be a required field because it is in a union. Please make the field optional.</value>
+  </data>
+  <data name="TC0601" xml:space="preserve">
+    <value>A union name must be specified.</value>
   </data>
 </root>

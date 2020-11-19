@@ -707,5 +707,49 @@ namespace Thrift.Net.Compilation
         /// To resolve this issue, delete the file, or add some Thrift definitions.
         /// </example>
         DocumentEmpty = 500,
+
+        /// <summary>
+        /// A field in a union has been marked as required. This doesn't make sense
+        /// because unions only allow one of their fields to be set, meaning
+        /// that all the fields are implicitly optional.
+        /// </summary>
+        /// <example>
+        /// The following example produces this error:
+        /// <code>
+        /// union Request {
+        ///   1: required string Query
+        ///      ^^^^^^^^
+        /// }
+        /// </code>
+        ///
+        /// To resolve this issue, change the field to optional or remove the
+        /// `required` modifier:
+        /// <code>
+        /// union Request {
+        ///   1: optional string Query
+        /// }
+        /// </code>
+        /// </example>
+        UnionCannotContainRequiredFields = 600,
+
+        /// <summary>
+        /// A union has been declared with no name.
+        /// </summary>
+        /// <example>
+        /// The following example produces this error:
+        /// <code>
+        /// union {
+        ///   1: string Query
+        /// }
+        /// </code>
+        ///
+        /// To resolve this issue, add a name to the union:
+        /// <code>
+        /// union Request {
+        ///   1: string Query
+        /// }
+        /// </code>
+        /// </example>
+        UnionMustHaveAName = 601,
     }
 }

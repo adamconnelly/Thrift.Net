@@ -50,5 +50,15 @@ namespace Thrift.Net.Compilation.Symbols
             this.Fields
                 .Where(field => field.Requiredness != FieldRequiredness.Required)
                 .ToList();
+
+        /// <inheritdoc/>
+        protected override IReadOnlyCollection<ISymbol> Children => this.Fields;
+
+        /// <inheritdoc/>
+        public override void Accept(ISymbolVisitor visitor)
+        {
+            visitor.VisitUnion(this);
+            base.Accept(visitor);
+        }
     }
 }

@@ -83,6 +83,7 @@ namespace Thrift.Net.Compilation.Symbols
             {
                 return this.Enums.Cast<INamedTypeSymbol>()
                     .Union(this.Structs)
+                    .Union(this.Unions)
                     .OrderBy(symbol => symbol.Node.SourceInterval.a)
                     .ToList();
             }
@@ -115,6 +116,7 @@ namespace Thrift.Net.Compilation.Symbols
             {
                 return this.Namespaces.Cast<ISymbol>()
                     .Union(this.Structs)
+                    .Union(this.Unions)
                     .Union(this.Enums)
                     .ToList();
             }

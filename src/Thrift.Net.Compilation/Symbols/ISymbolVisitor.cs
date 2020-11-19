@@ -64,5 +64,11 @@ namespace Thrift.Net.Compilation.Symbols
         /// </summary>
         /// <param name="mapType">The map type being reference by a field.</param>
         void VisitMapType(MapType mapType);
+
+        /// <summary>
+        /// Visits a union.
+        /// </summary>
+        /// <param name="union">The union to visit.</param>
+        void VisitUnion(IUnion union);
     }
 }

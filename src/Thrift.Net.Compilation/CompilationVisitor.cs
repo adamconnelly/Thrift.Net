@@ -228,6 +228,20 @@ namespace Thrift.Net.Compilation
                     field.Name);
             }
 
+            if (field.Requiredness == FieldRequiredness.Required && field.Parent is IUnion)
+            {
+                // A field in a union has been marked as required.
+                // ```
+                // union Request {
+                //     1: required string Query
+                // }
+                // ```
+                this.AddError(
+                    CompilerMessageId.UnionCannotContainRequiredFields,
+                    field.Node.fieldRequiredness().Start,
+                    field.Name);
+            }
+
             base.VisitField(field);
         }
 
@@ -336,6 +350,33 @@ namespace Thrift.Net.Compilation
             }
 
             base.VisitMapType(mapType);
+        }
+
+        /// <inheritdoc/>
+        public override void VisitUnion(IUnion union)
+        {
+            if (union.Name == null)
+            {
+                // A union has been declared with no name. For example `union {}`.
+                this.AddError(
+                    CompilerMessageId.UnionMustHaveAName,
+                    union.Node.UNION().Symbol);
+            }
+            else if (union.Parent.IsMemberNameAlreadyDeclared(union))
+            {
+                // Another type has already been declared with the same name.
+                // For example:
+                // ```
+                // struct Request {}
+                // union Request {}
+                // ```
+                this.AddError(
+                    CompilerMessageId.NameAlreadyDeclared,
+                    union.Node.name,
+                    union.Name);
+            }
+
+            base.VisitUnion(union);
         }
 
         private void AddEnumMessages(IEnum enumDefinition)

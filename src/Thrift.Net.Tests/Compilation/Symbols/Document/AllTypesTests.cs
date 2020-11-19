@@ -75,5 +75,25 @@ struct Permission {}";
                 member => Assert.Same(permissionType, member),
                 member => Assert.Same(permission, member));
         }
+
+        [Fact]
+        public void ContainsUnion_IncludesUnion()
+        {
+            // Arrange
+            var input =
+@"union User {}";
+            var document = this.CreateDocumentFromInput(input);
+
+            var union = this.SetupMember(
+                document.Node.definitions().unionDefinition()[0], "User", document);
+
+            // Act
+            var allTypes = document.AllTypes;
+
+            // Assert
+            Assert.Collection(
+                allTypes,
+                member => Assert.Same(union, member));
+        }
     }
 }
