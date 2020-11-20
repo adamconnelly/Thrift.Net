@@ -26,7 +26,7 @@ steps:
     projects: '$(System.DefaultWorkingDirectory)/src/Thrift.Net.Tests/Thrift.Net.Tests.csproj'
     arguments: '--configuration Release -warnaserror /p:PublishSingleFile=false --collect "XPlat Code Coverage" --settings "$(System.DefaultWorkingDirectory)/src/Thrift.Net.Tests/Thrift.Net.Tests.runsettings"'
 
-- task: PublishCodeCoverageResults@1
+- task: PublishCodeCoverageResults@1.175.0
   displayName: 'Publish Code Coverage'
   inputs:
     codeCoverageTool: 'cobertura'
