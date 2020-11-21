@@ -76,6 +76,10 @@ $endif$
 
         try
         {
+            $if(struct.RequiredFields)$
+            $struct.RequiredFields:declareIsSetVariable(); separator="\n"$
+
+            $endif$
             await protocol.ReadStructBeginAsync(cancellationToken);
         
             while (true)
@@ -102,6 +106,10 @@ $endif$
             }
 
             await protocol.ReadStructEndAsync(cancellationToken);
+            $if(struct.RequiredFields)$
+
+            $struct.RequiredFields:verifyRequiredFieldIsSet(); separator="\n\n"$
+            $endif$
         }
         finally
         {
@@ -183,6 +191,17 @@ $endif$
 }
 >>
 
+declareIsSetVariable(field) ::= <<
+var isSet_$field.Name$ = false;
+>>
+
+verifyRequiredFieldIsSet(field) ::= <<
+if (!isSet_$field.Name$)
+{
+    throw new TProtocolException(TProtocolException.INVALID_DATA);
+}
+>>
+
 backingFieldName(field) ::= <<
 _$field.Name$
 >>
@@ -230,6 +249,9 @@ case FieldIds.$field.Name$:
     if (field.Type == $getTType(field.Type, typeMap)$)
     {
         $generateReadMethod(qualifyWithThis(field.Name), field.Type, typeMap, false)$
+        $if(field.IsRequired)$
+        isSet_$field.Name$ = true;
+        $endif$
     }
     else
     {

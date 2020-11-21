@@ -16,5 +16,10 @@ namespace Thrift.Net.Compilation.Symbols
         /// Gets the fields that are optional (either explicitly or implicitly).
         /// </summary>
         IReadOnlyCollection<Field> OptionalFields { get; }
+
+        /// <summary>
+        /// Gets the fields that are required.
+        /// </summary>
+        IReadOnlyCollection<Field> RequiredFields { get; }
     }
 }
