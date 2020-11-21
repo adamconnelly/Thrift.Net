@@ -1,6 +1,11 @@
 # Thrift.Net
 
 [![Build Status](https://dev.azure.com/adamrpconnelly/Thrift.Net/_apis/build/status/Build%20and%20Run%20Tests?branchName=main)](https://dev.azure.com/adamrpconnelly/Thrift.Net/_build/latest?definitionId=3&branchName=main)
+![Azure DevOps tests](https://img.shields.io/azure-devops/tests/adamrpconnelly/Thrift.Net/3)
+![Azure DevOps coverage](https://img.shields.io/azure-devops/coverage/adamrpconnelly/Thrift.Net/3)
+
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/adamconnelly/Thrift.Net.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/adamconnelly/Thrift.Net/alerts/)
+[![Language grade: C#](https://img.shields.io/lgtm/grade/csharp/g/adamconnelly/Thrift.Net.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/adamconnelly/Thrift.Net/context:csharp)
 
 The aim of the Thrift.Net project is to create an implementation of the
 [Thrift](https://thrift.apache.org/) compiler and runtime library in C#,

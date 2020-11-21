@@ -56,7 +56,7 @@
         /// The exit code. This can be used by scripts to determine whether the
         /// compile was successful or not.
         /// </returns>
-        public static int Main(FileInfo input, DirectoryInfo outputDirectory, IConsole console = null)
+        public static int Main(FileInfo input, DirectoryInfo outputDirectory, IConsole console)
         {
             if (!input.Exists)
             {

@@ -26,18 +26,24 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
                 m => m.MessageType == messageType && m.MessageId == messageId);
             Assert.True(message != null, $"No {messageType.ToString().ToLower()} messages were returned from the compiler");
 
-            if (parserInput.LineNumber != null)
+            // Although we know that message cannot be null because of the assert on
+            // the previous line, check for null here because the lgtm check isn't
+            // smart enough to realise that
+            if (message != null)
             {
-                Assert.Equal(parserInput.LineNumber, message.LineNumber);
-                Assert.Equal(parserInput.StartPosition, message.StartPosition);
-                Assert.Equal(parserInput.EndPosition, message.EndPosition);
-            }
+                if (parserInput.LineNumber != null)
+                {
+                    Assert.Equal(parserInput.LineNumber, message.LineNumber);
+                    Assert.Equal(parserInput.StartPosition, message.StartPosition);
+                    Assert.Equal(parserInput.EndPosition, message.EndPosition);
+                }
 
-            if (messageParameters?.Length > 0)
-            {
-                var expectedMessage = string.Format(
-                    CompilerMessages.Get(messageId), messageParameters);
-                Assert.Equal(expectedMessage, message.Message);
+                if (messageParameters?.Length > 0)
+                {
+                    var expectedMessage = string.Format(
+                        CompilerMessages.Get(messageId), messageParameters);
+                    Assert.Equal(expectedMessage, message.Message);
+                }
             }
         }
 

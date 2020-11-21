@@ -125,9 +125,8 @@ namespace Thrift.Net.Compilation.Symbols
         /// <inheritdoc/>
         public bool IsMemberNameAlreadyDeclared(INamedSymbol member)
         {
-            var parent = member.Node.Parent as DefinitionsContext;
-
-            if (parent.children.Count <= 1)
+            if (member.Node.Parent is DefinitionsContext parent &&
+                parent.children.Count <= 1)
             {
                 return false;
             }

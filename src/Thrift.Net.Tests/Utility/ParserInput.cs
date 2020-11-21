@@ -62,7 +62,7 @@ namespace Thrift.Net.Tests.Utility
             int? lineNumber = null;
             int? startPosition = null;
             int? endPosition = null;
-            var reader = new StringReader(input);
+            using var reader = new StringReader(input);
 
             if (input.Contains('$'))
             {
