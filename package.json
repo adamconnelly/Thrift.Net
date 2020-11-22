@@ -24,7 +24,7 @@
   "homepage": "https://github.com/adamconnelly/Thrift.Net#readme",
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
-    "@commitlint/config-conventional": "^9.1.1",
+    "@commitlint/config-conventional": "^11.0.0",
     "husky": "^4.3.0",
     "lint-staged": "^10.5.1",
     "markdownlint-cli": "^0.25.0",
