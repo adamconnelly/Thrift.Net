@@ -28,11 +28,15 @@ $model.Enums:generateEnum(); separator="\n\n"$
 $endif$
 $if(model.Structs)$
 
-$model.Structs:{struct | $generateMessage(struct, typeMap)$}; separator="\n\n"$
+$model.Structs:{struct | $generateMessage(struct, typeMap, false)$}; separator="\n\n"$
 $endif$
 $if(model.Unions)$
 
-$model.Unions:{union | $generateMessage(union, typeMap)$}; separator="\n\n"$
+$model.Unions:{union | $generateMessage(union, typeMap, false)$}; separator="\n\n"$
+$endif$
+$if(model.Exceptions)$
+
+$model.Exceptions:{exception | $generateMessage(exception, typeMap, true)$}; separator="\n\n"$
 $endif$
 >>
 
@@ -47,16 +51,20 @@ generateEnumMember(member) ::= <<
 $member.Name$ = $member.Value$
 >>
 
-generateMessage(struct, typeMap) ::= <<
-public class $struct.Name$ : TBase
+generateMessage(message, typeMap, isException) ::= <<
+$if(isException)$
+public class $message.Name$ : TException, TBase
+$else$
+public class $message.Name$ : TBase
+$endif$
 {
-$if(struct.Fields)$
-$if(struct.OptionalFields)$
+$if(message.Fields)$
+$if(message.OptionalFields)$
     private IsSetInfo isSet;
 $endif$
-    $struct.Fields:generateBackingField(); separator="\n"$
+    $message.Fields:generateBackingField(); separator="\n"$
 
-$if(struct.OptionalFields)$
+$if(message.OptionalFields)$
     /// <summary>
     /// Gets information about whether each optional field has been set.
     /// </summary>
@@ -66,7 +74,7 @@ $if(struct.OptionalFields)$
     }
 
 $endif$
-    $struct.Fields:generateField(); separator="\n\n"$
+    $message.Fields:generateField(); separator="\n\n"$
 
 $endif$
     /// <inheritdoc />
@@ -76,8 +84,8 @@ $endif$
 
         try
         {
-            $if(struct.RequiredFields)$
-            $struct.RequiredFields:declareIsSetVariable(); separator="\n"$
+            $if(message.RequiredFields)$
+            $message.RequiredFields:declareIsSetVariable(); separator="\n"$
 
             $endif$
             await protocol.ReadStructBeginAsync(cancellationToken);
@@ -92,8 +100,8 @@ $endif$
 
                 switch (field.ID)
                 {
-$if(struct.Fields)$
-                    $struct.Fields:{field | $generateReadFieldCaseStatement(field, typeMap)$}; separator="\n\n"$
+$if(message.Fields)$
+                    $message.Fields:{field | $generateReadFieldCaseStatement(field, typeMap)$}; separator="\n\n"$
 
 $endif$
                     default: 
@@ -106,9 +114,9 @@ $endif$
             }
 
             await protocol.ReadStructEndAsync(cancellationToken);
-            $if(struct.RequiredFields)$
+            $if(message.RequiredFields)$
 
-            $struct.RequiredFields:verifyRequiredFieldIsSet(); separator="\n\n"$
+            $message.RequiredFields:verifyRequiredFieldIsSet(); separator="\n\n"$
             $endif$
         }
         finally
@@ -124,12 +132,12 @@ $endif$
 
         try
         {
-            var @struct = new TStruct("$struct.Name$");
+            var @struct = new TStruct("$message.Name$");
             await protocol.WriteStructBeginAsync(@struct, cancellationToken);
-$if(struct.Fields)$
+$if(message.Fields)$
             var field = new TField();
 
-            $struct.Fields:{field | $generateWriteField(field, typeMap)$}; separator="\n\n"$
+            $message.Fields:{field | $generateWriteField(field, typeMap)$}; separator="\n\n"$
 
 $endif$      
             await protocol.WriteFieldStopAsync(cancellationToken);
@@ -140,24 +148,24 @@ $endif$
             protocol.DecrementRecursionDepth();
         }
     }
-$if(struct.Fields)$
+$if(message.Fields)$
 
     /// <inheritdoc />
     public override bool Equals(object obj)
     {
-        return obj is $struct.Name$ other && this.Equals(other);
+        return obj is $message.Name$ other && this.Equals(other);
     }
 
     /// <inheritdoc />
     public override int GetHashCode()
     {
         var hashCode = new HashCode();
-        $struct.Fields:{f | hashCode.Add(this.$f.Name$);}; separator="\n"$
+        $message.Fields:{f | hashCode.Add(this.$f.Name$);}; separator="\n"$
 
         return hashCode.ToHashCode();
     }
 
-    private bool Equals($struct.Name$ other)
+    private bool Equals($message.Name$ other)
     {
         if (object.ReferenceEquals(this, other))
         {
@@ -165,7 +173,7 @@ $if(struct.Fields)$
         }
 
         return other != null &&
-            $struct.Fields:generateEqualsComparison(); separator=" &&\n"$;
+            $message.Fields:generateEqualsComparison(); separator=" &&\n"$;
     }
 
     /// <summary>
@@ -174,10 +182,10 @@ $if(struct.Fields)$
     /// </summary>
     public static class FieldIds
     {
-        $struct.Fields:generateFieldId(); separator="\n\n"$
+        $message.Fields:generateFieldId(); separator="\n\n"$
     }
 $endif$
-$if(struct.OptionalFields)$
+$if(message.OptionalFields)$
 
     /// <summary>
     /// Contains an entry for each optional field, indicating whether it has been
@@ -185,7 +193,7 @@ $if(struct.OptionalFields)$
     /// </summary>
     public struct IsSetInfo
     {
-        $struct.OptionalFields:generateIsSetField(); separator="\n\n"$
+        $message.OptionalFields:generateIsSetField(); separator="\n\n"$
     }
 $endif$
 }

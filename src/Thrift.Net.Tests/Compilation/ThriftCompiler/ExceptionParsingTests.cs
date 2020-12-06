@@ -6,49 +6,49 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
 
     using ThriftCompiler = Thrift.Net.Compilation.ThriftCompiler;
 
-    public class UnionParsingTests
+    public class ExceptionParsingTests
     {
         private readonly ThriftCompiler compiler = new ThriftCompiler();
 
         [Fact]
-        public void Compile_DocumentContainsUnion_AddsUnionToModel()
+        public void Compile_DocumentContainsException_AddsExceptionToModel()
         {
             // Arrange
-            var input = "union User {}";
+            var input = "exception NotFoundException {}";
 
             // Act
             var result = this.compiler.Compile(input.ToStream());
 
             // Assert
             Assert.Collection(
-                result.Document.Unions,
-                item => Assert.Equal("User", item.Name));
+                result.Document.Exceptions,
+                item => Assert.Equal("NotFoundException", item.Name));
         }
 
         [Fact]
-        public void Compile_DocumentContainsMultipleUnions_AddsAllToModel()
+        public void Compile_DocumentContainsMultipleExceptions_AddsAllToModel()
         {
             // Arrange
             var input =
-@"union User {}
-union Team {}";
+@"exception NotFoundException {}
+exception NotEnabledException {}";
 
             // Act
             var result = this.compiler.Compile(input.ToStream());
 
             // Assert
             Assert.Collection(
-                result.Document.Unions,
-                item => Assert.Equal("User", item.Name),
-                item => Assert.Equal("Team", item.Name));
+                result.Document.Exceptions,
+                item => Assert.Equal("NotFoundException", item.Name),
+                item => Assert.Equal("NotEnabledException", item.Name));
         }
 
         [Fact]
-        public void Compile_UnionContainsFields_AddsFieldsToUnion()
+        public void Compile_ExceptionContainsFields_AddsFieldsToException()
         {
             // Arrange
             var input =
-@"union User {
+@"exception NotFoundException {
     i32 Id
     string Name
 }";
@@ -57,7 +57,7 @@ union Team {}";
             var result = this.compiler.Compile(input.ToStream());
 
             // Assert
-            var definition = result.Document.Unions.First();
+            var definition = result.Document.Exceptions.First();
 
             Assert.Collection(
                 definition.Fields,
@@ -66,23 +66,23 @@ union Team {}";
         }
 
         [Fact]
-        public void Compile_UnionContainsFields_SetsFieldIdsCorrectly()
+        public void Compile_ExceptionContainsFields_SetsFieldIdsCorrectly()
         {
             // Arrange
             var input =
-@"union User {
+@"exception NotFoundException {
     i32 Id
     1: string Username
-    2: string CreatedOn
-    string Name
-    string DeletedOn
+    2: string Timestamp
+    string ErrorId
+    string Type
 }";
 
             // Act
             var result = this.compiler.Compile(input.ToStream());
 
             // Assert
-            var definition = result.Document.Unions.First();
+            var definition = result.Document.Exceptions.First();
 
             Assert.Collection(
                 definition.Fields,
@@ -94,11 +94,11 @@ union Team {}";
         }
 
         [Fact]
-        public void Compile_UnionUsesCommaFieldSeparators_ParsesCorrectly()
+        public void Compile_ExceptionUsesCommaFieldSeparators_ParsesCorrectly()
         {
             // Arrange
             var input =
-@"union User {
+@"exception NotFoundException {
     i32 Id,
     string Username
 }";
@@ -108,15 +108,15 @@ union Team {}";
 
             // Assert
             Assert.False(result.HasErrors);
-            Assert.Equal(2, result.Document.Unions.Single().Fields.Count());
+            Assert.Equal(2, result.Document.Exceptions.Single().Fields.Count());
         }
 
         [Fact]
-        public void Compile_UnionUsesSemicolonFieldSeparators_ParsesCorrectly()
+        public void Compile_ExceptionUsesSemicolonFieldSeparators_ParsesCorrectly()
         {
             // Arrange
             var input =
-@"union User {
+@"exception NotFoundException {
     i32 Id;
     string Username
 }";
@@ -126,32 +126,32 @@ union Team {}";
 
             // Assert
             Assert.False(result.HasErrors);
-            Assert.Equal(2, result.Document.Unions.Single().Fields.Count());
+            Assert.Equal(2, result.Document.Exceptions.Single().Fields.Count());
         }
 
         [Fact]
-        public void Compile_MultipleUnions_AssignsFieldsToCorrectUnion()
+        public void Compile_MultipleExceptions_AssignsFieldsToCorrectException()
         {
             // Arrange
             var input =
-@"union User {
+@"exception NotFoundException {
     1: i32 Id
     2: string Username
 }
 
-union Address {
-    1: string Line1
-    2: string Line2
-    3: string Town
+exception OperationFailedException {
+    1: string Operation
+    2: string Timestamp
+    3: string Details
 }";
 
             // Act
             var result = this.compiler.Compile(input.ToStream());
 
             // Assert
-            Assert.Equal(2, result.Document.Unions.Count);
-            Assert.Equal(2, result.Document.Unions.ElementAt(0).Fields.Count);
-            Assert.Equal(3, result.Document.Unions.ElementAt(1).Fields.Count);
+            Assert.Equal(2, result.Document.Exceptions.Count);
+            Assert.Equal(2, result.Document.Exceptions.ElementAt(0).Fields.Count);
+            Assert.Equal(3, result.Document.Exceptions.ElementAt(1).Fields.Count);
         }
     }
 }

@@ -29,6 +29,11 @@ namespace Thrift.Net.Compilation.Symbols
         IReadOnlyCollection<IUnion> Unions { get; }
 
         /// <summary>
+        /// Gets any exceptions that have been defined.
+        /// </summary>
+        IReadOnlyCollection<IException> Exceptions { get; }
+
+        /// <summary>
         /// Gets all the types contained by this document, in the order they
         /// appeared in the source.
         /// </summary>

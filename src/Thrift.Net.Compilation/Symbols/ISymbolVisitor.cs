@@ -70,5 +70,11 @@ namespace Thrift.Net.Compilation.Symbols
         /// </summary>
         /// <param name="union">The union to visit.</param>
         void VisitUnion(IUnion union);
+
+        /// <summary>
+        /// Visits an exception.
+        /// </summary>
+        /// <param name="exception">The exception to visit.</param>
+        void VisitException(IException exception);
     }
 }

@@ -54,6 +54,20 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Document
             return member;
         }
 
+        protected IException SetupMember(ExceptionDefinitionContext node, string name, Document document)
+        {
+            var member = new ExceptionBuilder()
+                .SetNode(node)
+                .SetName(name)
+                .Build();
+
+            this.binderProvider.GetBinder(node).Returns(this.memberBinder);
+            this.memberBinder.Bind<INamedSymbol>(node, document).Returns(member);
+            this.memberBinder.Bind<IException>(node, document).Returns(member);
+
+            return member;
+        }
+
         protected Namespace SetupNamespace(NamespaceStatementContext namespaceNode, string scope, string name, Document document)
         {
             var @namespace = new NamespaceBuilder()

@@ -26,7 +26,11 @@ namespaceStatement: (
                                  // but allowing it lets us handle the situation
                                  // where someone has added a separator by accident
 
-definitions: (enumDefinition | structDefinition | unionDefinition)*;
+definitions: (
+    enumDefinition |
+    structDefinition |
+    unionDefinition |
+    exceptionDefinition)*;
 
 enumDefinition: ENUM name=IDENTIFIER?
     '{'
@@ -45,6 +49,11 @@ structDefinition: STRUCT name=IDENTIFIER?
     '}';
 
 unionDefinition: UNION name=IDENTIFIER?
+    '{'
+        field*
+    '}';
+
+exceptionDefinition: EXCEPTION name=IDENTIFIER?
     '{'
         field*
     '}';
@@ -69,6 +78,7 @@ NAMESPACE: 'namespace';
 ENUM: 'enum';
 STRUCT: 'struct';
 UNION: 'union';
+EXCEPTION: 'exception';
 REQUIRED: 'required';
 OPTIONAL: 'optional';
 LIST: 'list';

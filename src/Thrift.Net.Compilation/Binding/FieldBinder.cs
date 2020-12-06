@@ -81,6 +81,14 @@ namespace Thrift.Net.Compilation.Binding
                     .IndexOf(node) + 1) * -1;
             }
 
+            if (node.Parent is ExceptionDefinitionContext exceptionNode)
+            {
+                return (exceptionNode.field()
+                    .Where(field => field.fieldId == null)
+                    .ToList()
+                    .IndexOf(node) + 1) * -1;
+            }
+
             return -1;
         }
     }

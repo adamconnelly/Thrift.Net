@@ -59,5 +59,10 @@ namespace Thrift.Net.Compilation.Symbols
         public virtual void VisitUnion(IUnion union)
         {
         }
+
+        /// <inheritdoc/>
+        public virtual void VisitException(IException exception)
+        {
+        }
     }
 }

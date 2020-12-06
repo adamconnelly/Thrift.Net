@@ -161,4 +161,7 @@
   <data name="TC0601" xml:space="preserve">
     <value>A union name must be specified.</value>
   </data>
+  <data name="TC0700" xml:space="preserve">
+    <value>An exception name must be specified.</value>
+  </data>
 </root>

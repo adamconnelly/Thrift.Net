@@ -15,6 +15,7 @@ namespace Thrift.Net.Compilation.Binding
         private static readonly NamespaceBinder NamespaceBinder;
         private static readonly StructBinder StructBinder;
         private static readonly UnionBinder UnionBinder;
+        private static readonly ExceptionBinder ExceptionBinder;
         private static readonly EnumBinder EnumBinder;
         private static readonly EnumMemberBinder EnumMemberBinder;
         private static readonly FieldBinder FieldBinder;
@@ -33,6 +34,7 @@ namespace Thrift.Net.Compilation.Binding
             NamespaceBinder = new NamespaceBinder(ProviderInstance);
             StructBinder = new StructBinder(ProviderInstance);
             UnionBinder = new UnionBinder(ProviderInstance);
+            ExceptionBinder = new ExceptionBinder(ProviderInstance);
             EnumBinder = new EnumBinder(ProviderInstance);
             EnumMemberBinder = new EnumMemberBinder(ProviderInstance);
             FieldBinder = new FieldBinder(ProviderInstance);
@@ -121,6 +123,10 @@ namespace Thrift.Net.Compilation.Binding
             else if (node is MapTypeContext)
             {
                 return MapTypeBinder;
+            }
+            else if (node is ExceptionDefinitionContext)
+            {
+                return ExceptionBinder;
             }
 
             throw new ArgumentException(

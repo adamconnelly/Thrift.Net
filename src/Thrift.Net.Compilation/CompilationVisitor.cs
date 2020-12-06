@@ -379,6 +379,33 @@ namespace Thrift.Net.Compilation
             base.VisitUnion(union);
         }
 
+        /// <inheritdoc/>
+        public override void VisitException(IException exception)
+        {
+            if (exception.Name == null)
+            {
+                // An exception has been declared with no name. For example `exception {}`.
+                this.AddError(
+                    CompilerMessageId.ExceptionMustHaveAName,
+                    exception.Node.EXCEPTION().Symbol);
+            }
+            else if (exception.Parent.IsMemberNameAlreadyDeclared(exception))
+            {
+                // Another type has already been declared with the same name.
+                // For example:
+                // ```
+                // struct Request {}
+                // exception Request {}
+                // ```
+                this.AddError(
+                    CompilerMessageId.NameAlreadyDeclared,
+                    exception.Node.name,
+                    exception.Name);
+            }
+
+            base.VisitException(exception);
+        }
+
         private void AddEnumMessages(IEnum enumDefinition)
         {
             if (enumDefinition.Name == null)

@@ -751,5 +751,25 @@ namespace Thrift.Net.Compilation
         /// </code>
         /// </example>
         UnionMustHaveAName = 601,
+
+        /// <summary>
+        /// An exception has been declared with no name.
+        /// </summary>
+        /// <example>
+        /// The following example produces this error:
+        /// <code>
+        /// exception {
+        ///   1: string Id
+        /// }
+        /// </code>
+        ///
+        /// To resolve this issue, add a name to the exception:
+        /// <code>
+        /// exception NotFoundException {
+        ///   1: string Id
+        /// }
+        /// </code>
+        /// </example>
+        ExceptionMustHaveAName = 700,
     }
 }

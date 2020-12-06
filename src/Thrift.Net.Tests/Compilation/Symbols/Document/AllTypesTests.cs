@@ -95,5 +95,25 @@ struct Permission {}";
                 allTypes,
                 member => Assert.Same(union, member));
         }
+
+        [Fact]
+        public void ContainsException_IncludesException()
+        {
+            // Arrange
+            var input =
+@"exception NotFoundException {}";
+            var document = this.CreateDocumentFromInput(input);
+
+            var exception = this.SetupMember(
+                document.Node.definitions().exceptionDefinition()[0], "NotFoundException", document);
+
+            // Act
+            var allTypes = document.AllTypes;
+
+            // Assert
+            Assert.Collection(
+                allTypes,
+                member => Assert.Same(exception, member));
+        }
     }
 }

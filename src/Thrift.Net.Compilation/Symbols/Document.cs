@@ -77,6 +77,19 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
+        public IReadOnlyCollection<IException> Exceptions
+        {
+            get
+            {
+                return this.Node.definitions().exceptionDefinition()
+                    .Select(exceptionNode => this.binderProvider
+                        .GetBinder(exceptionNode)
+                        .Bind<IException>(exceptionNode, this))
+                    .ToList();
+            }
+        }
+
+        /// <inheritdoc/>
         public IReadOnlyCollection<INamedTypeSymbol> AllTypes
         {
             get
@@ -84,6 +97,7 @@ namespace Thrift.Net.Compilation.Symbols
                 return this.Enums.Cast<INamedTypeSymbol>()
                     .Union(this.Structs)
                     .Union(this.Unions)
+                    .Union(this.Exceptions)
                     .OrderBy(symbol => symbol.Node.SourceInterval.a)
                     .ToList();
             }
@@ -115,9 +129,7 @@ namespace Thrift.Net.Compilation.Symbols
             get
             {
                 return this.Namespaces.Cast<ISymbol>()
-                    .Union(this.Structs)
-                    .Union(this.Unions)
-                    .Union(this.Enums)
+                    .Union(this.AllTypes)
                     .ToList();
             }
         }
