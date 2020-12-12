@@ -10,7 +10,8 @@
     "antlr:grun": "java -jar ./src/Thrift.Net.Antlr/lib/antlr-4.8-complete.jar -o .antlr -Xexact-output-dir ./src/Thrift.Net.Antlr/Thrift.g4 && javac -cp ./src/Thrift.Net.Antlr/lib/antlr-4.8-complete.jar ./.antlr/Thrift*.java && echo 'Starting grun' && java -cp ./.antlr:./src/Thrift.Net.Antlr/lib/antlr-4.8-complete.jar org.antlr.v4.gui.TestRig Thrift document -gui",
     "compiler": "dotnet run --project ./src/Thrift.Net.Compiler --",
     "publish:compiler:linux-x64": "dotnet publish -c 'Release' -r linux-x64 -o ./artifacts/linux-x64 ./src/Thrift.Net.Compiler",
-    "publish:compiler:win-x64": "dotnet publish -c 'Release' -r win-x64 -o ./artifacts/win-x64 ./src/Thrift.Net.Compiler"
+    "publish:compiler:win-x64": "dotnet publish -c 'Release' -r win-x64 -o ./artifacts/win-x64 ./src/Thrift.Net.Compiler",
+    "commitz": "cz"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,9 @@
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
+    "commitizen": "^4.2.2",
+    "cz-conventional-changelog": "^3.3.0",
+    "cz-customizable": "^6.3.0",
     "husky": "^4.3.0",
     "lint-staged": "^10.5.2",
     "markdownlint-cli": "^0.25.0",
@@ -38,5 +42,10 @@
   },
   "lint-staged": {
     "*.{js,css,md}": "prettier --write"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-customizable"
+    }
   }
 }

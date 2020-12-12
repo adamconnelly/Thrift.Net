@@ -7,6 +7,8 @@
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/adamconnelly/Thrift.Net.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/adamconnelly/Thrift.Net/alerts/)
 [![Language grade: C#](https://img.shields.io/lgtm/grade/csharp/g/adamconnelly/Thrift.Net.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/adamconnelly/Thrift.Net/context:csharp)
 
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+
 The aim of the Thrift.Net project is to create an implementation of the
 [Thrift](https://thrift.apache.org/) compiler and runtime library in C#,
 providing a first class experience for .NET developers wanting to use Thrift.
