@@ -8,7 +8,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a Thrift struct.
     /// </summary>
-    public class Struct : NamedSymbol<StructDefinitionContext, IDocument>, IStruct
+    public class Struct : FieldContainer<StructDefinitionContext, IDocument>, IStruct
     {
         private readonly IBinderProvider binderProvider;
 
@@ -30,7 +30,7 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public IReadOnlyCollection<Field> Fields
+        public override IReadOnlyCollection<Field> Fields
         {
             get
             {
@@ -41,16 +41,6 @@ namespace Thrift.Net.Compilation.Symbols
                     .ToList();
             }
         }
-
-        /// <inheritdoc/>
-        public IReadOnlyCollection<Field> OptionalFields => this.Fields
-            .Where(field => field.Requiredness != FieldRequiredness.Required)
-            .ToList();
-
-        /// <inheritdoc/>
-        public IReadOnlyCollection<Field> RequiredFields => this.Fields
-            .Where(field => field.Requiredness == FieldRequiredness.Required)
-            .ToList();
 
         /// <inheritdoc/>
         public IDocument Document => this.Parent;

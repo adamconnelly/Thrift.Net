@@ -8,7 +8,7 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a Thrift Union.
     /// </summary>
-    public class Union : NamedSymbol<UnionDefinitionContext, IDocument>, IUnion
+    public class Union : FieldContainer<UnionDefinitionContext, IDocument>, IUnion
     {
         private readonly IBinderProvider binderProvider;
 
@@ -33,7 +33,7 @@ namespace Thrift.Net.Compilation.Symbols
         public IDocument Document => this.Parent as IDocument;
 
         /// <inheritdoc/>
-        public IReadOnlyCollection<Field> Fields
+        public override IReadOnlyCollection<Field> Fields
         {
             get
             {
@@ -44,17 +44,6 @@ namespace Thrift.Net.Compilation.Symbols
                     .ToList();
             }
         }
-
-        /// <inheritdoc/>
-        public IReadOnlyCollection<Field> OptionalFields =>
-            this.Fields
-                .Where(field => field.Requiredness != FieldRequiredness.Required)
-                .ToList();
-
-        /// <inheritdoc/>
-        public IReadOnlyCollection<Field> RequiredFields => this.Fields
-            .Where(field => field.Requiredness == FieldRequiredness.Required)
-            .ToList();
 
         /// <inheritdoc/>
         protected override IReadOnlyCollection<ISymbol> Children => this.Fields;

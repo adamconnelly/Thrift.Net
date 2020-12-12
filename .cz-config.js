@@ -26,7 +26,12 @@ module.exports = {
     { value: "revert", name: "revert:   Revert to a commit" },
   ],
 
-  scopes: [{ name: "compiler" }, { name: "runtime" }, { name: "docs" }],
+  scopes: [
+    { name: "compiler" },
+    { name: "runtime" },
+    { name: "docs" },
+    { name: "tests" },
+  ],
 
   allowTicketNumber: false,
   isTicketNumberRequired: false,
