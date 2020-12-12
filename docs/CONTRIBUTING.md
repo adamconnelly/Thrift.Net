@@ -152,6 +152,7 @@ We provide the following npm scripts to simplify certain development tasks:
   Linux, and outputs it into the `artifacts` directory.
 - `npm run publish:compiler:win-x64` - builds the compiler executable for
   Windows, and outputs it into the `artifacts` directory.
+- `npm run commitz` - creates a new commit using Commitizen.
 
 ### Running the Compiler
 
@@ -205,11 +206,18 @@ feat(compiler): add ability to parse an enum
 - Did x because of y.
 - Did z because of a.
 
-Fixes #123
+Issues: #123
 ```
 
-All commit messages must have a valid subject line and reference an issue. The
-body of the commit message is optional.
+All commit messages must have a valid subject line. The body of the commit
+message, and referencing any issues are optional.
+
+### Commitizen
+
+The project is configured with [Commitizen](http://commitizen.github.io/cz-cli/)
+to make it easier to write commit messages in the correct format. To use it, run
+`npm run commitz`, and it will walk you through the process of writing your
+commit message.
 
 ## Running Apache Thrift Compiler via Docker
 
@@ -233,7 +241,7 @@ format `<type>/<value>`, for example `type/epic`.
 We support the following types of issue:
 
 - bug - used to report a bug in Thrift.Net.
-- feature-request - used to ask for new functionality.
+- feature - used to add new functionality to Thrift.Net.
 - epic - indicates a major piece of work that will need to worked on in multiple
   pieces.
 
