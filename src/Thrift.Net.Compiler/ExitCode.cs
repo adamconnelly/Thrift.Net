@@ -19,5 +19,10 @@ namespace Thrift.Net.Compiler
         /// Compilation has failed because of one or more errors.
         /// </summary>
         CompilationFailed = 2,
+
+        /// <summary>
+        /// Compilation has failed because of an unhandled exception.
+        /// </summary>
+        UnhandledException = 3,
     }
 }

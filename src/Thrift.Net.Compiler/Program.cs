@@ -1,4 +1,4 @@
-﻿namespace Thrift.Net.Compiler
+namespace Thrift.Net.Compiler
 {
     using System;
     using System.CommandLine;
@@ -58,50 +58,62 @@
         /// </returns>
         public static int Main(FileInfo input, DirectoryInfo outputDirectory, IConsole console)
         {
-            if (!input.Exists)
+            try
             {
-                console.Error.Write($"The specified input file '{input.Name}' could not be found.{Environment.NewLine}");
-                return (int)ExitCode.InputFileNotFound;
-            }
-
-            if (!outputDirectory.Exists)
-            {
-                outputDirectory.Create();
-            }
-
-            console.Out.Write($"Starting compilation of {input.Name}{Environment.NewLine}");
-
-            var thriftFile = FileProvider.Create(
-                new DirectoryInfo(Directory.GetCurrentDirectory()),
-                input,
-                outputDirectory);
-
-            using (var stream = input.OpenRead())
-            {
-                var result = Compiler.Compile(stream);
-
-                OutputCompilationSummary(console, result);
-
-                // TODO: Pull message formatting out to its own object.
-                foreach (var message in result.Messages.OrderBy(message => message.LineNumber))
+                if (!input.Exists)
                 {
-                    console.Out.Write($"{thriftFile.RelativePath}({message.LineNumber},{message.StartPosition}-{message.EndPosition}): {message.MessageType} {message.FormattedMessageId}: {message.Message} [{input.FullName}]{Environment.NewLine}");
+                    console.Error.Write($"The specified input file '{input.Name}' could not be found.{Environment.NewLine}");
+                    return (int)ExitCode.InputFileNotFound;
                 }
 
-                if (result.HasErrors)
+                if (!outputDirectory.Exists)
                 {
-                    return (int)ExitCode.CompilationFailed;
+                    outputDirectory.Create();
                 }
 
-                if (result.Document.ContainsDefinitions)
-                {
-                    var generatedCode = DocumentGenerator.Generate(result.Document);
+                console.Out.Write($"Starting compilation of {input.Name}{Environment.NewLine}");
 
-                    FileWriter.Write(thriftFile, generatedCode);
+                var thriftFile = FileProvider.Create(
+                    new DirectoryInfo(Directory.GetCurrentDirectory()),
+                    input,
+                    outputDirectory);
+
+                using (var stream = input.OpenRead())
+                {
+                    var result = Compiler.Compile(stream);
+
+                    OutputCompilationSummary(console, result);
+
+                    // TODO: Pull message formatting out to its own object.
+                    foreach (var message in result.Messages.OrderBy(message => message.LineNumber))
+                    {
+                        console.Out.Write($"{thriftFile.RelativePath}({message.LineNumber},{message.StartPosition}-{message.EndPosition}): {message.MessageType} {message.FormattedMessageId}: {message.Message} [{input.FullName}]{Environment.NewLine}");
+                    }
+
+                    if (result.HasErrors)
+                    {
+                        return (int)ExitCode.CompilationFailed;
+                    }
+
+                    if (result.Document.ContainsDefinitions)
+                    {
+                        var generatedCode = DocumentGenerator.Generate(result.Document);
+
+                        FileWriter.Write(thriftFile, generatedCode);
+                    }
                 }
+
+                return (int)ExitCode.Success;
             }
-
-            return (int)ExitCode.Success;
+            catch (Exception exception)
+            {
+                console.Out.Write($"Error: {exception}{Environment.NewLine}{Environment.NewLine}");
+                console.Out.Write($"Thrift.Net has encountered an error. This is a problem with the compiler and not caused by your code.{Environment.NewLine}");
+                console.Out.Write($"Please help us to resolve this by reporting a new issue here: https://github.com/adamconnelly/Thrift.Net/issues/new?template=issue_template.md. {Environment.NewLine} {Environment.NewLine}");
+                console.Out.Write($"We welcome contributions, so please feel free to create a PR to resolve the issue.{Environment.NewLine}");
+                console.Out.Write($"You can find out how to contribute here: https://github.com/adamconnelly/Thrift.Net/blob/main/docs/CONTRIBUTING.md. {Environment.NewLine}");
+                return (int)ExitCode.UnhandledException;
+            }
         }
 
         private static void OutputCompilationSummary(IConsole console, CompilationResult result)
