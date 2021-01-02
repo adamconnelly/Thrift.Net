@@ -214,7 +214,7 @@ namespace Thrift.Net.Compilation
                 }
             }
 
-            if (field.Type.Name == BaseType.Slist)
+            if (field.Type.Name == BaseType.SlistName)
             {
                 // A field has been declared using a deprecated type. For example:
                 // ```

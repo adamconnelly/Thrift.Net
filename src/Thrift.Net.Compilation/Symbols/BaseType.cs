@@ -12,68 +12,118 @@ namespace Thrift.Net.Compilation.Symbols
         /// <summary>
         /// The name of the byte type.
         /// </summary>
-        public const string Byte = "byte";
+        public const string ByteName = "byte";
 
         /// <summary>
         /// The name of the i8 type.
         /// </summary>
-        public const string I8 = "i8";
+        public const string I8Name = "i8";
 
         /// <summary>
         /// The name of the i16 type.
         /// </summary>
-        public const string I16 = "i16";
+        public const string I16Name = "i16";
 
         /// <summary>
         /// The name of the i32 type.
         /// </summary>
-        public const string I32 = "i32";
+        public const string I32Name = "i32";
 
         /// <summary>
         /// The name of the i64 type.
         /// </summary>
-        public const string I64 = "i64";
+        public const string I64Name = "i64";
 
         /// <summary>
         /// The name of the bool type.
         /// </summary>
-        public const string Bool = "bool";
+        public const string BoolName = "bool";
 
         /// <summary>
         /// The name of the double type.
         /// </summary>
-        public const string Double = "double";
+        public const string DoubleName = "double";
 
         /// <summary>
         /// The name of the string type.
         /// </summary>
-        public const string String = "string";
+        public const string StringName = "string";
 
         /// <summary>
         /// The name of the binary type.
         /// </summary>
-        public const string Binary = "binary";
+        public const string BinaryName = "binary";
 
         /// <summary>
         /// The name of the slist type.
         /// </summary>
-        public const string Slist = "slist";
+        public const string SlistName = "slist";
+
+        /// <summary>
+        /// The bool base type.
+        /// </summary>
+        public static readonly BaseType Bool = new BaseType(null, null, BoolName, "bool", "bool?");
+
+        /// <summary>
+        /// The byte base type.
+        /// </summary>
+        public static readonly BaseType Byte = new BaseType(null, null, ByteName, "byte", "byte?");
+
+        /// <summary>
+        /// The i8 base type.
+        /// </summary>
+        public static readonly BaseType I8 = new BaseType(null, null, I8Name, "sbyte", "sbyte?");
+
+        /// <summary>
+        /// The i16 base type.
+        /// </summary>
+        public static readonly BaseType I16 = new BaseType(null, null, I16Name, "short", "short?");
+
+        /// <summary>
+        /// The i32 base type.
+        /// </summary>
+        public static readonly BaseType I32 = new BaseType(null, null, I32Name, "int", "int?");
+
+        /// <summary>
+        /// The i64 base type.
+        /// </summary>
+        public static readonly BaseType I64 = new BaseType(null, null, I64Name, "long", "long?");
+
+        /// <summary>
+        /// The double base type.
+        /// </summary>
+        public static readonly BaseType Double = new BaseType(null, null, DoubleName, "double", "double?");
+
+        /// <summary>
+        /// The string base type.
+        /// </summary>
+        public static readonly BaseType String = new BaseType(null, null, StringName, "string", "string");
+
+        /// <summary>
+        /// The binary base type.
+        /// </summary>
+        public static readonly BaseType Binary = new BaseType(null, null, BinaryName, "byte[]", "byte[]");
+
+        /// <summary>
+        /// The slist base type.
+        /// </summary>
+        public static readonly BaseType Slist = new BaseType(null, null, SlistName, "string", "string");
 
         /// <summary>
         /// The list of all base type names.
         /// </summary>
         public static readonly IReadOnlyCollection<string> Names = new List<string>
         {
-            Byte,
-            I8,
-            I16,
-            I32,
-            I64,
-            Bool,
-            Double,
-            String,
-            Binary,
-            Slist,
+            ByteName,
+            I8Name,
+            I16Name,
+            I32Name,
+            I64Name,
+            BoolName,
+            DoubleName,
+            StringName,
+            BinaryName,
+            SlistName,
         };
 
         /// <summary>
@@ -147,18 +197,20 @@ namespace Thrift.Net.Compilation.Symbols
         /// </exception>
         public static BaseType Resolve(BaseTypeContext node, ISymbol parent)
         {
+            // TODO: Remove this method once we refactor and separate the concept of
+            // types vs type references.
             return node.typeName.Text switch
             {
-                "bool" => new BaseType(node, parent, "bool", "bool", "bool?"),
-                "byte" => new BaseType(node, parent, "byte", "byte", "byte?"),
-                "i8" => new BaseType(node, parent, "i8", "sbyte", "sbyte?"),
-                "i16" => new BaseType(node, parent, "i16", "short", "short?"),
-                "i32" => new BaseType(node, parent, "i32", "int", "int?"),
-                "i64" => new BaseType(node, parent, "i64", "long", "long?"),
-                "double" => new BaseType(node, parent, "double", "double", "double?"),
-                "string" => new BaseType(node, parent, "string", "string", "string"),
-                "binary" => new BaseType(node, parent, "binary", "byte[]", "byte[]"),
-                "slist" => new BaseType(node, parent, "slist", "string", "string"),
+                BoolName => new BaseType(node, parent, BoolName, "bool", "bool?"),
+                ByteName => new BaseType(node, parent, ByteName, "byte", "byte?"),
+                I8Name => new BaseType(node, parent, I8Name, "sbyte", "sbyte?"),
+                I16Name => new BaseType(node, parent, I16Name, "short", "short?"),
+                I32Name => new BaseType(node, parent, I32Name, "int", "int?"),
+                I64Name => new BaseType(node, parent, I64Name, "long", "long?"),
+                DoubleName => new BaseType(node, parent, DoubleName, "double", "double?"),
+                StringName => new BaseType(node, parent, StringName, "string", "string"),
+                BinaryName => new BaseType(node, parent, BinaryName, "byte[]", "byte[]"),
+                SlistName => new BaseType(node, parent, SlistName, "string", "string"),
                 _ => throw new InvalidOperationException($"'{node.typeName.Text}' is not a known base type"),
             };
         }

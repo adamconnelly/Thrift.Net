@@ -19,7 +19,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
             var compilationResult = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(compilationResult.Document);
+            var output = this.Generator.Generate(this.ThriftFile, compilationResult.Document);
 
             // Assert
             var (root, _, _) = ParseCSharp(output);
@@ -35,7 +35,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
             var compilationResult = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(compilationResult.Document);
+            var output = this.Generator.Generate(this.ThriftFile, compilationResult.Document);
 
             // Assert
             var (root, _, _) = ParseCSharp(output);

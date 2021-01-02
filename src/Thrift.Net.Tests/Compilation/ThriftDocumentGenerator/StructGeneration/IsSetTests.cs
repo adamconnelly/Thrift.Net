@@ -26,7 +26,7 @@ struct User {
             var result = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(result.Document);
+            var output = this.Generator.Generate(this.ThriftFile, result.Document);
 
             // Assert
             var (isSetStruct, isSetProperty, isSetSymbol) = GetIsSetInformation(output);
@@ -46,7 +46,7 @@ struct User {}";
             var result = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(result.Document);
+            var output = this.Generator.Generate(this.ThriftFile, result.Document);
 
             // Assert
             var (isSetStruct, isSetProperty, _) = GetIsSetInformation(output);
@@ -68,7 +68,7 @@ struct User {
             var result = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(result.Document);
+            var output = this.Generator.Generate(this.ThriftFile, result.Document);
 
             // Assert
             var (isSetStruct, isSetProperty, _) = GetIsSetInformation(output);
@@ -90,7 +90,7 @@ struct User {
             var result = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(result.Document);
+            var output = this.Generator.Generate(this.ThriftFile, result.Document);
 
             // Assert
             var (isSetStruct, isSetProperty, _) = GetIsSetInformation(output);
@@ -111,7 +111,7 @@ struct User {
             var compilationResult = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(compilationResult.Document);
+            var output = this.Generator.Generate(this.ThriftFile, compilationResult.Document);
 
             // Assert
             var scriptContents =
@@ -141,7 +141,7 @@ return user.IsSet.Field1 == false &&
             var compilationResult = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(compilationResult.Document);
+            var output = this.Generator.Generate(this.ThriftFile, compilationResult.Document);
 
             // Assert
             var scriptContents =
@@ -171,7 +171,7 @@ return user.IsSet.Field1;";
             var compilationResult = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(compilationResult.Document);
+            var output = this.Generator.Generate(this.ThriftFile, compilationResult.Document);
 
             // Assert
             var scriptContents =

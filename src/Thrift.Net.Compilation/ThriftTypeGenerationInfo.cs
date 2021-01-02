@@ -16,45 +16,45 @@ namespace Thrift.Net.Compilation
             = new Dictionary<string, ThriftTypeGenerationInfo>
         {
             {
-                BaseType.Byte,
+                BaseType.ByteName,
                 new ThriftTypeGenerationInfo(
                     "TType.Byte", "ReadByteAsync", "WriteByteAsync")
             },
             {
-                BaseType.I8,
+                BaseType.I8Name,
                 new ThriftTypeGenerationInfo(
                     "TType.Byte", "ReadByteAsync", "WriteByteAsync")
             },
             {
-                BaseType.I16,
+                BaseType.I16Name,
                 new ThriftTypeGenerationInfo("TType.I16", "ReadI16Async", "WriteI16Async")
             },
             {
-                BaseType.I32,
+                BaseType.I32Name,
                 new ThriftTypeGenerationInfo("TType.I32", "ReadI32Async", "WriteI32Async")
             },
             {
-                BaseType.I64,
+                BaseType.I64Name,
                 new ThriftTypeGenerationInfo("TType.I64", "ReadI64Async", "WriteI64Async")
             },
             {
-                BaseType.Bool,
+                BaseType.BoolName,
                 new ThriftTypeGenerationInfo("TType.Bool", "ReadBoolAsync", "WriteBoolAsync")
             },
             {
-                BaseType.Double,
+                BaseType.DoubleName,
                 new ThriftTypeGenerationInfo("TType.Double", "ReadDoubleAsync", "WriteDoubleAsync")
             },
             {
-                BaseType.String,
+                BaseType.StringName,
                 new ThriftTypeGenerationInfo("TType.String", "ReadStringAsync", "WriteStringAsync")
             },
             {
-                BaseType.Binary,
+                BaseType.BinaryName,
                 new ThriftTypeGenerationInfo("TType.String", "ReadBinaryAsync", "WriteBinaryAsync")
             },
             {
-                BaseType.Slist,
+                BaseType.SlistName,
                 new ThriftTypeGenerationInfo("TType.String", "ReadStringAsync", "WriteStringAsync")
             },
         };

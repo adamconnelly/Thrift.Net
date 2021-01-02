@@ -227,7 +227,7 @@ namespace Thrift.Net.Tests.Compiler
             var thriftFile = this.SetupCreateThriftFile(inputFile);
 
             const string generatedCode = "namespace Thrift.Net.Tests ...";
-            this.documentGenerator.Generate(default).ReturnsForAnyArgs(generatedCode);
+            this.documentGenerator.Generate(default, default).ReturnsForAnyArgs(generatedCode);
 
             // Act
             Program.Main(inputFile, outputDirectory, this.console);
@@ -306,7 +306,7 @@ namespace Thrift.Net.Tests.Compiler
 
         private ThriftFile SetupCreateThriftFile(FileInfo inputFile)
         {
-            var thriftFile = new ThriftFile(inputFile.FullName, inputFile.Name, $"output/{inputFile.Name}");
+            var thriftFile = new ThriftFile(inputFile.Name, inputFile.FullName, inputFile.Name, $"output/{inputFile.Name}");
             this.fileProvider.Create(default, default, default).ReturnsForAnyArgs(thriftFile);
             return thriftFile;
         }

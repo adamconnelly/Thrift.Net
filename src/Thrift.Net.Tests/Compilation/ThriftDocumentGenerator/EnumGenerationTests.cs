@@ -16,7 +16,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
             var model = this.CompileEnum();
 
             // Act
-            var output = this.Generator.Generate(model);
+            var output = this.Generator.Generate(this.ThriftFile, model);
 
             // Assert
             var userTypeEnum = GetEnum(output);
@@ -31,7 +31,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
             var model = this.CompileEnum();
 
             // Act
-            var output = this.Generator.Generate(model);
+            var output = this.Generator.Generate(this.ThriftFile, model);
 
             // Assert
             var userTypeEnum = GetEnum(output);
@@ -49,7 +49,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
             var model = this.CompileEnum();
 
             // Act
-            var output = this.Generator.Generate(model);
+            var output = this.Generator.Generate(this.ThriftFile, model);
 
             // Assert
             var userTypeEnum = GetEnum(output);

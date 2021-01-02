@@ -2,15 +2,18 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator
 {
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
+    using Thrift.Net.Compilation;
     using ThriftDocumentGenerator = Thrift.Net.Compilation.ThriftDocumentGenerator;
 
     public abstract class ThriftDocumentGeneratorTests
     {
         private readonly ThriftDocumentGenerator generator = new ThriftDocumentGenerator();
-        private readonly Thrift.Net.Compilation.ThriftCompiler compiler = new Thrift.Net.Compilation.ThriftCompiler();
+        private readonly ThriftCompiler compiler = new ThriftCompiler();
+        private readonly ThriftFile thriftFile = new ThriftFile("Test.thrift", "Test.thrift", "Test.thrift", "output");
 
         protected ThriftDocumentGenerator Generator => this.generator;
-        protected Thrift.Net.Compilation.ThriftCompiler Compiler => this.compiler;
+        protected ThriftCompiler Compiler => this.compiler;
+        protected ThriftFile ThriftFile => this.thriftFile;
 
         /// <summary>
         /// Parses the specified C# code and returns the root node in the syntax

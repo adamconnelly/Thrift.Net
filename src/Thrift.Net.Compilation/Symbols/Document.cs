@@ -90,6 +90,19 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
+        public IReadOnlyCollection<IConstant> Constants
+        {
+            get
+            {
+                return this.Node.definitions().constDefinition()
+                    .Select(constNode => this.binderProvider
+                        .GetBinder(constNode)
+                        .Bind<IConstant>(constNode, this))
+                    .ToList();
+            }
+        }
+
+        /// <inheritdoc/>
         public IReadOnlyCollection<INamedTypeSymbol> AllTypes
         {
             get
@@ -98,6 +111,7 @@ namespace Thrift.Net.Compilation.Symbols
                     .Union(this.Structs)
                     .Union(this.Unions)
                     .Union(this.Exceptions)
+                    .Union(this.Constants)
                     .OrderBy(symbol => symbol.Node.SourceInterval.a)
                     .ToList();
             }

@@ -95,7 +95,7 @@
 
                 if (result.Document.ContainsDefinitions)
                 {
-                    var generatedCode = DocumentGenerator.Generate(result.Document);
+                    var generatedCode = DocumentGenerator.Generate(thriftFile, result.Document);
 
                     FileWriter.Write(thriftFile, generatedCode);
                 }

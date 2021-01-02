@@ -21,6 +21,7 @@ namespace Thrift.Net.Compilation
             var calculatedOutputDirectory = CalculateOutputDirectory(workingDirectory, inputFile, outputDirectory);
 
             return new ThriftFile(
+                inputFile.Name,
                 inputFile.FullName,
                 Path.GetRelativePath(workingDirectory.FullName, inputFile.FullName),
                 Path.Combine(calculatedOutputDirectory, inputFile.Name.Replace(inputFile.Extension, ".cs")));

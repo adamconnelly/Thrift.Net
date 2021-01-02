@@ -116,6 +116,22 @@ namespace Thrift.Net.Tests.Compilation
                 thriftFile.OutputPath);
         }
 
+        [Fact]
+        public void Create_FileProvided_SetsFileName()
+        {
+            // Arrange
+            var provider = new ThriftFileProvider();
+            var workingDirectory = this.fileCreator.CreateTempDirectory();
+            var inputFile = new FileInfo(Path.Combine(workingDirectory.FullName, "test.thrift"));
+            var outputDirectory = this.fileCreator.GetTempDirectory();
+
+            // Act
+            var thriftFile = provider.Create(workingDirectory, inputFile, outputDirectory);
+
+            // Assert
+            Assert.Equal(inputFile.Name, thriftFile.FileName);
+        }
+
         public void Dispose()
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method

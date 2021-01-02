@@ -198,7 +198,7 @@ struct User {
                 f => f.Name == "Emails");
 
             var list = Assert.IsAssignableFrom<IListType>(field.Type);
-            Assert.Equal(BaseType.String, list.ElementType.Name);
+            Assert.Equal(BaseType.StringName, list.ElementType.Name);
         }
 
         [Fact]
@@ -218,7 +218,7 @@ struct User {
                 f => f.Name == "Emails");
 
             var set = Assert.IsAssignableFrom<ISetType>(field.Type);
-            Assert.Equal(BaseType.String, set.ElementType.Name);
+            Assert.Equal(BaseType.StringName, set.ElementType.Name);
         }
 
         [Fact]
@@ -238,7 +238,7 @@ struct User {
                 f => f.Name == "Permissions");
 
             var map = Assert.IsAssignableFrom<IMapType>(field.Type);
-            Assert.Equal(BaseType.String, map.KeyType.Name);
+            Assert.Equal(BaseType.StringName, map.KeyType.Name);
             Assert.Equal("PermissionType", map.ValueType.Name);
         }
     }

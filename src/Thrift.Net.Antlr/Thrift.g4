@@ -30,7 +30,8 @@ definitions: (
     enumDefinition |
     structDefinition |
     unionDefinition |
-    exceptionDefinition)*;
+    exceptionDefinition |
+    constDefinition)*;
 
 enumDefinition: ENUM name=IDENTIFIER?
     '{'
@@ -72,6 +73,9 @@ listType: LIST LT_OPERATOR? fieldType? GT_OPERATOR?;
 setType: SET LT_OPERATOR? fieldType? GT_OPERATOR?;
 mapType: MAP LT_OPERATOR? keyType=fieldType? COMMA? valueType=fieldType? GT_OPERATOR?;
 
+constDefinition: CONST fieldType name=IDENTIFIER? EQUALS_OPERATOR constExpression;
+constExpression: value=INT_CONSTANT | value=DOUBLE_CONSTANT | value=.*?;
+
 listSeparator: COMMA | SEMICOLON;
 
 NAMESPACE: 'namespace';
@@ -84,6 +88,7 @@ OPTIONAL: 'optional';
 LIST: 'list';
 SET: 'set';
 MAP: 'map';
+CONST: 'const';
 LT_OPERATOR: '<';
 GT_OPERATOR: '>';
 COMMA: ',';
@@ -94,6 +99,18 @@ KNOWN_NAMESPACE_SCOPES: '*' | 'c_glib' | 'cpp' | 'csharp' | 'delphi' | 'go' |
 EQUALS_OPERATOR: '=';
 LITERAL: ( '"' .*? '"' ) | ( '\'' .*? '\'' );
 IDENTIFIER: ( [a-zA-Z] | '_' ) ( [a-zA-Z] | [0-9] | '.' | '_' )*;
+
+// Examples of valid doubles (based on the Thrift IDL) include:
+// 100.5
+// -100.5
+// +100.5
+// 100.5e10
+// 100e2 (for some reason only doubles support exponent syntax, and an integer value using this syntax is classed as a double)
+DOUBLE_CONSTANT: ('+' | '-')? [0-9]* (
+        ('.' [0-9]+) ([eE] INT_CONSTANT)? |
+        ([eE] INT_CONSTANT)
+    );
+
 INT_CONSTANT: ('+' | '-')? [0-9]+;
 
 // NOTE: HEX_CONSTANT deliberately allows invalid hex (i.e. letters > F) to allow

@@ -38,7 +38,7 @@ struct Permission {}";
             var result = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(result.Document);
+            var output = this.Generator.Generate(this.ThriftFile, result.Document);
 
             // Assert
             var (root, _, _) = ParseCSharp(output);
@@ -64,7 +64,7 @@ struct User {
             var result = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(result.Document);
+            var output = this.Generator.Generate(this.ThriftFile, result.Document);
 
             // Assert
             var (root, _, _) = ParseCSharp(output);
@@ -97,7 +97,7 @@ struct User {{
             var result = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(result.Document);
+            var output = this.Generator.Generate(this.ThriftFile, result.Document);
 
             // Assert
             var (root, _, _) = ParseCSharp(output);
@@ -136,7 +136,7 @@ struct User {
             var result = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(result.Document);
+            var output = this.Generator.Generate(this.ThriftFile, result.Document);
 
             // Assert
             var (root, _, _) = ParseCSharp(output);
@@ -174,7 +174,7 @@ struct User {
             var result = this.Compiler.Compile(input.ToStream());
 
             // Act
-            var output = this.Generator.Generate(result.Document);
+            var output = this.Generator.Generate(this.ThriftFile, result.Document);
 
             // Assert
             var (tree, compilation, semanticModel) = ParseCSharp(output);

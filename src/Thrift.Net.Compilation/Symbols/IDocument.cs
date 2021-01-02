@@ -34,6 +34,11 @@ namespace Thrift.Net.Compilation.Symbols
         IReadOnlyCollection<IException> Exceptions { get; }
 
         /// <summary>
+        /// Gets any constants that have been defined.
+        /// </summary>
+        IReadOnlyCollection<IConstant> Constants { get; }
+
+        /// <summary>
         /// Gets all the types contained by this document, in the order they
         /// appeared in the source.
         /// </summary>

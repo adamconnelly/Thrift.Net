@@ -8,10 +8,11 @@ namespace Thrift.Net.Compilation
     public interface IThriftDocumentGenerator
     {
         /// <summary>
-        /// Generates the C# required for the specified document.
+        /// Generates the C# representation of the specified Thrift document.
         /// </summary>
-        /// <param name="document">The document to generate code for.</param>
-        /// <returns>The generated C#.</returns>
-        string Generate(IDocument document);
+        /// <param name="file">Contains information about the thrift input file.</param>
+        /// <param name="document">The document to generate code from.</param>
+        /// <returns>The generated code.</returns>
+        string Generate(ThriftFile file, IDocument document);
     }
 }

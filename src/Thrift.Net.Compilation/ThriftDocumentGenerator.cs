@@ -9,12 +9,8 @@ namespace Thrift.Net.Compilation
     /// </summary>
     public class ThriftDocumentGenerator : IThriftDocumentGenerator
     {
-        /// <summary>
-        /// Generates the C# representation of the specified Thrift document.
-        /// </summary>
-        /// <param name="document">The document to generate code from.</param>
-        /// <returns>The generated code.</returns>
-        public string Generate(IDocument document)
+        /// <inheritdoc/>
+        public string Generate(ThriftFile file, IDocument document)
         {
             var assembly = typeof(ThriftDocumentGenerator).Assembly;
             var rawTemplate = assembly.GetManifestResourceStream(
@@ -28,9 +24,10 @@ namespace Thrift.Net.Compilation
             var template = templateGroup.GetInstanceOf("document");
 
             // TODO: Get the semantic version
-            template.Add("version", assembly.GetName().Version.ToString());
-            template.Add("model", document);
-            template.Add("typeMap", ThriftTypeGenerationInfo.TypeMap);
+            template.Add("version", assembly.GetName().Version.ToString())
+                .Add("file", file)
+                .Add("model", document)
+                .Add("typeMap", ThriftTypeGenerationInfo.TypeMap);
 
             return template.Render();
         }
