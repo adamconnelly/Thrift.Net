@@ -60,5 +60,14 @@ namespace Thrift.Net.Compilation.Symbols
         /// Gets a value indicating whether the type is a collection.
         /// </summary>
         public bool IsCollection { get; }
+
+        /// <summary>
+        /// Checks whether the type can be assigned from the specified expression type.
+        /// For example, in the constant expression `const i32 MaxPageSize = 100`, `this`
+        /// would be `i32`, and `expressionType` would be `i8`.
+        /// </summary>
+        /// <param name="expressionType">The type of expression that would be assigned to this type.</param>
+        /// <returns>true if <paramref name="expressionType" /> can be assigned to this type, false otherwise.</returns>
+        bool IsAssignableFrom(IFieldType expressionType);
     }
 }

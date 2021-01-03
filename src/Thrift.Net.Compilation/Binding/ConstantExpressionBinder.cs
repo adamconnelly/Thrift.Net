@@ -1,5 +1,7 @@
 namespace Thrift.Net.Compilation.Binding
 {
+    using System;
+    using System.Globalization;
     using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Compilation.Symbols.Builders;
     using static Thrift.Net.Antlr.ThriftParser;
@@ -41,20 +43,17 @@ namespace Thrift.Net.Compilation.Binding
         {
             if (node.INT_CONSTANT() != null && long.TryParse(node.value?.Text, out var value))
             {
-                if (value < int.MinValue || value > int.MaxValue)
-                {
-                    return BaseType.I64;
-                }
-                else if (value < short.MinValue || value > short.MaxValue)
-                {
-                    return BaseType.I32;
-                }
-                else if (value < sbyte.MinValue || value > sbyte.MaxValue)
-                {
-                    return BaseType.I16;
-                }
+                return GetTypeFromNumericValue(value);
+            }
 
-                return BaseType.I8;
+            if (node.HEX_CONSTANT() != null)
+            {
+                var hexText = node.HEX_CONSTANT().Symbol.Text.AsSpan()[2..];
+
+                if (long.TryParse(hexText, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var hexValue))
+                {
+                    return GetTypeFromNumericValue(hexValue);
+                }
             }
 
             if (node.DOUBLE_CONSTANT() != null)
@@ -63,6 +62,24 @@ namespace Thrift.Net.Compilation.Binding
             }
 
             return BaseType.String;
+        }
+
+        private static BaseType GetTypeFromNumericValue(long value)
+        {
+            if (value < int.MinValue || value > int.MaxValue)
+            {
+                return BaseType.I64;
+            }
+            else if (value < short.MinValue || value > short.MaxValue)
+            {
+                return BaseType.I32;
+            }
+            else if (value < sbyte.MinValue || value > sbyte.MaxValue)
+            {
+                return BaseType.I16;
+            }
+
+            return BaseType.I8;
         }
     }
 }

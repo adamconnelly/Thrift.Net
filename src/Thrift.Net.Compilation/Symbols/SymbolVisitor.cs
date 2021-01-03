@@ -64,5 +64,10 @@ namespace Thrift.Net.Compilation.Symbols
         public virtual void VisitException(IException exception)
         {
         }
+
+        /// <inheritdoc/>
+        public virtual void VisitConstant(IConstant constant)
+        {
+        }
     }
 }

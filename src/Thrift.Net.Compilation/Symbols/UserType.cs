@@ -94,6 +94,12 @@ namespace Thrift.Net.Compilation.Symbols
             base.Accept(visitor);
         }
 
+        /// <inheritdoc/>
+        public bool IsAssignableFrom(IFieldType expressionType)
+        {
+            return false;
+        }
+
         private string GetOptionalTypeName()
         {
             return this.IsEnum ? this.Definition.Name + "?" : this.Definition.Name;

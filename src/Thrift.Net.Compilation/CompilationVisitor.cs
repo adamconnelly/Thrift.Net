@@ -406,6 +406,47 @@ namespace Thrift.Net.Compilation
             base.VisitException(exception);
         }
 
+        /// <inheritdoc/>
+        public override void VisitConstant(IConstant constant)
+        {
+            if (constant.Name == null)
+            {
+                // A constant has been declared with no name. For example `const i32 = 100`.
+                this.AddError(
+                    CompilerMessageId.ConstantMustHaveAName,
+                    constant.Node.Start,
+                    constant.Node.Stop);
+            }
+
+            if (constant.Node.EQUALS_OPERATOR() == null && constant.Value != null)
+            {
+                this.AddError(
+                    CompilerMessageId.ConstantMissingEqualsOperator,
+                    constant.Node.name,
+                    constant.Name);
+            }
+
+            if (constant.Value == null)
+            {
+                // The constant hasn't been initialized. For example `const i32 MaxPageSize`.
+                this.AddError(
+                    CompilerMessageId.ConstantMustBeInitialized,
+                    constant.Node.name,
+                    constant.Name);
+            }
+            else if (!constant.Type.IsAssignableFrom(constant.Value.Type))
+            {
+                this.AddError(
+                    CompilerMessageId.ConstantExpressionCannotBeAssignedToType,
+                    constant.Node.constExpression().Start,
+                    constant.Node.constExpression().Stop,
+                    constant.Value.RawValue,
+                    constant.Type.Name);
+            }
+
+            base.VisitConstant(constant);
+        }
+
         private void AddEnumMessages(IEnum enumDefinition)
         {
             if (enumDefinition.Name == null)

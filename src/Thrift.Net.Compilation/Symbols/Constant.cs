@@ -42,12 +42,24 @@ namespace Thrift.Net.Compilation.Symbols
         {
             get
             {
-                return this.binderProvider.GetBinder(this.Node.constExpression())
-                    .Bind<IConstantExpression>(this.Node.constExpression(), this);
+                if (this.Node.constExpression() != null)
+                {
+                    return this.binderProvider.GetBinder(this.Node.constExpression())
+                        .Bind<IConstantExpression>(this.Node.constExpression(), this);
+                }
+
+                return null;
             }
         }
 
         /// <inheritdoc/>
         public IDocument Document => this.Document;
+
+        /// <inheritdoc/>
+        public override void Accept(ISymbolVisitor visitor)
+        {
+            visitor.VisitConstant(this);
+            base.Accept(visitor);
+        }
     }
 }

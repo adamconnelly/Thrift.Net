@@ -214,5 +214,49 @@ namespace Thrift.Net.Compilation.Symbols
                 _ => throw new InvalidOperationException($"'{node.typeName.Text}' is not a known base type"),
             };
         }
+
+        /// <inheritdoc/>
+        public bool IsAssignableFrom(IFieldType expressionType)
+        {
+            if (expressionType == null)
+            {
+                throw new ArgumentNullException(nameof(expressionType));
+            }
+
+            if (!(expressionType is BaseType))
+            {
+                return false;
+            }
+
+            // NOTE: At the moment we're checking the type names. Once we separate
+            // out the concept of a type vs a type reference, and we only have a single
+            // instance of each base type, we can switch to using reference equality instead.
+            if (this.Name == I8Name && expressionType.Name == I8Name)
+            {
+                return true;
+            }
+
+            if (this.Name == I16Name && (expressionType.Name == I8Name || expressionType.Name == I16Name))
+            {
+                return true;
+            }
+
+            if (this.Name == I32Name && (expressionType.Name == I8Name || expressionType.Name == I16Name || expressionType.Name == I32Name))
+            {
+                return true;
+            }
+
+            if (this.Name == I64Name && (expressionType.Name == I8Name || expressionType.Name == I16Name || expressionType.Name == I32Name || expressionType.Name == I64Name))
+            {
+                return true;
+            }
+
+            if (this.Name == DoubleName && (expressionType.Name == I8Name || expressionType.Name == I16Name || expressionType.Name == I32Name || expressionType.Name == I64Name))
+            {
+                return true;
+            }
+
+            return string.Equals(this.Name, expressionType.Name, StringComparison.InvariantCulture);
+        }
     }
 }

@@ -76,6 +76,12 @@ namespace Thrift.Net.Compilation.Symbols
         /// <inheritdoc/>
         public bool IsMap => this is IMapType;
 
+        /// <inheritdoc/>
+        public bool IsAssignableFrom(IFieldType expressionType)
+        {
+            return false;
+        }
+
         /// <summary>
         /// Gets the C# type name for the collection.
         /// </summary>

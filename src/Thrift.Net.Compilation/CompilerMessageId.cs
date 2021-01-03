@@ -771,5 +771,71 @@ namespace Thrift.Net.Compilation
         /// </code>
         /// </example>
         ExceptionMustHaveAName = 700,
+
+        /// <summary>
+        /// A constant has been declared with no name.
+        /// </summary>
+        /// <example>
+        /// The following example produces this error:
+        /// <code>
+        /// const i32 = 100
+        /// </code>
+        ///
+        /// To resolve this issue, add a name to the constant:
+        /// <code>
+        /// const i32 MaxPageSize = 100
+        /// </code>
+        /// </example>
+        ConstantMustHaveAName = 800,
+
+        /// <summary>
+        /// A constant has been declared with no initialization expression.
+        /// </summary>
+        /// <example>
+        /// The following example produces this error:
+        /// <code>
+        /// const i32 MaxPageSize
+        /// </code>
+        ///
+        /// To resolve this issue, add an initialization expression to the constant:
+        /// <code>
+        /// const i32 MaxPageSize = 100
+        /// </code>
+        /// </example>
+        ConstantMustBeInitialized = 801,
+
+        /// <summary>
+        /// The constant expression is missing the equals operator.
+        /// </summary>
+        /// <example>
+        /// The following example produces this error:
+        /// <code>
+        /// const i32 MaxPageSize 100
+        /// </code>
+        ///
+        /// To resolve this issue, add the missing equals operator:
+        /// <code>
+        /// const i32 MaxPageSize = 100
+        /// </code>
+        /// </example>
+        ConstantMissingEqualsOperator = 802,
+
+        /// <summary>
+        /// The specified expression cannot be assigned to the constant because
+        /// it does not match the constant's type.
+        /// </summary>
+        /// <example>
+        /// The following example produces this error:
+        /// <code>
+        /// const i32 MaxPageSize = "100"
+        /// </code>
+        ///
+        /// To resolve this issue, change the type of the constant, or alter the
+        /// expression to match the constant's type:
+        /// <code>
+        /// const i32 MaxPageSize = 100
+        /// </code>
+        /// </example>
+        ConstantExpressionCannotBeAssignedToType = 803,
     }
 }

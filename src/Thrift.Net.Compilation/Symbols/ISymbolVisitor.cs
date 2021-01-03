@@ -54,6 +54,12 @@ namespace Thrift.Net.Compilation.Symbols
         void VisitUserType(IUserType userType);
 
         /// <summary>
+        /// Visits a constant.
+        /// </summary>
+        /// <param name="constant">The constant to visit.</param>
+        void VisitConstant(IConstant constant);
+
+        /// <summary>
         /// Visits a set type reference.
         /// </summary>
         /// <param name="setType">The set type being referenced by a field.</param>

@@ -1,9 +1,11 @@
 namespace Thrift.Net.Compilation.Symbols
 {
+    using static Thrift.Net.Antlr.ThriftParser;
+
     /// <summary>
     /// Represents a Thrift constant.
     /// </summary>
-    public interface IConstant : INamedTypeSymbol
+    public interface IConstant : ISymbol<ConstDefinitionContext, IDocument>, INamedTypeSymbol
     {
         /// <summary>
         /// Gets the type the constant has been declared as. For example, the constant

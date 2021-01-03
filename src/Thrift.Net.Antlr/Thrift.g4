@@ -73,8 +73,13 @@ listType: LIST LT_OPERATOR? fieldType? GT_OPERATOR?;
 setType: SET LT_OPERATOR? fieldType? GT_OPERATOR?;
 mapType: MAP LT_OPERATOR? keyType=fieldType? COMMA? valueType=fieldType? GT_OPERATOR?;
 
-constDefinition: CONST fieldType name=IDENTIFIER? EQUALS_OPERATOR constExpression;
-constExpression: value=INT_CONSTANT | value=DOUBLE_CONSTANT | value=.*?;
+constDefinition:
+    CONST fieldType name=IDENTIFIER EQUALS_OPERATOR? | // `const i32 MaxPageSize =` (missing initialization expression)
+    CONST fieldType EQUALS_OPERATOR constExpression | // `const i32 = 100` (missing name)
+    CONST fieldType name=IDENTIFIER constExpression | // `const i32 MaxPageSize 100` (missing '=' operator)
+    CONST fieldType name=IDENTIFIER EQUALS_OPERATOR constExpression // Successful parse
+    ;
+constExpression: value=INT_CONSTANT | value=HEX_CONSTANT | value=DOUBLE_CONSTANT | value=LITERAL;
 
 listSeparator: COMMA | SEMICOLON;
 
