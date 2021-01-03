@@ -26,7 +26,7 @@ namespace Thrift.Net.Compilation.Binding
         private static readonly SetTypeBinder SetTypeBinder;
         private static readonly MapTypeBinder MapTypeBinder;
         private static readonly ConstantBinder ConstantBinder;
-        private static readonly ConstantValueBinder ConstantValueBinder;
+        private static readonly ConstantExpressionBinder ConstantExpressionBinder;
         private static readonly BinderProvider ProviderInstance;
 
         static BinderProvider()
@@ -47,7 +47,7 @@ namespace Thrift.Net.Compilation.Binding
             MapTypeBinder = new MapTypeBinder(ProviderInstance);
             SetTypeBinder = new SetTypeBinder(ProviderInstance);
             ConstantBinder = new ConstantBinder(ProviderInstance);
-            ConstantValueBinder = new ConstantValueBinder();
+            ConstantExpressionBinder = new ConstantExpressionBinder();
         }
 
         private BinderProvider()
@@ -138,7 +138,7 @@ namespace Thrift.Net.Compilation.Binding
             }
             else if (node is ConstExpressionContext)
             {
-                return ConstantValueBinder;
+                return ConstantExpressionBinder;
             }
 
             throw new ArgumentException(

@@ -1,4 +1,4 @@
-namespace Thrift.Net.Tests.Compilation.Binding.ConstantValueBinder
+namespace Thrift.Net.Tests.Compilation.Binding.ConstantExpressionBinder
 {
     using System.Collections.Generic;
     using NSubstitute;
@@ -6,7 +6,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.ConstantValueBinder
     using Thrift.Net.Tests.Utility;
     using Xunit;
 
-    using ConstantValueBinder = Thrift.Net.Compilation.Binding.ConstantValueBinder;
+    using ConstantExpressionBinder = Thrift.Net.Compilation.Binding.ConstantExpressionBinder;
 
     public class TypeTests
     {
@@ -38,13 +38,13 @@ namespace Thrift.Net.Tests.Compilation.Binding.ConstantValueBinder
         public void SetsCorrectTypeForValue(string input, BaseType expectedType)
         {
             // Arrange
-            var binder = new ConstantValueBinder();
+            var binder = new ConstantExpressionBinder();
             var node = ParserInput.FromString(input)
                 .ParseInput(parser => parser.constExpression());
             var parent = Substitute.For<IConstant>();
 
             // Act
-            var value = binder.Bind<IConstantValue>(node, parent);
+            var value = binder.Bind<IConstantExpression>(node, parent);
 
             // Assert
             Assert.Same(expectedType, value.Type);

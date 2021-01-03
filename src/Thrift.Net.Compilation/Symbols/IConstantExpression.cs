@@ -1,9 +1,9 @@
 namespace Thrift.Net.Compilation.Symbols
 {
     /// <summary>
-    /// Represents a Thrift constant.
+    /// Represents the initialisation expression for a Thrift constant.
     /// </summary>
-    public interface IConstantValue : ISymbol
+    public interface IConstantExpression : ISymbol
     {
         /// <summary>
         /// Gets the type of the constant's expression. For example, the constant

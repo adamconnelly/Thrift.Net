@@ -38,12 +38,12 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public IConstantValue Value
+        public IConstantExpression Value
         {
             get
             {
                 return this.binderProvider.GetBinder(this.Node.constExpression())
-                    .Bind<IConstantValue>(this.Node.constExpression(), this);
+                    .Bind<IConstantExpression>(this.Node.constExpression(), this);
             }
         }
 

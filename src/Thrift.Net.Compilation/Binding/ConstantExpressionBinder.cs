@@ -5,17 +5,17 @@ namespace Thrift.Net.Compilation.Binding
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
-    /// Used to bind <see cref="IConstantValue" /> symbols from <see cref="ConstExpressionContext" />
+    /// Used to bind <see cref="IConstantExpression" /> symbols from <see cref="ConstExpressionContext" />
     /// nodes.
     /// </summary>
-    public class ConstantValueBinder : Binder<ConstExpressionContext, IConstantValue, IConstant>
+    public class ConstantExpressionBinder : Binder<ConstExpressionContext, IConstantExpression, IConstant>
     {
         /// <inheritdoc/>
-        protected override IConstantValue Bind(ConstExpressionContext node, IConstant parent)
+        protected override IConstantExpression Bind(ConstExpressionContext node, IConstant parent)
         {
             var type = GetExpressionType(node);
 
-            var builder = new ConstantValueBuilder()
+            var builder = new ConstantExpressionBuilder()
                 .SetNode(node)
                 .SetParent(parent)
                 .SetRawValue(node.value?.Text)

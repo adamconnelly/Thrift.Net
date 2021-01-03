@@ -5,7 +5,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
     /// <summary>
     /// Used to build <see cref="Constant" /> objects.
     /// </summary>
-    public class ConstantValueBuilder : SymbolBuilder<ConstExpressionContext, ConstantValue, IConstant, ConstantValueBuilder>
+    public class ConstantExpressionBuilder : SymbolBuilder<ConstExpressionContext, ConstantExpression, IConstant, ConstantExpressionBuilder>
     {
         private string rawValue;
         private IFieldType type;
@@ -25,7 +25,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// </summary>
         /// <param name="rawValue">The string representation of the constant expression.</param>
         /// <returns>The builder.</returns>
-        public ConstantValueBuilder SetRawValue(string rawValue)
+        public ConstantExpressionBuilder SetRawValue(string rawValue)
         {
             this.rawValue = rawValue;
 
@@ -37,7 +37,7 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         /// </summary>
         /// <param name="type">The type of the expression.</param>
         /// <returns>The builder.</returns>
-        public ConstantValueBuilder SetType(IFieldType type)
+        public ConstantExpressionBuilder SetType(IFieldType type)
         {
             this.type = type;
 
@@ -45,9 +45,9 @@ namespace Thrift.Net.Compilation.Symbols.Builders
         }
 
         /// <inheritdoc/>
-        public override ConstantValue Build()
+        public override ConstantExpression Build()
         {
-            return new ConstantValue(this.Node, this.Parent, this.RawValue, this.Type);
+            return new ConstantExpression(this.Node, this.Parent, this.RawValue, this.Type);
         }
     }
 }

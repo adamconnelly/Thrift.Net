@@ -14,6 +14,6 @@ namespace Thrift.Net.Compilation.Symbols
         /// <summary>
         /// Gets the value of the constant definition.
         /// </summary>
-        IConstantValue Value { get; }
+        IConstantExpression Value { get; }
     }
 }

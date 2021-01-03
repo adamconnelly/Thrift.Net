@@ -5,16 +5,16 @@ namespace Thrift.Net.Compilation.Symbols
     /// <summary>
     /// Represents a constant expression value.
     /// </summary>
-    public class ConstantValue : Symbol<ConstExpressionContext, IConstant>, IConstantValue
+    public class ConstantExpression : Symbol<ConstExpressionContext, IConstant>, IConstantExpression
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConstantValue" /> class.
+        /// Initializes a new instance of the <see cref="ConstantExpression" /> class.
         /// </summary>
         /// <param name="node">The parse tree node.</param>
         /// <param name="parent">The constant that contains this value.</param>
         /// <param name="rawValue">The raw value representing the constant expression.</param>
         /// <param name="type">The type of the constant expression.</param>
-        public ConstantValue(
+        public ConstantExpression(
             ConstExpressionContext node,
             IConstant parent,
             string rawValue,

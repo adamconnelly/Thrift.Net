@@ -1,11 +1,11 @@
-namespace Thrift.Net.Tests.Compilation.Binding.ConstantValueBinder
+namespace Thrift.Net.Tests.Compilation.Binding.ConstantExpressionBinder
 {
     using NSubstitute;
     using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Tests.Utility;
     using Xunit;
 
-    using ConstantValueBinder = Thrift.Net.Compilation.Binding.ConstantValueBinder;
+    using ConstantExpressionBinder = Thrift.Net.Compilation.Binding.ConstantExpressionBinder;
 
     public class RawValueTests
     {
@@ -13,13 +13,13 @@ namespace Thrift.Net.Tests.Compilation.Binding.ConstantValueBinder
         public void RawValueProvided_SetsRawValue()
         {
             // Arrange
-            var binder = new ConstantValueBinder();
+            var binder = new ConstantExpressionBinder();
             var node = ParserInput.FromString("100")
                 .ParseInput(parser => parser.constExpression());
             var parent = Substitute.For<IConstant>();
 
             // Act
-            var value = binder.Bind<IConstantValue>(node, parent);
+            var value = binder.Bind<IConstantExpression>(node, parent);
 
             // Assert
             Assert.Equal("100", value.RawValue);
@@ -29,13 +29,13 @@ namespace Thrift.Net.Tests.Compilation.Binding.ConstantValueBinder
         public void RawValueNotProvided_Null()
         {
             // Arrange
-            var binder = new ConstantValueBinder();
+            var binder = new ConstantExpressionBinder();
             var node = ParserInput.FromString(string.Empty)
                 .ParseInput(parser => parser.constExpression());
             var parent = Substitute.For<IConstant>();
 
             // Act
-            var value = binder.Bind<IConstantValue>(node, parent);
+            var value = binder.Bind<IConstantExpression>(node, parent);
 
             // Assert
             Assert.Null(value.RawValue);
