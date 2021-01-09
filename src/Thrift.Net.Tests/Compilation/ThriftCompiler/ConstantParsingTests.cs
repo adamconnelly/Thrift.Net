@@ -51,7 +51,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
             // Assert
             Assert.Collection(
                 result.Document.Constants,
-                item => Assert.Equal(BaseType.I8Name, item.Value.Type.Name));
+                item => Assert.Equal(BaseType.I8Name, item.Expression.Type.Name));
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
             // Assert
             Assert.Collection(
                 result.Document.Constants,
-                item => Assert.Equal("100", item.Value.RawValue));
+                item => Assert.Equal("100", item.Expression.RawValue));
         }
 
         [Theory]

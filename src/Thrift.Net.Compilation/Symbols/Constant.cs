@@ -40,7 +40,7 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public IConstantExpression Value
+        public IConstantExpression Expression
         {
             get
             {
@@ -62,24 +62,24 @@ namespace Thrift.Net.Compilation.Symbols
         {
             get
             {
-                if (this.Value == null)
+                if (this.Expression == null)
                 {
                     throw new InvalidOperationException(
                         "Cannot generate the C# value for this constant because no value could be parsed from the Thrift source");
                 }
 
-                if (!this.Type.IsAssignableFrom(this.Value.Type))
+                if (!this.Type.IsAssignableFrom(this.Expression.Type))
                 {
                     throw new InvalidOperationException(
                         "Cannot generate the C# value for this constant because the value cannot be assigned to the constant's type");
                 }
 
-                if (this.Type.Name == BaseType.BoolName && this.Value.Type.IsIntegerType())
+                if (this.Type.Name == BaseType.BoolName && this.Expression.Type.IsIntegerType())
                 {
-                    return long.Parse(this.Value.RawValue) > 0 ? "true" : "false";
+                    return long.Parse(this.Expression.RawValue) > 0 ? "true" : "false";
                 }
 
-                return this.Value.RawValue;
+                return this.Expression.RawValue;
             }
         }
 

@@ -14,9 +14,9 @@ namespace Thrift.Net.Compilation.Symbols
         IFieldType Type { get; }
 
         /// <summary>
-        /// Gets the value of the constant definition.
+        /// Gets the expression used to initialize the constant.
         /// </summary>
-        IConstantExpression Value { get; } // TODO: Rename to Expression
+        IConstantExpression Expression { get; }
 
         /// <summary>
         /// Gets the CSharp value of the constant expression that should be used for

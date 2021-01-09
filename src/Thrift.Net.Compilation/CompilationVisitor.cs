@@ -418,7 +418,7 @@ namespace Thrift.Net.Compilation
                     constant.Node.Stop);
             }
 
-            if (constant.Node.EQUALS_OPERATOR() == null && constant.Value != null)
+            if (constant.Node.EQUALS_OPERATOR() == null && constant.Expression != null)
             {
                 this.AddError(
                     CompilerMessageId.ConstantMissingEqualsOperator,
@@ -426,7 +426,7 @@ namespace Thrift.Net.Compilation
                     constant.Name);
             }
 
-            if (constant.Value == null)
+            if (constant.Expression == null)
             {
                 // The constant hasn't been initialized. For example `const i32 MaxPageSize`.
                 this.AddError(
@@ -434,13 +434,13 @@ namespace Thrift.Net.Compilation
                     constant.Node.name,
                     constant.Name);
             }
-            else if (!constant.Type.IsAssignableFrom(constant.Value.Type))
+            else if (!constant.Type.IsAssignableFrom(constant.Expression.Type))
             {
                 this.AddError(
                     CompilerMessageId.ConstantExpressionCannotBeAssignedToType,
                     constant.Node.constExpression().Start,
                     constant.Node.constExpression().Stop,
-                    constant.Value.RawValue,
+                    constant.Expression.RawValue,
                     constant.Type.Name);
             }
 
