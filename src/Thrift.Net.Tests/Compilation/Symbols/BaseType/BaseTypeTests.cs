@@ -23,7 +23,7 @@ namespace Thrift.Net.Tests.Compilation.Symbols.BaseType
                 new object[] { BaseType.I8, BaseType.Double, false },
                 new object[] { BaseType.I8, BaseType.String, false },
                 new object[] { BaseType.I8, BaseType.Bool, false },
-                new object[] { BaseType.I8, BaseType.Byte, false },
+                new object[] { BaseType.I8, BaseType.Byte, true },
                 new object[] { BaseType.I8, BaseType.Binary, false },
                 new object[] { BaseType.I8, BaseType.Slist, false },
 
@@ -100,7 +100,7 @@ namespace Thrift.Net.Tests.Compilation.Symbols.BaseType
                 new object[] { BaseType.Bool, BaseType.Slist, false },
 
                 // byte
-                new object[] { BaseType.Byte, BaseType.I8, false },
+                new object[] { BaseType.Byte, BaseType.I8, true },
                 new object[] { BaseType.Byte, BaseType.I16, false },
                 new object[] { BaseType.Byte, BaseType.I32, false },
                 new object[] { BaseType.Byte, BaseType.I64, false },
@@ -139,7 +139,7 @@ namespace Thrift.Net.Tests.Compilation.Symbols.BaseType
 
         [Theory]
         [InlineData("bool", "bool", "bool?")]
-        [InlineData("byte", "byte", "byte?")]
+        [InlineData("byte", "sbyte", "sbyte?")]
         [InlineData("i8", "sbyte", "sbyte?")]
         [InlineData("i16", "short", "short?")]
         [InlineData("i32", "int", "int?")]

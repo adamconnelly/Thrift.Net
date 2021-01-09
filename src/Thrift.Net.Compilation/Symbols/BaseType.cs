@@ -202,7 +202,7 @@ namespace Thrift.Net.Compilation.Symbols
             return node.typeName.Text switch
             {
                 BoolName => new BaseType(node, parent, BoolName, "bool", "bool?"),
-                ByteName => new BaseType(node, parent, ByteName, "byte", "byte?"),
+                ByteName => new BaseType(node, parent, ByteName, "sbyte", "sbyte?"),
                 I8Name => new BaseType(node, parent, I8Name, "sbyte", "sbyte?"),
                 I16Name => new BaseType(node, parent, I16Name, "short", "short?"),
                 I32Name => new BaseType(node, parent, I32Name, "int", "int?"),
@@ -231,7 +231,7 @@ namespace Thrift.Net.Compilation.Symbols
             // NOTE: At the moment we're checking the type names. Once we separate
             // out the concept of a type vs a type reference, and we only have a single
             // instance of each base type, we can switch to using reference equality instead.
-            if (this.Name == I8Name && expressionType.Name == I8Name)
+            if (this.Name == I8Name && (expressionType.Name == I8Name || expressionType.Name == ByteName))
             {
                 return true;
             }
@@ -252,6 +252,13 @@ namespace Thrift.Net.Compilation.Symbols
             }
 
             if (this.Name == DoubleName && (expressionType.Name == I8Name || expressionType.Name == I16Name || expressionType.Name == I32Name || expressionType.Name == I64Name))
+            {
+                return true;
+            }
+
+            // `byte` has been superceded by the `i8` type and is equivalent, so an `i8` can
+            // be assigned to a `byte`.
+            if (this.Name == ByteName && (expressionType.Name == I8Name || expressionType.Name == ByteName))
             {
                 return true;
             }
