@@ -34,6 +34,8 @@ namespace Thrift.Net.Tests.Compilation.Binding.ConstantExpressionBinder
                 new object[] { "100e2", BaseType.Double },
                 new object[] { "-100e2", BaseType.Double },
                 new object[] { "+100e2", BaseType.Double },
+                new object[] { "true", BaseType.Bool },
+                new object[] { "false", BaseType.Bool },
             };
         }
 

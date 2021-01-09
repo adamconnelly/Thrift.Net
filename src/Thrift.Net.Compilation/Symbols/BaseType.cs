@@ -231,34 +231,61 @@ namespace Thrift.Net.Compilation.Symbols
             // NOTE: At the moment we're checking the type names. Once we separate
             // out the concept of a type vs a type reference, and we only have a single
             // instance of each base type, we can switch to using reference equality instead.
-            if (this.Name == I8Name && (expressionType.Name == I8Name || expressionType.Name == ByteName))
+            if (this.Name == I8Name &&
+                (expressionType.Name == I8Name ||
+                expressionType.Name == ByteName))
             {
                 return true;
             }
 
-            if (this.Name == I16Name && (expressionType.Name == I8Name || expressionType.Name == I16Name))
+            if (this.Name == I16Name &&
+                (expressionType.Name == I8Name ||
+                expressionType.Name == I16Name))
             {
                 return true;
             }
 
-            if (this.Name == I32Name && (expressionType.Name == I8Name || expressionType.Name == I16Name || expressionType.Name == I32Name))
+            if (this.Name == I32Name &&
+                (expressionType.Name == I8Name ||
+                expressionType.Name == I16Name ||
+                expressionType.Name == I32Name))
             {
                 return true;
             }
 
-            if (this.Name == I64Name && (expressionType.Name == I8Name || expressionType.Name == I16Name || expressionType.Name == I32Name || expressionType.Name == I64Name))
+            if (this.Name == I64Name &&
+                (expressionType.Name == I8Name ||
+                expressionType.Name == I16Name ||
+                expressionType.Name == I32Name ||
+                expressionType.Name == I64Name))
             {
                 return true;
             }
 
-            if (this.Name == DoubleName && (expressionType.Name == I8Name || expressionType.Name == I16Name || expressionType.Name == I32Name || expressionType.Name == I64Name))
+            if (this.Name == DoubleName &&
+                (expressionType.Name == I8Name ||
+                expressionType.Name == I16Name ||
+                expressionType.Name == I32Name ||
+                expressionType.Name == I64Name))
             {
                 return true;
             }
 
             // `byte` has been superceded by the `i8` type and is equivalent, so an `i8` can
             // be assigned to a `byte`.
-            if (this.Name == ByteName && (expressionType.Name == I8Name || expressionType.Name == ByteName))
+            if (this.Name == ByteName &&
+                (expressionType.Name == I8Name ||
+                expressionType.Name == ByteName))
+            {
+                return true;
+            }
+
+            if (this.Name == BoolName &&
+                (expressionType.Name == BoolName ||
+                expressionType.Name == I8Name ||
+                expressionType.Name == I16Name ||
+                expressionType.Name == I32Name ||
+                expressionType.Name == I64Name))
             {
                 return true;
             }

@@ -61,6 +61,11 @@ namespace Thrift.Net.Compilation.Binding
                 return BaseType.Double;
             }
 
+            if (node.BOOL_CONSTANT() != null)
+            {
+                return BaseType.Bool;
+            }
+
             return BaseType.String;
         }
 

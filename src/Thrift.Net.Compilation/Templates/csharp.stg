@@ -48,7 +48,7 @@ $endif$
 >>
 
 generateConstant(constant) ::= <<
-public const $constant.Type.CSharpRequiredTypeName$ $constant.Name$ = $constant.Value.RawValue$;
+public const $constant.Type.CSharpRequiredTypeName$ $constant.Name$ = $constant.CSharpValue$;
 >>
 
 generateEnum(enum) ::= <<

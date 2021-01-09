@@ -88,10 +88,10 @@ namespace Thrift.Net.Tests.Compilation.Symbols.BaseType
                 new object[] { BaseType.String, BaseType.Slist, false },
 
                 // bool
-                new object[] { BaseType.Bool, BaseType.I8, false },
-                new object[] { BaseType.Bool, BaseType.I16, false },
-                new object[] { BaseType.Bool, BaseType.I32, false },
-                new object[] { BaseType.Bool, BaseType.I64, false },
+                new object[] { BaseType.Bool, BaseType.I8, true },
+                new object[] { BaseType.Bool, BaseType.I16, true },
+                new object[] { BaseType.Bool, BaseType.I32, true },
+                new object[] { BaseType.Bool, BaseType.I64, true },
                 new object[] { BaseType.Bool, BaseType.Double, false },
                 new object[] { BaseType.Bool, BaseType.String, false },
                 new object[] { BaseType.Bool, BaseType.Bool, true },

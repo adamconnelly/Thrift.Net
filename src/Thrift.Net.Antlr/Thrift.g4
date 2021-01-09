@@ -79,7 +79,11 @@ constDefinition:
     CONST fieldType name=IDENTIFIER constExpression | // `const i32 MaxPageSize 100` (missing '=' operator)
     CONST fieldType name=IDENTIFIER EQUALS_OPERATOR constExpression // Successful parse
     ;
-constExpression: value=INT_CONSTANT | value=HEX_CONSTANT | value=DOUBLE_CONSTANT | value=LITERAL;
+constExpression: value=INT_CONSTANT |
+    value=HEX_CONSTANT |
+    value=DOUBLE_CONSTANT |
+    value=BOOL_CONSTANT |
+    value=LITERAL;
 
 listSeparator: COMMA | SEMICOLON;
 
@@ -102,8 +106,6 @@ KNOWN_NAMESPACE_SCOPES: '*' | 'c_glib' | 'cpp' | 'csharp' | 'delphi' | 'go' |
     'java' | 'js' | 'lua' | 'netcore' | 'netstd' | 'perl' | 'php' | 'py' |
     'py.twisted' | 'rb' | 'st' | 'xsd';
 EQUALS_OPERATOR: '=';
-LITERAL: ( '"' .*? '"' ) | ( '\'' .*? '\'' );
-IDENTIFIER: ( [a-zA-Z] | '_' ) ( [a-zA-Z] | [0-9] | '.' | '_' )*;
 
 // Examples of valid doubles (based on the Thrift IDL) include:
 // 100.5
@@ -121,6 +123,13 @@ INT_CONSTANT: ('+' | '-')? [0-9]+;
 // NOTE: HEX_CONSTANT deliberately allows invalid hex (i.e. letters > F) to allow
 // for graceful error handling
 HEX_CONSTANT: '0' [xX] [0-9a-zA-Z]+;
+
+// NOTE: Thrift also allows integer boolean expressions, but we parse that as an
+// int and handle it in the compiler
+BOOL_CONSTANT: 'true' | 'false';
+
+LITERAL: ( '"' .*? '"' ) | ( '\'' .*? '\'' );
+IDENTIFIER: ( [a-zA-Z] | '_' ) ( [a-zA-Z] | [0-9] | '.' | '_' )*;
 
 WS: [ \t\r\n]+ -> skip;
 COMMENT: (

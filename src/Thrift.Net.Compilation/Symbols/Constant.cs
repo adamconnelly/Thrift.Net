@@ -1,6 +1,8 @@
 namespace Thrift.Net.Compilation.Symbols
 {
+    using System;
     using Thrift.Net.Compilation.Binding;
+    using Thrift.Net.Compilation.Extensions;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
@@ -54,6 +56,32 @@ namespace Thrift.Net.Compilation.Symbols
 
         /// <inheritdoc/>
         public IDocument Document => this.Document;
+
+        /// <inheritdoc/>
+        public string CSharpValue
+        {
+            get
+            {
+                if (this.Value == null)
+                {
+                    throw new InvalidOperationException(
+                        "Cannot generate the C# value for this constant because no value could be parsed from the Thrift source");
+                }
+
+                if (!this.Type.IsAssignableFrom(this.Value.Type))
+                {
+                    throw new InvalidOperationException(
+                        "Cannot generate the C# value for this constant because the value cannot be assigned to the constant's type");
+                }
+
+                if (this.Type.Name == BaseType.BoolName && this.Value.Type.IsIntegerType())
+                {
+                    return long.Parse(this.Value.RawValue) > 0 ? "true" : "false";
+                }
+
+                return this.Value.RawValue;
+            }
+        }
 
         /// <inheritdoc/>
         public override void Accept(ISymbolVisitor visitor)

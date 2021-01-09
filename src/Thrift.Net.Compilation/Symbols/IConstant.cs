@@ -16,6 +16,12 @@ namespace Thrift.Net.Compilation.Symbols
         /// <summary>
         /// Gets the value of the constant definition.
         /// </summary>
-        IConstantExpression Value { get; }
+        IConstantExpression Value { get; } // TODO: Rename to Expression
+
+        /// <summary>
+        /// Gets the CSharp value of the constant expression that should be used for
+        /// code generation.
+        /// </summary>
+        string CSharpValue { get; }
     }
 }
