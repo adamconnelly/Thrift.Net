@@ -64,5 +64,14 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
                 expression,
                 constantType);
         }
+
+        [Fact]
+        public void BinaryConstantDefined_ReportsError()
+        {
+            this.AssertCompilerReturnsErrorMessage(
+                "const $binary$ Blob = \"testing123\"",
+                CompilerMessageId.BinaryConstantNotSupported,
+                "Blob");
+        }
     }
 }

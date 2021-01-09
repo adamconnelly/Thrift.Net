@@ -150,3 +150,33 @@ thrift-samples/structs/User.thrift(9,5-5): Error TC0203: Field Id '0' is not val
 **NOTE:** the official compiler supports a command-line argument to allow
 non-positive field Ids. At the moment we are taking the decision not to support
 this option unless someone requests it.
+
+### Binary Constants
+
+The official compiler allows you to declare a constant using the `binary` type,
+but it's not clear how a binary field could be initialised based on the
+available constant expressions defined in the Thrift IDL.
+
+The official compiler will allow a string literal to be assigned to a binary
+constant:
+
+```thrift
+const binary Blob = "testing123"
+```
+
+But the resulting C# code doesn't compile:
+
+```csharp
+public const byte[] Blob = "testing123";
+```
+
+As a result we've taken the decision to output an error message if a constant is
+declared using the binary type:
+
+```shell
+Error TC0804: 'Blob' has been declared using the `binary` type, which is not supported for constants. Please change the type of your constant.
+```
+
+This should highlight it as a problem if anyone is actually using binary
+constants, and we can then implement it properly. In the meantime it should
+prevent code being generated that can't be compiled.

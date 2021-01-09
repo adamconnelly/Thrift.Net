@@ -176,4 +176,7 @@
   <data name="TC0803" xml:space="preserve">
     <value>The expression '{0}' cannot be assigned to a constant of type '{1}'. Please check your expression and constant are of the correct type.</value>
   </data>
+  <data name="TC0804" xml:space="preserve">
+    <value>'{0}' has been declared using the `binary` type, which is not supported for constants. Please change the type of your constant.</value>
+  </data>
 </root>

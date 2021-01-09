@@ -444,6 +444,15 @@ namespace Thrift.Net.Compilation
                     constant.Type.Name);
             }
 
+            if (constant.Type.Name == BaseType.BinaryName)
+            {
+                this.AddError(
+                    CompilerMessageId.BinaryConstantNotSupported,
+                    constant.Node.fieldType().Start,
+                    constant.Node.fieldType().Stop,
+                    constant.Name);
+            }
+
             base.VisitConstant(constant);
         }
 

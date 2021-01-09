@@ -837,5 +837,23 @@ namespace Thrift.Net.Compilation
         /// </code>
         /// </example>
         ConstantExpressionCannotBeAssignedToType = 803,
+
+        /// <summary>
+        /// A constant has been declared using the `binary` type, which isn't supported
+        /// for constant expressions.
+        /// </summary>
+        /// <example>
+        /// The following example produces this error:
+        /// <code>
+        /// const binary Blob = "100"
+        ///       ^^^^^^
+        /// </code>
+        ///
+        /// To resolve this issue, change the type of the constant.
+        /// <code>
+        /// const string Blob = "100"
+        /// </code>
+        /// </example>
+        BinaryConstantNotSupported = 804,
     }
 }
