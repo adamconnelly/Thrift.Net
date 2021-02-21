@@ -3,6 +3,7 @@ namespace Thrift.Net.Tests.Compilation.Binding.ConstantExpressionBinder
     using System.Collections.Generic;
     using NSubstitute;
     using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Types;
     using Thrift.Net.Tests.Utility;
     using Xunit;
 

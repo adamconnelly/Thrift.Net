@@ -1,5 +1,7 @@
 namespace Thrift.Net.Compilation.Symbols
 {
+    using Thrift.Net.Compilation.Types;
+
     /// <summary>
     /// A base class for Symbol visitors.
     /// </summary>
@@ -41,17 +43,12 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public virtual void VisitUserType(IUserType userType)
-        {
-        }
-
-        /// <inheritdoc/>
         public virtual void VisitSetType(ISetType setType)
         {
         }
 
         /// <inheritdoc/>
-        public virtual void VisitMapType(MapType mapType)
+        public virtual void VisitMapType(IMapType mapType)
         {
         }
 
@@ -67,6 +64,11 @@ namespace Thrift.Net.Compilation.Symbols
 
         /// <inheritdoc/>
         public virtual void VisitConstant(IConstant constant)
+        {
+        }
+
+        /// <inheritdoc/>
+        public virtual void VisitFieldType(IFieldType fieldType)
         {
         }
     }

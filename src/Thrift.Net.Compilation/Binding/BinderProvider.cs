@@ -20,11 +20,6 @@ namespace Thrift.Net.Compilation.Binding
         private static readonly EnumMemberBinder EnumMemberBinder;
         private static readonly FieldBinder FieldBinder;
         private static readonly FieldTypeBinder FieldTypeBinder;
-        private static readonly BaseTypeBinder BaseTypeBinder;
-        private static readonly UserTypeBinder UserTypeBinder;
-        private static readonly ListTypeBinder ListTypeBinder;
-        private static readonly SetTypeBinder SetTypeBinder;
-        private static readonly MapTypeBinder MapTypeBinder;
         private static readonly ConstantBinder ConstantBinder;
         private static readonly ConstantExpressionBinder ConstantExpressionBinder;
         private static readonly BinderProvider ProviderInstance;
@@ -41,11 +36,6 @@ namespace Thrift.Net.Compilation.Binding
             EnumMemberBinder = new EnumMemberBinder(ProviderInstance);
             FieldBinder = new FieldBinder(ProviderInstance);
             FieldTypeBinder = new FieldTypeBinder(ProviderInstance);
-            BaseTypeBinder = new BaseTypeBinder();
-            UserTypeBinder = new UserTypeBinder();
-            ListTypeBinder = new ListTypeBinder(ProviderInstance);
-            MapTypeBinder = new MapTypeBinder(ProviderInstance);
-            SetTypeBinder = new SetTypeBinder(ProviderInstance);
             ConstantBinder = new ConstantBinder(ProviderInstance);
             ConstantExpressionBinder = new ConstantExpressionBinder();
         }
@@ -107,26 +97,6 @@ namespace Thrift.Net.Compilation.Binding
             else if (node is FieldTypeContext)
             {
                 return FieldTypeBinder;
-            }
-            else if (node is BaseTypeContext)
-            {
-                return BaseTypeBinder;
-            }
-            else if (node is UserTypeContext)
-            {
-                return UserTypeBinder;
-            }
-            else if (node is ListTypeContext)
-            {
-                return ListTypeBinder;
-            }
-            else if (node is SetTypeContext)
-            {
-                return SetTypeBinder;
-            }
-            else if (node is MapTypeContext)
-            {
-                return MapTypeBinder;
             }
             else if (node is ExceptionDefinitionContext)
             {

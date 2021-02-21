@@ -4,6 +4,7 @@ namespace Thrift.Net.Compilation.Binding
     using System.Globalization;
     using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Compilation.Symbols.Builders;
+    using Thrift.Net.Compilation.Types;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>

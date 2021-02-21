@@ -1,5 +1,6 @@
 namespace Thrift.Net.Compilation.Symbols
 {
+    using Thrift.Net.Compilation.Types;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
@@ -18,7 +19,7 @@ namespace Thrift.Net.Compilation.Symbols
             ConstExpressionContext node,
             IConstant parent,
             string rawValue,
-            IFieldType type)
+            IType type)
             : base(node, parent)
         {
             this.RawValue = rawValue;
@@ -26,7 +27,7 @@ namespace Thrift.Net.Compilation.Symbols
         }
 
         /// <inheritdoc/>
-        public IFieldType Type { get; }
+        public IType Type { get; }
 
         /// <inheritdoc/>
         public string RawValue { get; }

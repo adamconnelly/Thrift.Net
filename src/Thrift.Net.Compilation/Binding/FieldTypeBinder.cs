@@ -23,6 +23,8 @@ namespace Thrift.Net.Compilation.Binding
         /// <inheritdoc />
         protected override IFieldType Bind(FieldTypeContext node, ISymbol parent)
         {
+            // TODO: Delete the binders for the individual types and update FieldType
+            // to resolve the type
             if (node.baseType() != null)
             {
                 return this.binderProvider

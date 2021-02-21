@@ -26,6 +26,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// <returns>The symbol matching the node, or null if no symbol was found.</returns>
         ISymbol FindSymbolForNode(IParseTree node);
 
+        // TODO: Do we need the FindSymbolForNode methods?
         /// <summary>
         /// Finds the symbol that represents the specified node.
         /// </summary>
@@ -68,6 +69,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// <returns>The symbol matching the node, or null if no symbol was found.</returns>
         Struct FindSymbolForNode(ThriftParser.StructDefinitionContext node);
 
+        // TODO: Should we switch the return type to IType?
         /// <summary>
         /// Resolves the specified type.
         /// </summary>

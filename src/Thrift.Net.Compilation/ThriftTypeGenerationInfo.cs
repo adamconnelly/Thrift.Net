@@ -1,7 +1,7 @@
 namespace Thrift.Net.Compilation
 {
     using System.Collections.Generic;
-    using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Types;
 
     /// <summary>
     /// Used to provide mappings between Thrift types and their associated class
@@ -16,45 +16,45 @@ namespace Thrift.Net.Compilation
             = new Dictionary<string, ThriftTypeGenerationInfo>
         {
             {
-                BaseType.ByteName,
+                BaseType.Byte.Name,
                 new ThriftTypeGenerationInfo(
                     "TType.Byte", "ReadByteAsync", "WriteByteAsync")
             },
             {
-                BaseType.I8Name,
+                BaseType.I8.Name,
                 new ThriftTypeGenerationInfo(
                     "TType.Byte", "ReadByteAsync", "WriteByteAsync")
             },
             {
-                BaseType.I16Name,
+                BaseType.I16.Name,
                 new ThriftTypeGenerationInfo("TType.I16", "ReadI16Async", "WriteI16Async")
             },
             {
-                BaseType.I32Name,
+                BaseType.I32.Name,
                 new ThriftTypeGenerationInfo("TType.I32", "ReadI32Async", "WriteI32Async")
             },
             {
-                BaseType.I64Name,
+                BaseType.I64.Name,
                 new ThriftTypeGenerationInfo("TType.I64", "ReadI64Async", "WriteI64Async")
             },
             {
-                BaseType.BoolName,
+                BaseType.Bool.Name,
                 new ThriftTypeGenerationInfo("TType.Bool", "ReadBoolAsync", "WriteBoolAsync")
             },
             {
-                BaseType.DoubleName,
+                BaseType.Double.Name,
                 new ThriftTypeGenerationInfo("TType.Double", "ReadDoubleAsync", "WriteDoubleAsync")
             },
             {
-                BaseType.StringName,
+                BaseType.String.Name,
                 new ThriftTypeGenerationInfo("TType.String", "ReadStringAsync", "WriteStringAsync")
             },
             {
-                BaseType.BinaryName,
+                BaseType.Binary.Name,
                 new ThriftTypeGenerationInfo("TType.String", "ReadBinaryAsync", "WriteBinaryAsync")
             },
             {
-                BaseType.SlistName,
+                BaseType.Slist.Name,
                 new ThriftTypeGenerationInfo("TType.String", "ReadStringAsync", "WriteStringAsync")
             },
         };

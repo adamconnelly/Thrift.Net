@@ -5,6 +5,7 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Constant
     using Thrift.Net.Compilation.Binding;
     using Thrift.Net.Compilation.Symbols;
     using Thrift.Net.Compilation.Symbols.Builders;
+    using Thrift.Net.Compilation.Types;
     using Thrift.Net.Tests.Utility;
     using Xunit;
 
@@ -68,8 +69,8 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Constant
         public void UnassignableConstantTypes_ThrowsException()
         {
             // Arrange
-            var declaredType = Substitute.For<IFieldType>();
-            var expressionType = Substitute.For<IFieldType>();
+            var declaredType = Substitute.For<IType>();
+            var expressionType = Substitute.For<IType>();
 
             declaredType.IsAssignableFrom(expressionType).Returns(false);
 
@@ -81,10 +82,13 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Constant
             Assert.Throws<InvalidOperationException>(() => constant.CSharpValue);
         }
 
-        private IConstant CreateConstant(string input, IFieldType fieldType)
+        private IConstant CreateConstant(string input, IType type)
         {
             var node = ParserInput.FromString(input)
                 .ParseInput(parser => parser.constDefinition());
+
+            var fieldType = Substitute.For<IFieldType>();
+            fieldType.Reference.Type.Returns(type);
 
             var constant = new ConstantBuilder()
                 .SetNode(node)
@@ -96,7 +100,7 @@ namespace Thrift.Net.Tests.Compilation.Symbols.Constant
             return constant;
         }
 
-        private void SetConstantValue(IConstant constant, IFieldType expressionType, string rawValue)
+        private void SetConstantValue(IConstant constant, IType expressionType, string rawValue)
         {
             var constantValue = new ConstantExpressionBuilder()
                 .SetNode(constant.Node.constExpression())

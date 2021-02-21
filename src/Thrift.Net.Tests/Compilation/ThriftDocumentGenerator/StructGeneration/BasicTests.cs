@@ -5,26 +5,15 @@ namespace Thrift.Net.Tests.Compilation.ThriftDocumentGenerator.StructGeneration
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-    using NSubstitute;
-    using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Types;
     using Thrift.Net.Tests.Extensions;
-    using Thrift.Net.Tests.Utility;
     using Xunit;
 
     public class BasicTests : ThriftDocumentGeneratorTests
     {
         public static IEnumerable<object[]> GetBaseTypes()
         {
-            var field = Substitute.For<IField>();
-
-            return BaseType.Names.Select(name => new[]
-            {
-                BaseType.Resolve(
-                    ParserInput
-                        .FromString(name)
-                        .ParseInput(parser => parser.baseType()),
-                    field),
-            });
+            return BaseType.All.Select(type => new object[] { type });
         }
 
         [Fact]

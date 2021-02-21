@@ -3,6 +3,7 @@
 - [Compilation Overview](#compilation-overview).
 - [Explanation of the message format](#message-format).
 - [Full list of messages](#messages).
+- [Type System](#type-system).
 - [Differences to official compiler](#differences-to-official-compiler).
 
 ## Compilation Overview
@@ -108,6 +109,161 @@ The absolute path to the thrift file that has an error. For example:
 
 The full list of compilation messages can be found in the
 [CompilerMessageId](/src/Thrift.Net.Compilation/CompilerMessageId.cs) enum.
+
+## Type System
+
+The Thrift type system is made up of the following components:
+
+- [Base Types](#base-types).
+- [User Defined Types](#user-defined-types).
+- [Collection Types](#collection-types).
+
+### Base Types
+
+Base Types are the lowest level building blocks that can be used to create
+messages or services. They map to the primitive types of the various Thrift
+target languages. The following table details the available base types, along
+with their associated C# type:
+
+| Base Type | C# Type  | Notes                                                       |
+| --------- | -------- | ----------------------------------------------------------- |
+| `bool`    | `bool`   |                                                             |
+| `byte`    | `sbyte`  | `byte` is actually signed, and is equivalent to `i8`.       |
+| `i8`      | `sbyte`  |                                                             |
+| `i16`     | `short`  |                                                             |
+| `i32`     | `int`    |                                                             |
+| `i64`     | `long`   |                                                             |
+| `double`  | `double` |                                                             |
+| `string`  | `string` |                                                             |
+| `binary`  | `byte[]` |                                                             |
+| `slist`   | `string` | `slist` is deprecated, and `string` should be used instead. |
+
+#### Notes on `bool`
+
+Thrift supports the following constant expressions when assigning a value to
+constants or a default value to fields:
+
+- `true`.
+- `false`.
+- An integer expression where `<= 0` is `false` and positive numbers are true.
+
+This can be seen in the following example:
+
+```thrift
+const bool TrueConstant = true  // Has a value of `true`
+const bool FalseContant = false  // Has a value of `false`
+const bool NegativeConstant = -2 // Has a value of `false`
+const bool ZeroConstant = 0      // Has a value of `false`
+const bool PositiveConstant = 1  // Has a value of `true`
+```
+
+### User Defined Types
+
+Thrift supports the following user-defined types:
+
+- [Structs](#structs).
+- [Unions](#unions).
+- [Exceptions](#exceptions).
+- [Enums](#enums).
+- [Typedefs](#typedefs).
+
+#### Structs
+
+Structs allow you to create complex messages by combining multiple fields into a
+named type. Each field in a struct has a name and a Field Id, and both must be
+unique within the struct. Structs map directly to classes in C#.
+
+The following shows an example of a struct:
+
+```thrift
+struct User {
+  1: i32 Id
+  2: string Username
+  3: UserType Type
+}
+```
+
+#### Unions
+
+Unions are identical to structs, except that only a single field in a union can
+be set at a time.
+
+#### Exceptions
+
+Exceptions look almost identical to Thrift structs, but are used to create
+exceptions in the target language, and to allow those exceptions to be thrown
+from a Service and handled by the Thrift client. The following is an example of
+an exception:
+
+```thrift
+exception NotFoundException {
+  1: string Message
+}
+```
+
+#### Enums
+
+Enums represent enumerated types mapping names to values. The member names and
+values must be unique within the enum. Enums map directly to enums in C#. The
+following is an example of an enum:
+
+```thrift
+enum UserType {
+  User = 1
+  Administrator = 2
+}
+```
+
+#### Typedefs
+
+Typedefs allow you to create an alternative name for a type. The following is an
+example of typedefs:
+
+```thrift
+typedef i8 tinyint
+typedef list<string> stringlist
+```
+
+**NOTES:**
+
+- The Thrift specification only allows base types and collection types to be
+  specified in a typedef.
+
+### Type Hierarchy
+
+The type hierarchy in Thrift.Net looks like this:
+
+```text
+Type
+  --> BaseType
+  --> Struct
+  --> Union
+  --> Enum
+  --> Exception
+  --> List
+  --> Set
+  --> Map
+```
+
+#### Type vs Type Reference
+
+A Type represents the definition of a Thrift type, and a Type Reference
+represents the usage of that type. For example, in the following thrift
+definition we're defining two types, `UserType` and `User`, with each field
+containing a reference to a type:
+
+```thrift
+enum UserType {
+  User = 1
+  Administrator = 2
+}
+
+struct User {
+  1: i32 Id
+  2: string Username
+  3: UserType Type
+}
+```
 
 ## Differences to Official Compiler
 

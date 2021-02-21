@@ -3,6 +3,7 @@ namespace Thrift.Net.Compilation.Symbols
     using System;
     using Thrift.Net.Compilation.Binding;
     using Thrift.Net.Compilation.Extensions;
+    using Thrift.Net.Compilation.Types;
     using static Thrift.Net.Antlr.ThriftParser;
 
     /// <summary>
@@ -29,6 +30,7 @@ namespace Thrift.Net.Compilation.Symbols
             this.binderProvider = binderProvider;
         }
 
+        // TODO: Need to rename this so we don't have Type.Reference.Type going on
         /// <inheritdoc/>
         public IFieldType Type
         {
@@ -68,13 +70,13 @@ namespace Thrift.Net.Compilation.Symbols
                         "Cannot generate the C# value for this constant because no value could be parsed from the Thrift source");
                 }
 
-                if (!this.Type.IsAssignableFrom(this.Expression.Type))
+                if (!this.Type.Reference.Type.IsAssignableFrom(this.Expression.Type))
                 {
                     throw new InvalidOperationException(
                         "Cannot generate the C# value for this constant because the value cannot be assigned to the constant's type");
                 }
 
-                if (this.Type.Name == BaseType.BoolName && this.Expression.Type.IsIntegerType())
+                if (this.Type.Reference.Type == BaseType.Bool && this.Expression.Type.IsIntegerType())
                 {
                     return long.Parse(this.Expression.RawValue) > 0 ? "true" : "false";
                 }

@@ -4,6 +4,7 @@ namespace Thrift.Net.Compilation
     using System.Linq;
     using Antlr4.Runtime;
     using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Types;
 
     /// <summary>
     /// A visitor used to perform the main compilation.
@@ -214,7 +215,7 @@ namespace Thrift.Net.Compilation
                 }
             }
 
-            if (field.Type.Name == BaseType.SlistName)
+            if (field.Type == BaseType.Slist)
             {
                 // A field has been declared using a deprecated type. For example:
                 // ```
@@ -246,111 +247,112 @@ namespace Thrift.Net.Compilation
         }
 
         /// <inheritdoc/>
-        public override void VisitListType(IListType listType)
+        public override void VisitFieldType(IFieldType fieldType)
         {
-            if (listType.ElementType == null)
-            {
-                // A list has been declared with no element type specified. For example:
-                // ```
-                // struct User {
-                //   1: list<> Emails
-                // }
-                // ```
-                this.AddError(
-                    CompilerMessageId.ListMustHaveElementTypeSpecified,
-                    listType.Node.LIST().Symbol,
-                    listType.Node.GT_OPERATOR()?.Symbol ?? listType.Node.LIST().Symbol);
-            }
-
-            base.VisitListType(listType);
-        }
-
-        /// <inheritdoc/>
-        public override void VisitUserType(IUserType userType)
-        {
-            if (!userType.IsResolved)
+            if (!fieldType.Reference.IsResolved)
             {
                 // A field has referenced a type that doesn't exist. For example:
                 // ```
                 // struct User {
                 //     1: UserType Type
+                //        ^^^^^^^^
                 // }
                 // ```
                 this.AddError(
                     CompilerMessageId.UnknownType,
-                    userType.Node.IDENTIFIER().Symbol,
-                    userType.Name);
+                    fieldType.Node.Start,
+                    fieldType.Node.Stop,
+                    fieldType.Name);
             }
-
-            base.VisitUserType(userType);
         }
 
-        /// <inheritdoc/>
-        public override void VisitSetType(ISetType setType)
-        {
-            if (setType.ElementType == null)
-            {
-                // A set has been declared with no element type specified. For example:
-                // ```
-                // struct User {
-                //   1: set<> Emails
-                // }
-                // ```
-                this.AddError(
-                    CompilerMessageId.SetMustHaveElementTypeSpecified,
-                    setType.Node.SET().Symbol,
-                    setType.Node.GT_OPERATOR()?.Symbol ?? setType.Node.SET().Symbol);
-            }
+        // TODO: Decide what to do about these. Maybe we need a ITypeReference<ListTypeContext, IListType> or something like that?
+        // /// <inheritdoc/>
+        // public override void VisitListType(IListType listType)
+        // {
+        //     if (listType.ElementType == null)
+        //     {
+        //         // A list has been declared with no element type specified. For example:
+        //         // ```
+        //         // struct User {
+        //         //   1: list<> Emails
+        //         // }
+        //         // ```
+        //         this.AddError(
+        //             CompilerMessageId.ListMustHaveElementTypeSpecified,
+        //             listType.Node.LIST().Symbol,
+        //             listType.Node.GT_OPERATOR()?.Symbol ?? listType.Node.LIST().Symbol);
+        //     }
+        //
+        //     base.VisitListType(listType);
+        // }
 
-            base.VisitSetType(setType);
-        }
+        // /// <inheritdoc/>
+        // public override void VisitSetType(ISetType setType)
+        // {
+        //     if (setType.ElementType == null)
+        //     {
+        //         // A set has been declared with no element type specified. For example:
+        //         // ```
+        //         // struct User {
+        //         //   1: set<> Emails
+        //         // }
+        //         // ```
+        //         this.AddError(
+        //             CompilerMessageId.SetMustHaveElementTypeSpecified,
+        //             setType.Node.SET().Symbol,
+        //             setType.Node.GT_OPERATOR()?.Symbol ?? setType.Node.SET().Symbol);
+        //     }
+        //
+        //     base.VisitSetType(setType);
+        // }
 
-        /// <inheritdoc/>
-        public override void VisitMapType(MapType mapType)
-        {
-            if (mapType.KeyType == null && mapType.ValueType == null)
-            {
-                // A map has been declared with no key or value types specified.
-                // For example:
-                // ```
-                // struct User {
-                //   1: map<> Emails
-                // }
-                // ```
-                this.AddError(
-                    CompilerMessageId.MapMustHaveKeyAndValueTypeSpecified,
-                    mapType.Node.MAP().Symbol,
-                    mapType.Node.GT_OPERATOR()?.Symbol ?? mapType.Node.MAP().Symbol);
-            }
-            else if (mapType.KeyType == null)
-            {
-                // A map has been declared with no key type specified. For example:
-                // ```
-                // struct User {
-                //   1: map<, string> Emails
-                // }
-                // ```
-                this.AddError(
-                    CompilerMessageId.MapMustHaveKeyTypeSpecified,
-                    mapType.Node.MAP().Symbol,
-                    mapType.Node.GT_OPERATOR().Symbol);
-            }
-            else if (mapType.ValueType == null)
-            {
-                // A map has been declared with no value type specified. For example:
-                // ```
-                // struct User {
-                //   1: map<EmailType, > Emails
-                // }
-                // ```
-                this.AddError(
-                    CompilerMessageId.MapMustHaveValueTypeSpecified,
-                    mapType.Node.MAP().Symbol,
-                    mapType.Node.GT_OPERATOR().Symbol);
-            }
-
-            base.VisitMapType(mapType);
-        }
+        // /// <inheritdoc/>
+        // public override void VisitMapType(IMapType mapType)
+        // {
+        //     if (mapType.KeyType == null && mapType.ValueType == null)
+        //     {
+        //         // A map has been declared with no key or value types specified.
+        //         // For example:
+        //         // ```
+        //         // struct User {
+        //         //   1: map<> Emails
+        //         // }
+        //         // ```
+        //         this.AddError(
+        //             CompilerMessageId.MapMustHaveKeyAndValueTypeSpecified,
+        //             mapType.Node.MAP().Symbol,
+        //             mapType.Node.GT_OPERATOR()?.Symbol ?? mapType.Node.MAP().Symbol);
+        //     }
+        //     else if (mapType.KeyType == null)
+        //     {
+        //         // A map has been declared with no key type specified. For example:
+        //         // ```
+        //         // struct User {
+        //         //   1: map<, string> Emails
+        //         // }
+        //         // ```
+        //         this.AddError(
+        //             CompilerMessageId.MapMustHaveKeyTypeSpecified,
+        //             mapType.Node.MAP().Symbol,
+        //             mapType.Node.GT_OPERATOR().Symbol);
+        //     }
+        //     else if (mapType.ValueType == null)
+        //     {
+        //         // A map has been declared with no value type specified. For example:
+        //         // ```
+        //         // struct User {
+        //         //   1: map<EmailType, > Emails
+        //         // }
+        //         // ```
+        //         this.AddError(
+        //             CompilerMessageId.MapMustHaveValueTypeSpecified,
+        //             mapType.Node.MAP().Symbol,
+        //             mapType.Node.GT_OPERATOR().Symbol);
+        //     }
+        //
+        //     base.VisitMapType(mapType);
+        // }
 
         /// <inheritdoc/>
         public override void VisitUnion(IUnion union)
@@ -434,7 +436,7 @@ namespace Thrift.Net.Compilation
                     constant.Node.name,
                     constant.Name);
             }
-            else if (!constant.Type.IsAssignableFrom(constant.Expression.Type))
+            else if (!constant.Type.Reference.Type.IsAssignableFrom(constant.Expression.Type))
             {
                 this.AddError(
                     CompilerMessageId.ConstantExpressionCannotBeAssignedToType,
@@ -444,7 +446,7 @@ namespace Thrift.Net.Compilation
                     constant.Type.Name);
             }
 
-            if (constant.Type.Name == BaseType.BinaryName)
+            if (constant.Type.Reference.Type == BaseType.Binary)
             {
                 this.AddError(
                     CompilerMessageId.BinaryConstantNotSupported,

@@ -1,6 +1,6 @@
 namespace Thrift.Net.Tests.Compilation.ThriftCompiler
 {
-    using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Types;
     using Thrift.Net.Tests.Extensions;
     using Xunit;
     using ThriftCompiler = Thrift.Net.Compilation.ThriftCompiler;
@@ -36,7 +36,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
             // Assert
             Assert.Collection(
                 result.Document.Constants,
-                item => Assert.Equal(BaseType.I32Name, item.Type.Name));
+                item => Assert.Same(BaseType.I32, item.Type));
         }
 
         [Fact]
@@ -51,7 +51,7 @@ namespace Thrift.Net.Tests.Compilation.ThriftCompiler
             // Assert
             Assert.Collection(
                 result.Document.Constants,
-                item => Assert.Equal(BaseType.I8Name, item.Expression.Type.Name));
+                item => Assert.Same(BaseType.I8, item.Expression.Type));
         }
 
         [Fact]

@@ -1,5 +1,7 @@
 namespace Thrift.Net.Compilation.Symbols
 {
+    using Thrift.Net.Compilation.Types;
+
     /// <summary>
     /// Visits Symbols.
     /// </summary>
@@ -30,6 +32,12 @@ namespace Thrift.Net.Compilation.Symbols
         void VisitField(IField field);
 
         /// <summary>
+        /// Visits a field's type.
+        /// </summary>
+        /// <param name="fieldType">The field type.</param>
+        void VisitFieldType(IFieldType fieldType);
+
+        /// <summary>
         /// Visits a namespace.
         /// </summary>
         /// <param name="namespace">The namespace to visit.</param>
@@ -48,12 +56,6 @@ namespace Thrift.Net.Compilation.Symbols
         void VisitListType(IListType listType);
 
         /// <summary>
-        /// Visits a reference to a user-defined type.
-        /// </summary>
-        /// <param name="userType">The user type being referenced by a field.</param>
-        void VisitUserType(IUserType userType);
-
-        /// <summary>
         /// Visits a constant.
         /// </summary>
         /// <param name="constant">The constant to visit.</param>
@@ -69,7 +71,7 @@ namespace Thrift.Net.Compilation.Symbols
         /// Visits a map type reference.
         /// </summary>
         /// <param name="mapType">The map type being reference by a field.</param>
-        void VisitMapType(MapType mapType);
+        void VisitMapType(IMapType mapType);
 
         /// <summary>
         /// Visits a union.

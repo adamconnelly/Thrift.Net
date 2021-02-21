@@ -1,7 +1,7 @@
 namespace Thrift.Net.Tests.Compilation.ThriftCompiler
 {
     using System.Linq;
-    using Thrift.Net.Compilation.Symbols;
+    using Thrift.Net.Compilation.Types;
     using Thrift.Net.Tests.Extensions;
     using Xunit;
 
@@ -198,7 +198,7 @@ struct User {
                 f => f.Name == "Emails");
 
             var list = Assert.IsAssignableFrom<IListType>(field.Type);
-            Assert.Equal(BaseType.StringName, list.ElementType.Name);
+            Assert.Same(BaseType.String, list.ElementType);
         }
 
         [Fact]
@@ -218,7 +218,7 @@ struct User {
                 f => f.Name == "Emails");
 
             var set = Assert.IsAssignableFrom<ISetType>(field.Type);
-            Assert.Equal(BaseType.StringName, set.ElementType.Name);
+            Assert.Same(BaseType.String, set.ElementType);
         }
 
         [Fact]
@@ -238,7 +238,7 @@ struct User {
                 f => f.Name == "Permissions");
 
             var map = Assert.IsAssignableFrom<IMapType>(field.Type);
-            Assert.Equal(BaseType.StringName, map.KeyType.Name);
+            Assert.Same(BaseType.String, map.KeyType);
             Assert.Equal("PermissionType", map.ValueType.Name);
         }
     }
