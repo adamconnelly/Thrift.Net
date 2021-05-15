@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/adamconnelly/Thrift.Net#readme",
   "devDependencies": {
-    "@commitlint/cli": "^11.0.0",
+    "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
     "commitizen": "^4.2.3",
     "cz-conventional-changelog": "^3.3.0",
