@@ -11,7 +11,8 @@
     "compiler": "dotnet run --project ./src/Thrift.Net.Compiler --",
     "publish:compiler:linux-x64": "dotnet publish -c 'Release' -r linux-x64 -o ./artifacts/linux-x64 ./src/Thrift.Net.Compiler",
     "publish:compiler:win-x64": "dotnet publish -c 'Release' -r win-x64 -o ./artifacts/win-x64 ./src/Thrift.Net.Compiler",
-    "commitz": "cz"
+    "commitz": "cz",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -33,12 +34,6 @@
     "lint-staged": "^10.5.4",
     "markdownlint-cli": "^0.27.1",
     "prettier": "2.2.1"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
   },
   "lint-staged": {
     "*.{js,css,md}": "prettier --write"
