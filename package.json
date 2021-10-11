@@ -31,7 +31,7 @@
     "cz-conventional-changelog": "^3.3.0",
     "cz-customizable": "^6.3.0",
     "husky": "^6.0.0",
-    "lint-staged": "^10.5.4",
+    "lint-staged": "^11.2.3",
     "markdownlint-cli": "^0.27.1",
     "prettier": "2.2.1"
   },
