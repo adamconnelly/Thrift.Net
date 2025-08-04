@@ -20,18 +20,7 @@ Thrift.Net is provided under the MIT license, which you can find
 
 ## Project Status
 
-At the moment the project is **_not ready for production use_**. We are
-currently working on implementing a Thrift compiler that is compatible with the
-[official Apache runtime library](https://www.nuget.org/packages/ApacheThrift).
-Once we have a working compiler, the next step will be to implement the runtime
-library to make Thrift.Net self contained.
-
-- For information about the initial design goals for the project, see the
-  [design goals](docs/design-goals.md) page.
-- For information on the project roadmap, see the
-  [roadmap page](docs/roadmap.md).
-- For information about the compiler design, see the
-  [compilation page](docs/compilation.md).
+This project is **_not ready for production use_** and is currently unmaintained.
 
 ## Contributing
 
